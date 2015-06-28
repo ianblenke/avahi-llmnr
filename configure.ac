@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1076 2006-01-15 14:17:40Z lennart $
+# $Id: configure.ac 1096 2006-01-22 18:14:34Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,7 +21,7 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.4],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.5],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
@@ -30,7 +30,7 @@ AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
 AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [5:0:2])
 AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [3:3:0])
-AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [3:2:0])
+AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [4:0:1])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:0:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:0:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:0:0])
@@ -115,13 +115,14 @@ AC_TRY_COMPILE([#include <netinet/in.h>], [
 #
 # Detecting the linux distribution for specific things like init scripts.
 #
-AC_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the distribution to target: One of debian, gentoo, archlinux, fedora, darwin, netbsd, freebsd or none]))
+AC_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the distribution to target: One of debian, gentoo, archlinux, fedora, mandriva, darwin, netbsd, freebsd or none]))
 if test "z$with_distro" = "z"; then
     AC_CHECK_FILE(/etc/SuSE-release,with_distro="suse")
     AC_CHECK_FILE(/etc/gentoo-release,with_distro="gentoo")
     AC_CHECK_FILE(/etc/arch-release,with_distro="archlinux")
     AC_CHECK_FILE(/etc/debian_version,with_distro="debian")
     AC_CHECK_FILE(/etc/redhat-release,with_distro="fedora")
+    AC_CHECK_FILE(/etc/mandriva-release,with_distro="mandriva")
     if test "z$with_distro" = "z"; then
         with_distro=`uname -s`
     fi
@@ -129,7 +130,7 @@ fi
 with_distro=`echo ${with_distro} | tr '[[:upper:]]' '[[:lower:]]' `
 
 case $with_distro in
-    debian|gentoo|archlinux|suse|fedora|darwin|freebsd|none)
+    debian|gentoo|archlinux|suse|fedora|mandriva|darwin|freebsd|none)
      ;;
     netbsd)
      AC_MSG_WARN([Your distribution (${with_distro}) is supported but no init script exist yet! (patches welcome)])
@@ -147,6 +148,7 @@ AM_CONDITIONAL(TARGET_GENTOO, test x"$with_distro" = xgentoo)
 AM_CONDITIONAL(TARGET_DEBIAN, test x"$with_distro" = xdebian)
 AM_CONDITIONAL(TARGET_ARCHLINUX, test x"$with_distro" = xarchlinux)
 AM_CONDITIONAL(TARGET_FEDORA, test x"$with_distro" = xfedora)
+AM_CONDITIONAL(TARGET_MANDRIVA, test x"$with_distro" = xmandriva)
 AM_CONDITIONAL(TARGET_DARWIN, test x"$with_distro" = xdarwin)
 AM_CONDITIONAL(TARGET_NETBSD, test x"$with_distro" = xnetbsd)
 AM_CONDITIONAL(TARGET_FREEBSD, test x"$with_distro" = xfreebsd)
@@ -232,6 +234,12 @@ AM_CONDITIONAL(ENABLE_CHROOT, test "x$enable_chroot" = "xyes")
 if test "x$enable_chroot" = "xyes" ; then
    AC_DEFINE([ENABLE_CHROOT], 1, [Enable chroot() usage])
 fi
+
+AC_CHECK_LIB(dl, dlopen, [ AC_CHECK_HEADERS(dlfcn.h, HAVE_DLOPEN=yes, HAVE_DLOPEN=no) ], HAVE_DLOPEN=no)
+if test "x$HAVE_DLOPEN" = "xyes" ; then
+    AC_DEFINE([HAVE_DLOPEN],1,[Have dlopen()])
+fi
+AM_CONDITIONAL(HAVE_DLOPEN, test "x$HAVE_DLOPEN" = "xyes")
 
 # Check for pkg-config manually first, as if its not installed the
 # PKG_PROG_PKG_CONFIG macro won't be defined.
@@ -582,7 +590,7 @@ AC_ARG_ENABLE(monodoc,
         esac],
         [HAVE_MONODOC=yes])
 
-if test "x$HAVE_MONODOC" = "xyes" ; then
+if test "x$HAVE_MONO" = "xyes" && test "x$HAVE_MONODOC" = "xyes" ; then
         PKG_CHECK_MODULES(MONODOC, [monodoc >= 1.1.8])
         MONODOC_DIR=`$PKG_CONFIG --variable=sourcesdir monodoc`        
 
@@ -744,6 +752,7 @@ initscript/gentoo/Makefile
 initscript/archlinux/Makefile
 initscript/suse/Makefile
 initscript/fedora/Makefile
+initscript/mandriva/Makefile
 initscript/darwin/Makefile
 initscript/freebsd/Makefile
 avahi-dnsconfd/Makefile

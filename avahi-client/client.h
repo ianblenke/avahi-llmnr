@@ -1,7 +1,7 @@
 #ifndef fooclienthfoo
 #define fooclienthfoo
 
-/* $Id: client.h 937 2005-11-08 21:56:28Z lennart $ */
+/* $Id: client.h 1093 2006-01-20 23:05:57Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -84,6 +84,9 @@ int avahi_client_errno (AvahiClient*);
 
 /** Return the local service cookie. returns AVAHI_SERVICE_COOKIE_INVALID on failure. */
 uint32_t avahi_client_get_local_service_cookie(AvahiClient *client);
+
+/** Return 1 if gethostbyname() supports mDNS lookups, 0 otherwise. \since 0.6.5 */
+int avahi_nss_support(void);
 
 AVAHI_C_DECL_END
 

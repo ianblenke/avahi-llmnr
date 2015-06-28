@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 267 2005-08-08 10:19:22Z lennart $
+# $Id: Makefile.am 838 2005-10-22 21:23:02Z lennart $
 
 # This file is part of avahi.
 #
@@ -55,7 +55,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = initscript/archlinux
+subdir = initscript/mandriva
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
@@ -342,19 +342,10 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-initddir = $(sysconfdir)/rc.d
-EXTRA_DIST = \
-	avahi-daemon.in \
-	avahi-dnsconfd.in
-
-initd_SCRIPTS = \
-	avahi-daemon \
-	avahi-dnsconfd
-
-CLEANFILES = \
-	avahi-daemon \
-	avahi-dnsconfd
-
+initddir = $(sysconfdir)/rc.d/init.d
+EXTRA_DIST = avahi-daemon.in avahi-dnsconfd.in
+initd_SCRIPTS = avahi-daemon avahi-dnsconfd
+CLEANFILES = avahi-daemon avahi-dnsconfd
 all: all-am
 
 .SUFFIXES:
@@ -367,9 +358,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  initscript/archlinux/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  initscript/mandriva/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  initscript/archlinux/Makefile
+	  $(AUTOMAKE) --foreign  initscript/mandriva/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

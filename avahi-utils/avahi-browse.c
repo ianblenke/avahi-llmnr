@@ -1,4 +1,4 @@
-/* $Id: avahi-browse.c 988 2005-11-16 22:34:12Z lennart $ */
+/* $Id: avahi-browse.c 1094 2006-01-22 17:25:07Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -127,8 +127,8 @@ static ServiceInfo *find_service(AvahiIfIndex interface, AvahiProtocol protocol,
         if (i->interface == interface &&
             i->protocol == protocol &&
             strcasecmp(i->name, name) == 0 &&
-            avahi_domain_equal(i->type, type) == 0 &&
-            avahi_domain_equal(i->domain, domain) == 0)
+            avahi_domain_equal(i->type, type) &&
+            avahi_domain_equal(i->domain, domain))
 
             return i;
 

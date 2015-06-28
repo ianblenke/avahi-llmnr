@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1035 2005-11-25 10:32:39Z sebest $
+# $Id: Makefile.am 1103 2006-01-23 00:27:03Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -50,7 +50,8 @@ avahi_daemon_SOURCES = \
 	simple-protocol.c simple-protocol.h \
 	static-services.c static-services.h \
 	ini-file-parser.c ini-file-parser.h \
-	setproctitle.c setproctitle.h
+	setproctitle.c setproctitle.h \
+	../avahi-client/check-nss.c
 
 avahi_daemon_CFLAGS = $(AM_CFLAGS) $(LIBDAEMON_CFLAGS)
 avahi_daemon_LDADD = $(AM_LDADD) ../avahi-common/libavahi-common.la ../avahi-core/libavahi-core.la $(LIBDAEMON_LIBS) -lexpat
@@ -100,11 +101,15 @@ avahi_daemon_SOURCES += \
 	dbus-sync-host-name-resolver.c \
 	dbus-sync-service-resolver.c \
 	dbus-record-browser.c  \
-        ../avahi-common/dbus.c ../avahi-common/dbus.h \
+	../avahi-common/dbus.c ../avahi-common/dbus.h \
 	../avahi-common/dbus-watch-glue.c ../avahi-common/dbus-watch-glue.h
 
 avahi_daemon_LDADD += \
 	$(DBUS_LIBS)
+
+if HAVE_DLOPEN
+avahi_daemon_LDADD += -ldl
+endif
 
 avahi_daemon_CFLAGS += $(DBUS_CFLAGS)
 

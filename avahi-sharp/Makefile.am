@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1046 2005-12-22 12:36:21Z lennart $
+# $Id: Makefile.am 1082 2006-01-15 15:04:54Z sebest $
 
 # This file is part of avahi.
 #
@@ -64,7 +64,9 @@ if HAVE_MONODOC
 update-docs: $(ASSEMBLY)
 	$(MONODOCER) -assembly:$(ASSEMBLY) -path:en
 
-avahi-sharp-docs.zip avahi-sharp-docs.tree: $(srcdir)/en/*/*
+avahi-sharp-docs.zip: avahi-sharp-docs.tree
+
+avahi-sharp-docs.tree: $(srcdir)/en/*/*
 	$(MDASSEMBLER) --out avahi-sharp-docs --ecma $(srcdir)/en
 
 docdir = $(MONODOC_DIR)

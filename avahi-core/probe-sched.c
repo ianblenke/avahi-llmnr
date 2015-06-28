@@ -1,4 +1,4 @@
-/* $Id: probe-sched.c 879 2005-10-26 21:27:40Z lennart $ */
+/* $Id: probe-sched.c 1084 2006-01-17 12:25:54Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -22,6 +22,8 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <stdlib.h>
 
 #include <avahi-common/domain.h>
 #include <avahi-common/timeval.h>

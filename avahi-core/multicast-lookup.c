@@ -1,4 +1,4 @@
-/* $Id: multicast-lookup.c 954 2005-11-13 16:36:33Z lennart $ */
+/* $Id: multicast-lookup.c 1084 2006-01-17 12:25:54Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -22,6 +22,8 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <stdlib.h>
 
 #include <avahi-common/malloc.h>
 #include <avahi-common/timeval.h>

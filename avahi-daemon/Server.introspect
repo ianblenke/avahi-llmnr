@@ -2,7 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
 <!DOCTYPE node SYSTEM "introspect.dtd">
 
-<!-- $Id: Server.introspect 1027 2005-11-24 01:30:44Z lennart $ -->
+<!-- $Id: Server.introspect 1092 2006-01-20 22:56:11Z lennart $ -->
 
 <!--
   This file is part of avahi.
@@ -49,6 +49,10 @@
     </method>
     <method name="GetDomainName">
       <arg name="name" type="s" direction="out"/>
+    </method>
+
+    <method name="IsNSSSupportAvailable">
+      <arg name="yes" type="b" direction="out"/>
     </method>
 
     <method name="GetState">

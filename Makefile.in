@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1081 2006-01-15 14:33:02Z lennart $
+# $Id: Makefile.am 1091 2006-01-20 21:53:25Z sebest $
 
 # This file is part of avahi.
 #
@@ -247,6 +247,8 @@ GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
+HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
+HAVE_DLOPEN_TRUE = @HAVE_DLOPEN_TRUE@
 HAVE_EXPAT_FALSE = @HAVE_EXPAT_FALSE@
 HAVE_EXPAT_TRUE = @HAVE_EXPAT_TRUE@
 HAVE_GDBM_FALSE = @HAVE_GDBM_FALSE@
@@ -343,6 +345,8 @@ TARGET_FREEBSD_FALSE = @TARGET_FREEBSD_FALSE@
 TARGET_FREEBSD_TRUE = @TARGET_FREEBSD_TRUE@
 TARGET_GENTOO_FALSE = @TARGET_GENTOO_FALSE@
 TARGET_GENTOO_TRUE = @TARGET_GENTOO_TRUE@
+TARGET_MANDRIVA_FALSE = @TARGET_MANDRIVA_FALSE@
+TARGET_MANDRIVA_TRUE = @TARGET_MANDRIVA_TRUE@
 TARGET_NETBSD_FALSE = @TARGET_NETBSD_FALSE@
 TARGET_NETBSD_TRUE = @TARGET_NETBSD_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
@@ -1032,18 +1036,22 @@ uninstall-info: uninstall-info-recursive
 
 avahi-core.pc: avahi-core.pc.in
 	sed -e 's,@prefix\@,$(prefix),g' \
+	    -e 's,@libdir\@,$(libdir),g' \
 	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
 
 @HAVE_DBUS_TRUE@avahi-client.pc: avahi-client.pc.in
 @HAVE_DBUS_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \
+@HAVE_DBUS_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
 @HAVE_DBUS_TRUE@	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
 
 @ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@avahi-compat-howl.pc: avahi-compat-howl.pc.in
 @ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \
+@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
 @ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@	    -e 's,@HOWL_COMPAT_VERSION\@,$(HOWL_COMPAT_VERSION),g' $< > $@
 
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@avahi-compat-libdns_sd.pc: avahi-compat-libdns_sd.pc.in
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
 
 @HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@avahi-sharp.pc: avahi-sharp.pc.in
@@ -1053,14 +1061,17 @@ avahi-core.pc: avahi-core.pc.in
 
 @HAVE_GLIB_TRUE@avahi-glib.pc: avahi-glib.pc.in
 @HAVE_GLIB_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \
+@HAVE_GLIB_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
 @HAVE_GLIB_TRUE@	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
 
 @HAVE_QT3_TRUE@avahi-qt3.pc: avahi-qt3.pc.in
 @HAVE_QT3_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \
+@HAVE_QT3_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
 @HAVE_QT3_TRUE@	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
 
 @HAVE_QT4_TRUE@avahi-qt4.pc: avahi-qt4.pc.in
 @HAVE_QT4_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \
+@HAVE_QT4_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
 @HAVE_QT4_TRUE@	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
 
 homepage:

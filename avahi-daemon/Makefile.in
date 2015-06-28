@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1035 2005-11-25 10:32:39Z sebest $
+# $Id: Makefile.am 1103 2006-01-23 00:27:03Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -87,13 +87,14 @@ host_triplet = @host@
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	dbus-sync-host-name-resolver.c \
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	dbus-sync-service-resolver.c \
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	dbus-record-browser.c  \
-@HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@        ../avahi-common/dbus.c ../avahi-common/dbus.h \
+@HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/dbus.c ../avahi-common/dbus.h \
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/dbus-watch-glue.c ../avahi-common/dbus-watch-glue.h
 
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_5 = \
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(DBUS_LIBS)
 
-@HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_6 = $(DBUS_CFLAGS)
+@HAVE_DBUS_TRUE@@HAVE_DLOPEN_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_6 = -ldl
+@HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_7 = $(DBUS_CFLAGS)
 subdir = avahi-daemon
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/avahi-dbus.conf.in
@@ -114,15 +115,16 @@ PROGRAMS = $(noinst_PROGRAMS) $(sbin_PROGRAMS)
 am__avahi_daemon_SOURCES_DIST = main.c main.h simple-protocol.c \
 	simple-protocol.h static-services.c static-services.h \
 	ini-file-parser.c ini-file-parser.h setproctitle.c \
-	setproctitle.h chroot.c chroot.h caps.c caps.h dbus-protocol.c \
-	dbus-protocol.h dbus-util.c dbus-util.h dbus-internal.h \
-	dbus-async-address-resolver.c dbus-async-host-name-resolver.c \
-	dbus-async-service-resolver.c dbus-domain-browser.c \
-	dbus-entry-group.c dbus-service-browser.c \
-	dbus-service-type-browser.c dbus-sync-address-resolver.c \
-	dbus-sync-host-name-resolver.c dbus-sync-service-resolver.c \
-	dbus-record-browser.c ../avahi-common/dbus.c \
-	../avahi-common/dbus.h ../avahi-common/dbus-watch-glue.c \
+	setproctitle.h ../avahi-client/check-nss.c chroot.c chroot.h \
+	caps.c caps.h dbus-protocol.c dbus-protocol.h dbus-util.c \
+	dbus-util.h dbus-internal.h dbus-async-address-resolver.c \
+	dbus-async-host-name-resolver.c dbus-async-service-resolver.c \
+	dbus-domain-browser.c dbus-entry-group.c \
+	dbus-service-browser.c dbus-service-type-browser.c \
+	dbus-sync-address-resolver.c dbus-sync-host-name-resolver.c \
+	dbus-sync-service-resolver.c dbus-record-browser.c \
+	../avahi-common/dbus.c ../avahi-common/dbus.h \
+	../avahi-common/dbus-watch-glue.c \
 	../avahi-common/dbus-watch-glue.h
 @ENABLE_CHROOT_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__objects_1 = avahi_daemon-chroot.$(OBJEXT) \
 @ENABLE_CHROOT_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-caps.$(OBJEXT)
@@ -146,6 +148,7 @@ am__avahi_daemon_SOURCES_DIST = main.c main.h simple-protocol.c \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-static-services.$(OBJEXT) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-ini-file-parser.$(OBJEXT) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-setproctitle.$(OBJEXT) \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-check-nss.$(OBJEXT) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__objects_1) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__objects_2)
 avahi_daemon_OBJECTS = $(am_avahi_daemon_OBJECTS)
@@ -155,7 +158,8 @@ am__DEPENDENCIES_1 =
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-core/libavahi-core.la \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_1) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_1) \
-@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_2)
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_2) \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_1)
 am__ini_file_parser_test_SOURCES_DIST = ini-file-parser.c \
 	ini-file-parser.h ini-file-parser-test.c
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am_ini_file_parser_test_OBJECTS = ini_file_parser_test-ini-file-parser.$(OBJEXT) \
@@ -293,6 +297,8 @@ GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
+HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
+HAVE_DLOPEN_TRUE = @HAVE_DLOPEN_TRUE@
 HAVE_EXPAT_FALSE = @HAVE_EXPAT_FALSE@
 HAVE_EXPAT_TRUE = @HAVE_EXPAT_TRUE@
 HAVE_GDBM_FALSE = @HAVE_GDBM_FALSE@
@@ -389,6 +395,8 @@ TARGET_FREEBSD_FALSE = @TARGET_FREEBSD_FALSE@
 TARGET_FREEBSD_TRUE = @TARGET_FREEBSD_TRUE@
 TARGET_GENTOO_FALSE = @TARGET_GENTOO_FALSE@
 TARGET_GENTOO_TRUE = @TARGET_GENTOO_TRUE@
+TARGET_MANDRIVA_FALSE = @TARGET_MANDRIVA_FALSE@
+TARGET_MANDRIVA_TRUE = @TARGET_MANDRIVA_TRUE@
 TARGET_NETBSD_FALSE = @TARGET_NETBSD_FALSE@
 TARGET_NETBSD_TRUE = @TARGET_NETBSD_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
@@ -475,19 +483,21 @@ AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")' \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	ini-file-parser.h \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	setproctitle.c \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	setproctitle.h \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-client/check-nss.c \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_2) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_4)
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_daemon_CFLAGS =  \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(AM_CFLAGS) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(LIBDAEMON_CFLAGS) \
-@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_6)
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_7)
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_daemon_LDADD =  \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(AM_LDADD) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/libavahi-common.la \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-core/libavahi-core.la \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(LIBDAEMON_LIBS) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	-lexpat $(am__append_3) \
-@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_5)
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_5) \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_6)
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@ini_file_parser_test_SOURCES = \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	ini-file-parser.c ini-file-parser.h \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	ini-file-parser-test.c
@@ -619,6 +629,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_daemon-caps.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_daemon-check-nss.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_daemon-chroot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_daemon-dbus-async-address-resolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_daemon-dbus-async-host-name-resolver.Po@am__quote@
@@ -733,6 +744,20 @@ avahi_daemon-setproctitle.obj: setproctitle.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='setproctitle.c' object='avahi_daemon-setproctitle.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -c -o avahi_daemon-setproctitle.obj `if test -f 'setproctitle.c'; then $(CYGPATH_W) 'setproctitle.c'; else $(CYGPATH_W) '$(srcdir)/setproctitle.c'; fi`
+
+avahi_daemon-check-nss.o: ../avahi-client/check-nss.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -MT avahi_daemon-check-nss.o -MD -MP -MF "$(DEPDIR)/avahi_daemon-check-nss.Tpo" -c -o avahi_daemon-check-nss.o `test -f '../avahi-client/check-nss.c' || echo '$(srcdir)/'`../avahi-client/check-nss.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_daemon-check-nss.Tpo" "$(DEPDIR)/avahi_daemon-check-nss.Po"; else rm -f "$(DEPDIR)/avahi_daemon-check-nss.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../avahi-client/check-nss.c' object='avahi_daemon-check-nss.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -c -o avahi_daemon-check-nss.o `test -f '../avahi-client/check-nss.c' || echo '$(srcdir)/'`../avahi-client/check-nss.c
+
+avahi_daemon-check-nss.obj: ../avahi-client/check-nss.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -MT avahi_daemon-check-nss.obj -MD -MP -MF "$(DEPDIR)/avahi_daemon-check-nss.Tpo" -c -o avahi_daemon-check-nss.obj `if test -f '../avahi-client/check-nss.c'; then $(CYGPATH_W) '../avahi-client/check-nss.c'; else $(CYGPATH_W) '$(srcdir)/../avahi-client/check-nss.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_daemon-check-nss.Tpo" "$(DEPDIR)/avahi_daemon-check-nss.Po"; else rm -f "$(DEPDIR)/avahi_daemon-check-nss.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../avahi-client/check-nss.c' object='avahi_daemon-check-nss.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -c -o avahi_daemon-check-nss.obj `if test -f '../avahi-client/check-nss.c'; then $(CYGPATH_W) '../avahi-client/check-nss.c'; else $(CYGPATH_W) '$(srcdir)/../avahi-client/check-nss.c'; fi`
 
 avahi_daemon-chroot.o: chroot.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -MT avahi_daemon-chroot.o -MD -MP -MF "$(DEPDIR)/avahi_daemon-chroot.Tpo" -c -o avahi_daemon-chroot.o `test -f 'chroot.c' || echo '$(srcdir)/'`chroot.c; \

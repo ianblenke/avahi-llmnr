@@ -1,4 +1,4 @@
-/* $Id: announce.c 980 2005-11-16 01:15:46Z lennart $ */
+/* $Id: announce.c 1084 2006-01-17 12:25:54Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -22,6 +22,8 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <stdlib.h>
 
 #include <avahi-common/timeval.h>
 #include <avahi-common/malloc.h>

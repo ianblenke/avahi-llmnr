@@ -61,7 +61,10 @@ host_triplet = @host@
 @ENABLE_TESTS_TRUE@@HAVE_DBUS_TRUE@	client-test$(EXEEXT) \
 @ENABLE_TESTS_TRUE@@HAVE_DBUS_TRUE@	srv-test$(EXEEXT) \
 @ENABLE_TESTS_TRUE@@HAVE_DBUS_TRUE@	xdg-config-test$(EXEEXT) \
-@ENABLE_TESTS_TRUE@@HAVE_DBUS_TRUE@	rr-test$(EXEEXT)
+@ENABLE_TESTS_TRUE@@HAVE_DBUS_TRUE@	rr-test$(EXEEXT) \
+@ENABLE_TESTS_TRUE@@HAVE_DBUS_TRUE@	check-nss-test$(EXEEXT)
+@HAVE_DBUS_TRUE@@HAVE_DLOPEN_TRUE@am__append_1 = -ldl
+@HAVE_DBUS_TRUE@@HAVE_DLOPEN_TRUE@am__append_2 = -ldl
 subdir = avahi-client
 DIST_COMMON = $(am__avahi_clientinclude_HEADERS_DIST) \
 	$(am__noinst_HEADERS_DIST) $(srcdir)/Makefile.am \
@@ -88,11 +91,12 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 @HAVE_DBUS_TRUE@libavahi_client_la_DEPENDENCIES =  \
 @HAVE_DBUS_TRUE@	$(am__DEPENDENCIES_1) \
-@HAVE_DBUS_TRUE@	../avahi-common/libavahi-common.la
+@HAVE_DBUS_TRUE@	../avahi-common/libavahi-common.la \
+@HAVE_DBUS_TRUE@	$(am__DEPENDENCIES_1)
 am__libavahi_client_la_SOURCES_DIST = client.c client.h entrygroup.c \
 	browser.c resolver.c publish.h lookup.h xdg-config.c \
-	xdg-config.h ../avahi-common/dbus.c ../avahi-common/dbus.h \
-	../avahi-common/dbus-watch-glue.c \
+	xdg-config.h check-nss.c ../avahi-common/dbus.c \
+	../avahi-common/dbus.h ../avahi-common/dbus-watch-glue.c \
 	../avahi-common/dbus-watch-glue.h
 @HAVE_DBUS_TRUE@am_libavahi_client_la_OBJECTS =  \
 @HAVE_DBUS_TRUE@	libavahi_client_la-client.lo \
@@ -100,11 +104,19 @@ am__libavahi_client_la_SOURCES_DIST = client.c client.h entrygroup.c \
 @HAVE_DBUS_TRUE@	libavahi_client_la-browser.lo \
 @HAVE_DBUS_TRUE@	libavahi_client_la-resolver.lo \
 @HAVE_DBUS_TRUE@	libavahi_client_la-xdg-config.lo \
+@HAVE_DBUS_TRUE@	libavahi_client_la-check-nss.lo \
 @HAVE_DBUS_TRUE@	libavahi_client_la-dbus.lo \
 @HAVE_DBUS_TRUE@	libavahi_client_la-dbus-watch-glue.lo
 libavahi_client_la_OBJECTS = $(am_libavahi_client_la_OBJECTS)
 @HAVE_DBUS_TRUE@am_libavahi_client_la_rpath = -rpath $(libdir)
 PROGRAMS = $(noinst_PROGRAMS)
+am__check_nss_test_SOURCES_DIST = check-nss.c check-nss-test.c \
+	client.h
+@HAVE_DBUS_TRUE@am_check_nss_test_OBJECTS =  \
+@HAVE_DBUS_TRUE@	check_nss_test-check-nss.$(OBJEXT) \
+@HAVE_DBUS_TRUE@	check_nss_test-check-nss-test.$(OBJEXT)
+check_nss_test_OBJECTS = $(am_check_nss_test_OBJECTS)
+@HAVE_DBUS_TRUE@check_nss_test_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__client_test_SOURCES_DIST = client-test.c
 @HAVE_DBUS_TRUE@am_client_test_OBJECTS =  \
 @HAVE_DBUS_TRUE@	client_test-client-test.$(OBJEXT)
@@ -139,10 +151,11 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libavahi_client_la_SOURCES) $(client_test_SOURCES) \
-	$(rr_test_SOURCES) $(srv_test_SOURCES) \
+SOURCES = $(libavahi_client_la_SOURCES) $(check_nss_test_SOURCES) \
+	$(client_test_SOURCES) $(rr_test_SOURCES) $(srv_test_SOURCES) \
 	$(xdg_config_test_SOURCES)
 DIST_SOURCES = $(am__libavahi_client_la_SOURCES_DIST) \
+	$(am__check_nss_test_SOURCES_DIST) \
 	$(am__client_test_SOURCES_DIST) $(am__rr_test_SOURCES_DIST) \
 	$(am__srv_test_SOURCES_DIST) \
 	$(am__xdg_config_test_SOURCES_DIST)
@@ -253,6 +266,8 @@ GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
+HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
+HAVE_DLOPEN_TRUE = @HAVE_DLOPEN_TRUE@
 HAVE_EXPAT_FALSE = @HAVE_EXPAT_FALSE@
 HAVE_EXPAT_TRUE = @HAVE_EXPAT_TRUE@
 HAVE_GDBM_FALSE = @HAVE_GDBM_FALSE@
@@ -349,6 +364,8 @@ TARGET_FREEBSD_FALSE = @TARGET_FREEBSD_FALSE@
 TARGET_FREEBSD_TRUE = @TARGET_FREEBSD_TRUE@
 TARGET_GENTOO_FALSE = @TARGET_GENTOO_FALSE@
 TARGET_GENTOO_TRUE = @TARGET_GENTOO_TRUE@
+TARGET_MANDRIVA_FALSE = @TARGET_MANDRIVA_FALSE@
+TARGET_MANDRIVA_TRUE = @TARGET_MANDRIVA_TRUE@
 TARGET_NETBSD_FALSE = @TARGET_NETBSD_FALSE@
 TARGET_NETBSD_TRUE = @TARGET_NETBSD_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
@@ -433,11 +450,14 @@ AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")'
 @HAVE_DBUS_TRUE@	resolver.c \
 @HAVE_DBUS_TRUE@	publish.h lookup.h \
 @HAVE_DBUS_TRUE@	xdg-config.c xdg-config.h \
+@HAVE_DBUS_TRUE@	check-nss.c \
 @HAVE_DBUS_TRUE@	../avahi-common/dbus.c ../avahi-common/dbus.h \
 @HAVE_DBUS_TRUE@	../avahi-common/dbus-watch-glue.c ../avahi-common/dbus-watch-glue.h
 
 @HAVE_DBUS_TRUE@libavahi_client_la_CFLAGS = $(AM_CFLAGS) $(DBUS_CFLAGS) -DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS=\"$(DBUS_SYSTEM_BUS_DEFAULT_ADDRESS)\"
-@HAVE_DBUS_TRUE@libavahi_client_la_LIBADD = $(AM_LDADD) $(DBUS_LIBS) ../avahi-common/libavahi-common.la
+@HAVE_DBUS_TRUE@libavahi_client_la_LIBADD = $(AM_LDADD) $(DBUS_LIBS) \
+@HAVE_DBUS_TRUE@	../avahi-common/libavahi-common.la \
+@HAVE_DBUS_TRUE@	$(am__append_2)
 @HAVE_DBUS_TRUE@libavahi_client_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info $(LIBAVAHI_CLIENT_VERSION_INFO)
 @HAVE_DBUS_TRUE@client_test_SOURCES = client-test.c
 @HAVE_DBUS_TRUE@client_test_CFLAGS = $(AM_CFLAGS) 
@@ -451,6 +471,9 @@ AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")'
 @HAVE_DBUS_TRUE@xdg_config_test_SOURCES = xdg-config-test.c xdg-config.c xdg-config.h
 @HAVE_DBUS_TRUE@xdg_config_test_CFLAGS = $(AM_CFLAGS) 
 @HAVE_DBUS_TRUE@xdg_config_test_LDADD = $(AM_LDADD)
+@HAVE_DBUS_TRUE@check_nss_test_SOURCES = check-nss.c check-nss-test.c client.h
+@HAVE_DBUS_TRUE@check_nss_test_CFLAGS = $(AM_CFLAGS) 
+@HAVE_DBUS_TRUE@check_nss_test_LDADD = $(AM_LDADD) $(am__append_1)
 all: all-am
 
 .SUFFIXES:
@@ -520,6 +543,9 @@ clean-noinstPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+check-nss-test$(EXEEXT): $(check_nss_test_OBJECTS) $(check_nss_test_DEPENDENCIES) 
+	@rm -f check-nss-test$(EXEEXT)
+	$(LINK) $(check_nss_test_LDFLAGS) $(check_nss_test_OBJECTS) $(check_nss_test_LDADD) $(LIBS)
 client-test$(EXEEXT): $(client_test_OBJECTS) $(client_test_DEPENDENCIES) 
 	@rm -f client-test$(EXEEXT)
 	$(LINK) $(client_test_LDFLAGS) $(client_test_OBJECTS) $(client_test_LDADD) $(LIBS)
@@ -539,8 +565,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_nss_test-check-nss-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_nss_test-check-nss.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client_test-client-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_client_la-browser.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_client_la-check-nss.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_client_la-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_client_la-dbus-watch-glue.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_client_la-dbus.Plo@am__quote@
@@ -608,6 +637,13 @@ libavahi_client_la-xdg-config.lo: xdg-config.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libavahi_client_la_CFLAGS) $(CFLAGS) -c -o libavahi_client_la-xdg-config.lo `test -f 'xdg-config.c' || echo '$(srcdir)/'`xdg-config.c
 
+libavahi_client_la-check-nss.lo: check-nss.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libavahi_client_la_CFLAGS) $(CFLAGS) -MT libavahi_client_la-check-nss.lo -MD -MP -MF "$(DEPDIR)/libavahi_client_la-check-nss.Tpo" -c -o libavahi_client_la-check-nss.lo `test -f 'check-nss.c' || echo '$(srcdir)/'`check-nss.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libavahi_client_la-check-nss.Tpo" "$(DEPDIR)/libavahi_client_la-check-nss.Plo"; else rm -f "$(DEPDIR)/libavahi_client_la-check-nss.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='check-nss.c' object='libavahi_client_la-check-nss.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libavahi_client_la_CFLAGS) $(CFLAGS) -c -o libavahi_client_la-check-nss.lo `test -f 'check-nss.c' || echo '$(srcdir)/'`check-nss.c
+
 libavahi_client_la-dbus.lo: ../avahi-common/dbus.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libavahi_client_la_CFLAGS) $(CFLAGS) -MT libavahi_client_la-dbus.lo -MD -MP -MF "$(DEPDIR)/libavahi_client_la-dbus.Tpo" -c -o libavahi_client_la-dbus.lo `test -f '../avahi-common/dbus.c' || echo '$(srcdir)/'`../avahi-common/dbus.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libavahi_client_la-dbus.Tpo" "$(DEPDIR)/libavahi_client_la-dbus.Plo"; else rm -f "$(DEPDIR)/libavahi_client_la-dbus.Tpo"; exit 1; fi
@@ -621,6 +657,34 @@ libavahi_client_la-dbus-watch-glue.lo: ../avahi-common/dbus-watch-glue.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../avahi-common/dbus-watch-glue.c' object='libavahi_client_la-dbus-watch-glue.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libavahi_client_la_CFLAGS) $(CFLAGS) -c -o libavahi_client_la-dbus-watch-glue.lo `test -f '../avahi-common/dbus-watch-glue.c' || echo '$(srcdir)/'`../avahi-common/dbus-watch-glue.c
+
+check_nss_test-check-nss.o: check-nss.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(check_nss_test_CFLAGS) $(CFLAGS) -MT check_nss_test-check-nss.o -MD -MP -MF "$(DEPDIR)/check_nss_test-check-nss.Tpo" -c -o check_nss_test-check-nss.o `test -f 'check-nss.c' || echo '$(srcdir)/'`check-nss.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/check_nss_test-check-nss.Tpo" "$(DEPDIR)/check_nss_test-check-nss.Po"; else rm -f "$(DEPDIR)/check_nss_test-check-nss.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='check-nss.c' object='check_nss_test-check-nss.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(check_nss_test_CFLAGS) $(CFLAGS) -c -o check_nss_test-check-nss.o `test -f 'check-nss.c' || echo '$(srcdir)/'`check-nss.c
+
+check_nss_test-check-nss.obj: check-nss.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(check_nss_test_CFLAGS) $(CFLAGS) -MT check_nss_test-check-nss.obj -MD -MP -MF "$(DEPDIR)/check_nss_test-check-nss.Tpo" -c -o check_nss_test-check-nss.obj `if test -f 'check-nss.c'; then $(CYGPATH_W) 'check-nss.c'; else $(CYGPATH_W) '$(srcdir)/check-nss.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/check_nss_test-check-nss.Tpo" "$(DEPDIR)/check_nss_test-check-nss.Po"; else rm -f "$(DEPDIR)/check_nss_test-check-nss.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='check-nss.c' object='check_nss_test-check-nss.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(check_nss_test_CFLAGS) $(CFLAGS) -c -o check_nss_test-check-nss.obj `if test -f 'check-nss.c'; then $(CYGPATH_W) 'check-nss.c'; else $(CYGPATH_W) '$(srcdir)/check-nss.c'; fi`
+
+check_nss_test-check-nss-test.o: check-nss-test.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(check_nss_test_CFLAGS) $(CFLAGS) -MT check_nss_test-check-nss-test.o -MD -MP -MF "$(DEPDIR)/check_nss_test-check-nss-test.Tpo" -c -o check_nss_test-check-nss-test.o `test -f 'check-nss-test.c' || echo '$(srcdir)/'`check-nss-test.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/check_nss_test-check-nss-test.Tpo" "$(DEPDIR)/check_nss_test-check-nss-test.Po"; else rm -f "$(DEPDIR)/check_nss_test-check-nss-test.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='check-nss-test.c' object='check_nss_test-check-nss-test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(check_nss_test_CFLAGS) $(CFLAGS) -c -o check_nss_test-check-nss-test.o `test -f 'check-nss-test.c' || echo '$(srcdir)/'`check-nss-test.c
+
+check_nss_test-check-nss-test.obj: check-nss-test.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(check_nss_test_CFLAGS) $(CFLAGS) -MT check_nss_test-check-nss-test.obj -MD -MP -MF "$(DEPDIR)/check_nss_test-check-nss-test.Tpo" -c -o check_nss_test-check-nss-test.obj `if test -f 'check-nss-test.c'; then $(CYGPATH_W) 'check-nss-test.c'; else $(CYGPATH_W) '$(srcdir)/check-nss-test.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/check_nss_test-check-nss-test.Tpo" "$(DEPDIR)/check_nss_test-check-nss-test.Po"; else rm -f "$(DEPDIR)/check_nss_test-check-nss-test.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='check-nss-test.c' object='check_nss_test-check-nss-test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(check_nss_test_CFLAGS) $(CFLAGS) -c -o check_nss_test-check-nss-test.obj `if test -f 'check-nss-test.c'; then $(CYGPATH_W) 'check-nss-test.c'; else $(CYGPATH_W) '$(srcdir)/check-nss-test.c'; fi`
 
 client_test-client-test.o: client-test.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(client_test_CFLAGS) $(CFLAGS) -MT client_test-client-test.o -MD -MP -MF "$(DEPDIR)/client_test-client-test.Tpo" -c -o client_test-client-test.o `test -f 'client-test.c' || echo '$(srcdir)/'`client-test.c; \

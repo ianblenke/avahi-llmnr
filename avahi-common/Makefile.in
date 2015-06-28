@@ -85,7 +85,9 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(avahi_commonincludedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libavahi_common_la_LIBADD =
+am__DEPENDENCIES_1 =
+libavahi_common_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_libavahi_common_la_OBJECTS = libavahi_common_la-malloc.lo \
 	libavahi_common_la-address.lo \
 	libavahi_common_la-alternative.lo libavahi_common_la-error.lo \
@@ -112,7 +114,6 @@ strlst_test_LDADD = $(LDADD)
 am_timeval_test_OBJECTS = timeval_test-timeval.$(OBJEXT) \
 	timeval_test-timeval-test.$(OBJEXT)
 timeval_test_OBJECTS = $(am_timeval_test_OBJECTS)
-am__DEPENDENCIES_1 =
 timeval_test_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_watch_test_OBJECTS = watch_test-timeval.$(OBJEXT) \
@@ -254,6 +255,8 @@ GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
+HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
+HAVE_DLOPEN_TRUE = @HAVE_DLOPEN_TRUE@
 HAVE_EXPAT_FALSE = @HAVE_EXPAT_FALSE@
 HAVE_EXPAT_TRUE = @HAVE_EXPAT_TRUE@
 HAVE_GDBM_FALSE = @HAVE_GDBM_FALSE@
@@ -350,6 +353,8 @@ TARGET_FREEBSD_FALSE = @TARGET_FREEBSD_FALSE@
 TARGET_FREEBSD_TRUE = @TARGET_FREEBSD_TRUE@
 TARGET_GENTOO_FALSE = @TARGET_GENTOO_FALSE@
 TARGET_GENTOO_TRUE = @TARGET_GENTOO_TRUE@
+TARGET_MANDRIVA_FALSE = @TARGET_MANDRIVA_FALSE@
+TARGET_MANDRIVA_TRUE = @TARGET_MANDRIVA_TRUE@
 TARGET_NETBSD_FALSE = @TARGET_NETBSD_FALSE@
 TARGET_NETBSD_TRUE = @TARGET_NETBSD_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
@@ -435,6 +440,7 @@ avahi_commoninclude_HEADERS = \
 	watch.h \
 	timeval.h \
 	simple-watch.h \
+	thread-watch.h \
 	gccmacro.h \
 	error.h \
 	llist.h \
@@ -457,7 +463,8 @@ libavahi_common_la_SOURCES = \
 	rlist.h rlist.c
 
 libavahi_common_la_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS) 
-libavahi_common_la_LDFLAGS = $(AM_LDFLAGS) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) -export-dynamic -version-info $(LIBAVAHI_COMMON_VERSION_INFO)
+libavahi_common_la_LIBADD = $(AM_LDADD) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS)
+libavahi_common_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info $(LIBAVAHI_COMMON_VERSION_INFO)
 strlst_test_SOURCES = \
 	strlst.c strlst.h \
 	malloc.c malloc.h \

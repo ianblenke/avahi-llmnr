@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1017 2005-11-19 19:49:24Z sebest $
+# $Id: Makefile.am 1087 2006-01-20 20:59:12Z sebest $
 
 # This file is part of avahi.
 #
@@ -59,8 +59,9 @@ host_triplet = @host@
 @TARGET_GENTOO_TRUE@am__append_3 = gentoo
 @TARGET_SUSE_TRUE@am__append_4 = suse
 @TARGET_FEDORA_TRUE@am__append_5 = fedora
-@TARGET_DARWIN_TRUE@am__append_6 = darwin
-@TARGET_FREEBSD_TRUE@am__append_7 = freebsd
+@TARGET_MANDRIVA_TRUE@am__append_6 = mandriva
+@TARGET_DARWIN_TRUE@am__append_7 = darwin
+@TARGET_FREEBSD_TRUE@am__append_8 = freebsd
 subdir = initscript
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -82,7 +83,8 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	uninstall-recursive
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = debian archlinux gentoo suse fedora darwin freebsd
+DIST_SUBDIRS = debian archlinux gentoo suse fedora mandriva darwin \
+	freebsd
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -184,6 +186,8 @@ GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
+HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
+HAVE_DLOPEN_TRUE = @HAVE_DLOPEN_TRUE@
 HAVE_EXPAT_FALSE = @HAVE_EXPAT_FALSE@
 HAVE_EXPAT_TRUE = @HAVE_EXPAT_TRUE@
 HAVE_GDBM_FALSE = @HAVE_GDBM_FALSE@
@@ -280,6 +284,8 @@ TARGET_FREEBSD_FALSE = @TARGET_FREEBSD_FALSE@
 TARGET_FREEBSD_TRUE = @TARGET_FREEBSD_TRUE@
 TARGET_GENTOO_FALSE = @TARGET_GENTOO_FALSE@
 TARGET_GENTOO_TRUE = @TARGET_GENTOO_TRUE@
+TARGET_MANDRIVA_FALSE = @TARGET_MANDRIVA_FALSE@
+TARGET_MANDRIVA_TRUE = @TARGET_MANDRIVA_TRUE@
 TARGET_NETBSD_FALSE = @TARGET_NETBSD_FALSE@
 TARGET_NETBSD_TRUE = @TARGET_NETBSD_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
@@ -352,7 +358,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 SUBDIRS = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7)
+	$(am__append_7) $(am__append_8)
 all: all-recursive
 
 .SUFFIXES:
