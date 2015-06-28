@@ -1,7 +1,7 @@
-# $Id: Makefile.am 1134 2006-02-13 08:07:45Z sebest $
-
-# This file is part of avahi.
+# $Id: hosts 1137 2006-02-14 21:31:48Z lennart $
 #
+# This file is part of avahi.
+# 
 # avahi is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2 of the
@@ -17,40 +17,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA.
 
-SUBDIRS = 
+# This file contains static ip address <-> host name mappings.  These
+# can be useful to publish services on behalf of a non-avahi enabled
+# device. Please bear in mind that host names are expected to be
+# fully qualified domain names, i.e. ending in .local!
 
-if TARGET_DEBIAN
-SUBDIRS += debian
-endif
+# See avahi.hosts(5) for more information on this configuration file!
 
-if TARGET_ARCHLINUX
-SUBDIRS += archlinux
-endif
-
-if TARGET_GENTOO
-SUBDIRS += gentoo
-endif
-
-if TARGET_SUSE
-SUBDIRS += suse
-endif
-
-if TARGET_FEDORA
-SUBDIRS += fedora
-endif
-
-if TARGET_MANDRIVA
-SUBDIRS += mandriva
-endif
-
-if TARGET_DARWIN
-SUBDIRS += darwin
-endif
-
-if TARGET_FREEBSD
-SUBDIRS += freebsd
-endif
-
-if TARGET_SLACKWARE
-SUBDIRS += slackware
-endif
+# Examples:
+# 192.168.0.1 router.local
+# 2001::81:1 test.local

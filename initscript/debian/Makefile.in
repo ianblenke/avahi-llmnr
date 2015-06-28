@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 267 2005-08-08 10:19:22Z lennart $
+# $Id: Makefile.am 1128 2006-02-03 22:04:13Z sebest $
 
 # This file is part of avahi.
 #
@@ -274,6 +274,8 @@ TARGET_MANDRIVA_FALSE = @TARGET_MANDRIVA_FALSE@
 TARGET_MANDRIVA_TRUE = @TARGET_MANDRIVA_TRUE@
 TARGET_NETBSD_FALSE = @TARGET_NETBSD_FALSE@
 TARGET_NETBSD_TRUE = @TARGET_NETBSD_TRUE@
+TARGET_SLACKWARE_FALSE = @TARGET_SLACKWARE_FALSE@
+TARGET_SLACKWARE_TRUE = @TARGET_SLACKWARE_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
 TARGET_SUSE_TRUE = @TARGET_SUSE_TRUE@
 USE_XMLTOMAN_FALSE = @USE_XMLTOMAN_FALSE@
@@ -541,11 +543,17 @@ uninstall-am: uninstall-info-am uninstall-initdSCRIPTS
 
 
 avahi-daemon: avahi-daemon.in
-	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+	sed \
+		-e 's,@sbindir\@,$(sbindir),g' \
+		-e 's,@sysconfdir\@,$(sysconfdir),g' \
+		$< > $@
 	chmod +x $@
 
 avahi-dnsconfd: avahi-dnsconfd.in
-	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+	sed \
+		-e 's,@sbindir\@,$(sbindir),g' \
+		-e 's,@sysconfdir\@,$(sysconfdir),g' \
+		$< > $@
 	chmod +x $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

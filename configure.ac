@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1122 2006-01-30 20:42:19Z lennart $
+# $Id: configure.ac 1142 2006-02-14 22:57:47Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,15 +21,15 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.6],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.7],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
-AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [5:0:2])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [3:4:0])
+AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [5:1:2])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [3:5:0])
 AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [4:1:1])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:0:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:1:0])
@@ -115,7 +115,7 @@ AC_TRY_COMPILE([#include <netinet/in.h>], [
 #
 # Detecting the linux distribution for specific things like init scripts.
 #
-AC_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the distribution to target: One of debian, gentoo, archlinux, fedora, mandriva, darwin, netbsd, freebsd or none]))
+AC_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the distribution to target: One of debian, gentoo, archlinux, fedora, mandriva, darwin, netbsd, freebsd, slackware or none]))
 if test "z$with_distro" = "z"; then
     AC_CHECK_FILE(/etc/SuSE-release,with_distro="suse")
     AC_CHECK_FILE(/etc/gentoo-release,with_distro="gentoo")
@@ -123,6 +123,7 @@ if test "z$with_distro" = "z"; then
     AC_CHECK_FILE(/etc/debian_version,with_distro="debian")
     AC_CHECK_FILE(/etc/redhat-release,with_distro="fedora")
     AC_CHECK_FILE(/etc/mandriva-release,with_distro="mandriva")
+    AC_CHECK_FILE(/etc/slackware-version,with_distro="slackware")
     if test "z$with_distro" = "z"; then
         with_distro=`uname -s`
     fi
@@ -130,7 +131,7 @@ fi
 with_distro=`echo ${with_distro} | tr '[[:upper:]]' '[[:lower:]]' `
 
 case $with_distro in
-    debian|gentoo|archlinux|suse|fedora|mandriva|darwin|freebsd|none)
+    debian|gentoo|archlinux|suse|fedora|mandriva|darwin|freebsd|slackware|none)
      ;;
     netbsd)
      AC_MSG_WARN([Your distribution (${with_distro}) is supported but no init script exist yet! (patches welcome)])
@@ -152,6 +153,7 @@ AM_CONDITIONAL(TARGET_MANDRIVA, test x"$with_distro" = xmandriva)
 AM_CONDITIONAL(TARGET_DARWIN, test x"$with_distro" = xdarwin)
 AM_CONDITIONAL(TARGET_NETBSD, test x"$with_distro" = xnetbsd)
 AM_CONDITIONAL(TARGET_FREEBSD, test x"$with_distro" = xfreebsd)
+AM_CONDITIONAL(TARGET_SLACKWARE, test x"$with_distro" = xslackware)
 
 test_gcc_flag() {
     AC_LANG_CONFTEST([int main() {}])
@@ -755,6 +757,7 @@ initscript/fedora/Makefile
 initscript/mandriva/Makefile
 initscript/darwin/Makefile
 initscript/freebsd/Makefile
+initscript/slackware/Makefile
 avahi-dnsconfd/Makefile
 avahi-utils/Makefile
 avahi-python/Makefile

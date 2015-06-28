@@ -1,4 +1,4 @@
-/* $Id: socket.c 945 2005-11-09 18:38:57Z sebest $ */
+/* $Id: socket.c 1132 2006-02-10 01:45:09Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -125,6 +125,12 @@ int avahi_mdns_mcast_join_ipv4(int fd, const AvahiIPv4Address *a, int idx, int j
     mdns_mcast_group_ipv4(&sa);
     mreq.imr_multiaddr = sa.sin_addr;
 
+    /* Some network drivers have issues with dropping membership of
+     * mcast groups when the iface is down, but don't allow rejoining
+     * when it comes back up. This is an ugly workaround */
+    if (join)
+        setsockopt(fd, IPPROTO_IP, IP_DROP_MEMBERSHIP, &mreq, sizeof(mreq));
+
     if (setsockopt(fd, IPPROTO_IP, join ? IP_ADD_MEMBERSHIP : IP_DROP_MEMBERSHIP, &mreq, sizeof(mreq)) < 0) {
         avahi_log_warn("%s failed: %s", join ? "IP_ADD_MEMBERSHIP" : "IP_DROP_MEMBERSHIP", strerror(errno));
         return -1;
@@ -146,6 +152,9 @@ int avahi_mdns_mcast_join_ipv6(int fd, const AvahiIPv6Address *a, int idx, int j
     mreq6.ipv6mr_multiaddr = sa6.sin6_addr;
     mreq6.ipv6mr_interface = idx;
 
+    if (join)
+        setsockopt(fd, IPPROTO_IPV6, IPV6_DROP_MEMBERSHIP, &mreq6, sizeof(mreq6));
+    
     if (setsockopt(fd, IPPROTO_IPV6, join ? IPV6_ADD_MEMBERSHIP : IPV6_DROP_MEMBERSHIP, &mreq6, sizeof(mreq6)) < 0) {
         avahi_log_warn("%s failed: %s", join ? "IPV6_ADD_MEMBERSHIP" : "IPV6_DROP_MEMBERSHIP", strerror(errno));
         return -1;
@@ -456,10 +465,10 @@ int avahi_send_dns_packet_ipv4(int fd, AvahiIfIndex interface, AvahiDnsPacket *p
     struct iovec io;
 #ifdef IP_PKTINFO
     struct cmsghdr *cmsg;
-    uint8_t cmsg_data[CMSG_SPACE(sizeof(struct in_pktinfo))];
+    size_t cmsg_data[( CMSG_SPACE(sizeof(struct in_pktinfo)) / sizeof(size_t)) + 1];
 #elif defined(IP_SENDSRCADDR)
     struct cmsghdr *cmsg;
-    uint8_t cmsg_data[CMSG_SPACE(sizeof(struct in_addr))];
+    size_t cmsg_data[( CMSG_SPACE(sizeof(struct in_addr)) / sizeof(size_t)) + 1];
 #endif
 
     assert(fd >= 0);
@@ -542,7 +551,7 @@ int avahi_send_dns_packet_ipv6(int fd, AvahiIfIndex interface, AvahiDnsPacket *p
     struct msghdr msg;
     struct iovec io;
     struct cmsghdr *cmsg;
-    uint8_t cmsg_data[CMSG_SPACE(sizeof(struct in6_pktinfo))];
+    size_t cmsg_data[(CMSG_SPACE(sizeof(struct in6_pktinfo))/sizeof(size_t)) + 1];
 
     assert(fd >= 0);
     assert(p);
@@ -596,7 +605,7 @@ AvahiDnsPacket *avahi_recv_dns_packet_ipv4(int fd, AvahiIPv4Address *ret_src_add
     AvahiDnsPacket *p= NULL;
     struct msghdr msg;
     struct iovec io;
-    uint8_t aux[1024];
+    size_t aux[1024 / sizeof(size_t)]; /* for alignment on ia64 ! */
     ssize_t l;
     struct cmsghdr *cmsg;
     int found_addr = 0;
@@ -726,7 +735,7 @@ AvahiDnsPacket *avahi_recv_dns_packet_ipv6(int fd, AvahiIPv6Address *ret_src_add
     AvahiDnsPacket *p = NULL;
     struct msghdr msg;
     struct iovec io;
-    uint8_t aux[64];
+    size_t aux[1024 / sizeof(size_t)];
     ssize_t l;
     int ms;
     struct cmsghdr *cmsg;

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1103 2006-01-23 00:27:03Z lennart $
+# $Id: Makefile.am 1133 2006-02-11 15:12:48Z lathiat $
 #
 # This file is part of avahi.
 # 
@@ -61,6 +61,7 @@ host_triplet = @host@
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	-DAVAHI_SOCKET=\"$(avahi_socket)\" \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	-DAVAHI_SERVICE_DIR=\"$(servicedir)\" \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	-DAVAHI_CONFIG_FILE=\"$(pkgsysconfdir)/avahi-daemon.conf\" \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	-DAVAHI_HOSTS_FILE=\"$(pkgsysconfdir)/hosts\" \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	-DAVAHI_DBUS_INTROSPECTION_DIR=\"$(introspectiondir)\" \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	-DAVAHI_CONFIG_DIR=\"$(pkgsysconfdir)\"
 
@@ -114,10 +115,11 @@ sbinPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(noinst_PROGRAMS) $(sbin_PROGRAMS)
 am__avahi_daemon_SOURCES_DIST = main.c main.h simple-protocol.c \
 	simple-protocol.h static-services.c static-services.h \
-	ini-file-parser.c ini-file-parser.h setproctitle.c \
-	setproctitle.h ../avahi-client/check-nss.c chroot.c chroot.h \
-	caps.c caps.h dbus-protocol.c dbus-protocol.h dbus-util.c \
-	dbus-util.h dbus-internal.h dbus-async-address-resolver.c \
+	static-hosts.c static-hosts.h ini-file-parser.c \
+	ini-file-parser.h setproctitle.c setproctitle.h \
+	../avahi-client/check-nss.c chroot.c chroot.h caps.c caps.h \
+	dbus-protocol.c dbus-protocol.h dbus-util.c dbus-util.h \
+	dbus-internal.h dbus-async-address-resolver.c \
 	dbus-async-host-name-resolver.c dbus-async-service-resolver.c \
 	dbus-domain-browser.c dbus-entry-group.c \
 	dbus-service-browser.c dbus-service-type-browser.c \
@@ -146,6 +148,7 @@ am__avahi_daemon_SOURCES_DIST = main.c main.h simple-protocol.c \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am_avahi_daemon_OBJECTS = avahi_daemon-main.$(OBJEXT) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-simple-protocol.$(OBJEXT) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-static-services.$(OBJEXT) \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-static-hosts.$(OBJEXT) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-ini-file-parser.$(OBJEXT) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-setproctitle.$(OBJEXT) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_daemon-check-nss.$(OBJEXT) \
@@ -399,6 +402,8 @@ TARGET_MANDRIVA_FALSE = @TARGET_MANDRIVA_FALSE@
 TARGET_MANDRIVA_TRUE = @TARGET_MANDRIVA_TRUE@
 TARGET_NETBSD_FALSE = @TARGET_NETBSD_FALSE@
 TARGET_NETBSD_TRUE = @TARGET_NETBSD_TRUE@
+TARGET_SLACKWARE_FALSE = @TARGET_SLACKWARE_FALSE@
+TARGET_SLACKWARE_TRUE = @TARGET_SLACKWARE_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
 TARGET_SUSE_TRUE = @TARGET_SUSE_TRUE@
 USE_XMLTOMAN_FALSE = @USE_XMLTOMAN_FALSE@
@@ -479,6 +484,8 @@ AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")' \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	simple-protocol.h \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	static-services.c \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	static-services.h \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	static-hosts.c \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	static-hosts.h \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	ini-file-parser.c \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	ini-file-parser.h \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	setproctitle.c \
@@ -505,7 +512,8 @@ AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")' \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@ini_file_parser_test_CFLAGS = $(AM_CFLAGS)
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@ini_file_parser_test_LDADD = $(AM_LDADD) ../avahi-common/libavahi-common.la ../avahi-core/libavahi-core.la 
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@pkgsysconf_DATA = \
-@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi-daemon.conf
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi-daemon.conf \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	hosts
 
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@service_DATA = \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	ssh.service
@@ -541,6 +549,7 @@ EXTRA_DIST = \
 	HostNameResolver.introspect \
 	RecordBrowser.introspect \
 	ssh.service \
+	hosts \
 	example.service \
 	introspect.dtd \
 	introspect.xsl
@@ -650,6 +659,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_daemon-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_daemon-setproctitle.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_daemon-simple-protocol.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_daemon-static-hosts.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_daemon-static-services.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ini_file_parser_test-ini-file-parser-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ini_file_parser_test-ini-file-parser.Po@am__quote@
@@ -716,6 +726,20 @@ avahi_daemon-static-services.obj: static-services.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='static-services.c' object='avahi_daemon-static-services.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -c -o avahi_daemon-static-services.obj `if test -f 'static-services.c'; then $(CYGPATH_W) 'static-services.c'; else $(CYGPATH_W) '$(srcdir)/static-services.c'; fi`
+
+avahi_daemon-static-hosts.o: static-hosts.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -MT avahi_daemon-static-hosts.o -MD -MP -MF "$(DEPDIR)/avahi_daemon-static-hosts.Tpo" -c -o avahi_daemon-static-hosts.o `test -f 'static-hosts.c' || echo '$(srcdir)/'`static-hosts.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_daemon-static-hosts.Tpo" "$(DEPDIR)/avahi_daemon-static-hosts.Po"; else rm -f "$(DEPDIR)/avahi_daemon-static-hosts.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='static-hosts.c' object='avahi_daemon-static-hosts.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -c -o avahi_daemon-static-hosts.o `test -f 'static-hosts.c' || echo '$(srcdir)/'`static-hosts.c
+
+avahi_daemon-static-hosts.obj: static-hosts.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -MT avahi_daemon-static-hosts.obj -MD -MP -MF "$(DEPDIR)/avahi_daemon-static-hosts.Tpo" -c -o avahi_daemon-static-hosts.obj `if test -f 'static-hosts.c'; then $(CYGPATH_W) 'static-hosts.c'; else $(CYGPATH_W) '$(srcdir)/static-hosts.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_daemon-static-hosts.Tpo" "$(DEPDIR)/avahi_daemon-static-hosts.Po"; else rm -f "$(DEPDIR)/avahi_daemon-static-hosts.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='static-hosts.c' object='avahi_daemon-static-hosts.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -c -o avahi_daemon-static-hosts.obj `if test -f 'static-hosts.c'; then $(CYGPATH_W) 'static-hosts.c'; else $(CYGPATH_W) '$(srcdir)/static-hosts.c'; fi`
 
 avahi_daemon-ini-file-parser.o: ini-file-parser.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_daemon_CFLAGS) $(CFLAGS) -MT avahi_daemon-ini-file-parser.o -MD -MP -MF "$(DEPDIR)/avahi_daemon-ini-file-parser.Tpo" -c -o avahi_daemon-ini-file-parser.o `test -f 'ini-file-parser.c' || echo '$(srcdir)/'`ini-file-parser.c; \

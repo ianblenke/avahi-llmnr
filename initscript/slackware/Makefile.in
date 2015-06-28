@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1082 2006-01-15 15:04:54Z sebest $
+# $Id: Makefile.am 1140 2006-02-14 22:39:06Z lennart $
 
 # This file is part of avahi.
 #
@@ -39,7 +39,7 @@ VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-top_builddir = ..
+top_builddir = ../..
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = @INSTALL@
 install_sh_DATA = $(install_sh) -c -m 644
@@ -55,7 +55,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = avahi-sharp
+subdir = initscript/slackware
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
@@ -66,17 +66,11 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
+am__installdirs = "$(DESTDIR)$(initddir)"
+initdSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+SCRIPTS = $(initd_SCRIPTS)
 SOURCES =
 DIST_SOURCES =
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(docdir)"
-docDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(doc_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -350,36 +344,10 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-ASSEMBLY = avahi-sharp.dll
-CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb $(ASSEMBLY).config
-AVAHISOURCES = \
-	$(srcdir)/AddressResolver.cs	\
-	$(srcdir)/AssemblyInfo.cs	\
-	$(srcdir)/BrowserBase.cs	\
-	$(srcdir)/Client.cs		\
-	$(srcdir)/ClientException.cs	\
-	$(srcdir)/DomainBrowser.cs	\
-	$(srcdir)/EntryGroup.cs		\
-	$(srcdir)/HostNameResolver.cs	\
-	$(srcdir)/RecordBrowser.cs	\
-	$(srcdir)/ResolverBase.cs	\
-	$(srcdir)/ServiceBrowser.cs	\
-	$(srcdir)/ServiceResolver.cs	\
-	$(srcdir)/ServiceTypeBrowser.cs	\
-	$(srcdir)/Utility.cs
-
-EXTRA_DIST = \
-	$(AVAHISOURCES)			\
-	$(srcdir)/AvahiTest.cs 		\
-	$(srcdir)/avahi.snk		\
-	$(srcdir)/$(ASSEMBLY).config.in	\
-	$(srcdir)/avahi-sharp-docs.source	\
-	$(srcdir)/en/*.xml		\
-	$(srcdir)/en/*/*.xml		\
-	$(srcdir)/gencfg.sh
-
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@docdir = $(MONODOC_DIR)
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@doc_DATA = avahi-sharp-docs.zip avahi-sharp-docs.tree avahi-sharp-docs.source
+initddir = $(sysconfdir)/rc.d
+EXTRA_DIST = avahi-daemon.in avahi-dnsconfd.in
+initd_SCRIPTS = rc.avahidaemon rc.avahidnsconfd
+CLEANFILES = rc.avahidaemon rc.avahidnsconfd
 all: all-am
 
 .SUFFIXES:
@@ -392,9 +360,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  avahi-sharp/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  initscript/slackware/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  avahi-sharp/Makefile
+	  $(AUTOMAKE) --foreign  initscript/slackware/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -412,6 +380,25 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+install-initdSCRIPTS: $(initd_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	test -z "$(initddir)" || $(mkdir_p) "$(DESTDIR)$(initddir)"
+	@list='$(initd_SCRIPTS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  if test -f $$d$$p; then \
+	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
+	    echo " $(initdSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(initddir)/$$f'"; \
+	    $(initdSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(initddir)/$$f"; \
+	  else :; fi; \
+	done
+
+uninstall-initdSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(initd_SCRIPTS)'; for p in $$list; do \
+	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
+	  echo " rm -f '$(DESTDIR)$(initddir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(initddir)/$$f"; \
+	done
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -422,23 +409,6 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-install-docDATA: $(doc_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(docdir)" || $(mkdir_p) "$(DESTDIR)$(docdir)"
-	@list='$(doc_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(docDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(docdir)/$$f'"; \
-	  $(docDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(docdir)/$$f"; \
-	done
-
-uninstall-docDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(doc_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(docdir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(docdir)/$$f"; \
-	done
 tags: TAGS
 TAGS:
 
@@ -447,7 +417,6 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/$(srcdir) $(distdir)/$(srcdir)/en $(distdir)/$(srcdir)/en/*
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -476,9 +445,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(DATA)
+all-am: Makefile $(SCRIPTS)
 installdirs:
-	for dir in "$(DESTDIR)$(docdir)"; do \
+	for dir in "$(DESTDIR)$(initddir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -506,10 +475,6 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@HAVE_DBUS_FALSE@install-data-hook:
-@HAVE_MONO_FALSE@install-data-hook:
-@HAVE_DBUS_FALSE@uninstall-hook:
-@HAVE_MONO_FALSE@uninstall-hook:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool mostlyclean-am
@@ -528,9 +493,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-docDATA
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
+install-data-am: install-initdSCRIPTS
 
 install-exec-am:
 
@@ -556,45 +519,27 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-docDATA uninstall-info-am
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
+uninstall-am: uninstall-info-am uninstall-initdSCRIPTS
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-data-hook install-docDATA \
-	install-exec install-exec-am install-info install-info-am \
-	install-man install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am uninstall uninstall-am uninstall-docDATA \
-	uninstall-hook uninstall-info-am
+	install-data install-data-am install-exec install-exec-am \
+	install-info install-info-am install-initdSCRIPTS install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	uninstall uninstall-am uninstall-info-am \
+	uninstall-initdSCRIPTS
 
 
-$(ASSEMBLY): $(AVAHISOURCES)
-	mcs -keyfile:$(srcdir)/avahi.snk -target:library -out:$@ -debug $(AVAHISOURCES) -r:Mono.Posix
+rc.avahidaemon: avahi-daemon.in
+	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+	chmod +x $@
 
-$(ASSEMBLY).config: $(ASSEMBLY).config.in
-	$(srcdir)/gencfg.sh $(top_builddir)/avahi-client/libavahi-client.la \
-		$(top_builddir)/avahi-common/libavahi-common.la \
-		$(top_builddir)/avahi-glib/libavahi-glib.la < $< > $@
-
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@all: $(ASSEMBLY) $(ASSEMBLY).config
-
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@update-docs: $(ASSEMBLY)
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@	$(MONODOCER) -assembly:$(ASSEMBLY) -path:en
-
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@avahi-sharp-docs.zip: avahi-sharp-docs.tree
-
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@avahi-sharp-docs.tree: $(srcdir)/en/*/*
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@	$(MDASSEMBLER) --out avahi-sharp-docs --ecma $(srcdir)/en
-
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@install-data-hook: $(ASSEMBLY)
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@	$(GACUTIL) /i $(ASSEMBLY) /package avahi-sharp /gacdir $(libdir) /root $(DESTDIR)$(libdir)
-
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@uninstall-hook: $(ASSEMBLY)
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@	$(GACUTIL) /u avahi-sharp /package avahi-sharp /gacdir $(libdir) /root $(DESTDIR)$(libdir)
+rc.avahidnsconfd: avahi-dnsconfd.in
+	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+	chmod +x $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

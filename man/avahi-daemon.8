@@ -55,9 +55,11 @@ Show help
 \fB-v | --version\f1
 Show version information 
 .SH FILES
-\fI/etc/avahi/avahi-daemon.conf\f1: the default configuration file for avahi-daemon.
+\fI/etc/avahi/avahi-daemon.conf\f1: the default configuration file for avahi-daemon, \fBavahi-daemon.conf(5)\f1 for more information.
 
-\fI/etc/avahi/services/*.service\f1: static service definitions.
+\fI/etc/avahi/hosts\f1: additional static hostname mappings to publish in mDNS, see \fBavahi.hosts(5)\f1 for more information.
+
+\fI/etc/avahi/services/*.service\f1: static service definitions, see \fBavahi.service(5)\f1 for more information.
 .SH SIGNALS
 \fISIGINT, SIGTERM, SIGQUIT\f1: avahi-daemon will shutdown. This is issued by passing --kill to avahi-daemon.
 
@@ -67,6 +69,6 @@ Show version information
 .SH AUTHORS
 The avahi developers <avahi (at) lists (dot) freedesktop (dot) org>; avahi is available from \fBhttp://avahi.org/\f1
 .SH SEE ALSO
-\fBavahi-daemon.conf(5)\f1, \fBavahi.service(5)\f1, \fBavahi-dnsconfd(8)\f1
+\fBavahi-daemon.conf(5)\f1, \fBavahi.hosts(5)\f1, \fBavahi.service(5)\f1, \fBavahi-dnsconfd(8)\f1
 .SH COMMENTS
 This man page was written using \fBxml2man(1)\f1 by Oliver Kurth.

@@ -1,4 +1,4 @@
-# $Id: Makefile.am 267 2005-08-08 10:19:22Z lennart $
+# $Id: Makefile.am 1128 2006-02-03 22:04:13Z sebest $
 
 # This file is part of avahi.
 #
@@ -32,9 +32,15 @@ CLEANFILES = \
 	avahi-dnsconfd
 
 avahi-daemon: avahi-daemon.in
-	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+	sed \
+		-e 's,@sbindir\@,$(sbindir),g' \
+		-e 's,@sysconfdir\@,$(sysconfdir),g' \
+		$< > $@
 	chmod +x $@
 
 avahi-dnsconfd: avahi-dnsconfd.in
-	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+	sed \
+		-e 's,@sbindir\@,$(sbindir),g' \
+		-e 's,@sysconfdir\@,$(sysconfdir),g' \
+		$< > $@
 	chmod +x $@

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 990 2005-11-16 23:01:03Z lennart $
+# $Id: Makefile.am 1138 2006-02-14 22:13:30Z lennart $
 
 # This file is part of avahi.
 #
@@ -289,6 +289,8 @@ TARGET_MANDRIVA_FALSE = @TARGET_MANDRIVA_FALSE@
 TARGET_MANDRIVA_TRUE = @TARGET_MANDRIVA_TRUE@
 TARGET_NETBSD_FALSE = @TARGET_NETBSD_FALSE@
 TARGET_NETBSD_TRUE = @TARGET_NETBSD_TRUE@
+TARGET_SLACKWARE_FALSE = @TARGET_SLACKWARE_FALSE@
+TARGET_SLACKWARE_TRUE = @TARGET_SLACKWARE_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
 TARGET_SUSE_TRUE = @TARGET_SUSE_TRUE@
 USE_XMLTOMAN_FALSE = @USE_XMLTOMAN_FALSE@
@@ -362,7 +364,8 @@ servicedir = $(pkgsysconfdir)/services
 @BUILD_MANPAGES_TRUE@man_MANS = avahi-daemon.8 avahi-dnsconfd.8 \
 @BUILD_MANPAGES_TRUE@	avahi-daemon.conf.5 \
 @BUILD_MANPAGES_TRUE@	avahi-dnsconfd.action.8 avahi.service.5 \
-@BUILD_MANPAGES_TRUE@	$(am__append_1) $(am__append_2)
+@BUILD_MANPAGES_TRUE@	avahi.hosts.5 $(am__append_1) \
+@BUILD_MANPAGES_TRUE@	$(am__append_2)
 @BUILD_MANPAGES_TRUE@noinst_DATA = \
 @BUILD_MANPAGES_TRUE@	avahi-browse.1.xml \
 @BUILD_MANPAGES_TRUE@	avahi-publish.1.xml \
@@ -373,7 +376,8 @@ servicedir = $(pkgsysconfdir)/services
 @BUILD_MANPAGES_TRUE@	avahi-dnsconfd.8.xml \
 @BUILD_MANPAGES_TRUE@	avahi-daemon.conf.5.xml \
 @BUILD_MANPAGES_TRUE@	avahi-dnsconfd.action.8.xml \
-@BUILD_MANPAGES_TRUE@	avahi.service.5.xml
+@BUILD_MANPAGES_TRUE@	avahi.service.5.xml \
+@BUILD_MANPAGES_TRUE@	avahi.hosts.5.xml
 
 @BUILD_MANPAGES_TRUE@CLEANFILES = $(noinst_DATA) $(am__append_3)
 EXTRA_DIST = \
@@ -388,6 +392,7 @@ EXTRA_DIST = \
 	avahi-daemon.conf.5.xml.in \
 	avahi-dnsconfd.action.8.xml.in \
 	avahi.service.5.xml.in \
+	avahi.hosts.5.xml.in \
 	xmltoman.css \
 	xmltoman.xsl \
 	xmltoman.dtd
@@ -744,6 +749,11 @@ uninstall-man: uninstall-man1 uninstall-man5 uninstall-man8
 @BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
 @BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
 
+@BUILD_MANPAGES_TRUE@avahi.hosts.5.xml: avahi.hosts.5.xml.in Makefile
+@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
+@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
+@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-browse.1: avahi-browse.1.xml Makefile
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
 
@@ -772,6 +782,9 @@ uninstall-man: uninstall-man1 uninstall-man5 uninstall-man8
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
 
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi.service.5: avahi.service.5.xml Makefile
+@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
+
+@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi.hosts.5: avahi.hosts.5.xml Makefile
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
 
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@xmllint: $(noinst_DATA)
