@@ -1,4 +1,4 @@
-/* $Id: dbus-service-browser.c 1235 2006-07-15 20:15:30Z lennart $ */
+/* $Id: dbus-service-browser.c 1329 2006-09-25 13:43:50Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -105,10 +105,6 @@ void avahi_dbus_service_browser_callback(AvahiSServiceBrowser *b, AvahiIfIndex i
     assert(b);
     assert(i);
 
-    i_interface = (int32_t) interface;
-    i_protocol = (int32_t) protocol;
-    u_flags = (uint32_t) flags;
-
     m = dbus_message_new_signal(i->path, AVAHI_DBUS_INTERFACE_SERVICE_BROWSER, avahi_dbus_map_browse_signal_name(event));
 
     if (event == AVAHI_BROWSER_NEW) {
@@ -117,6 +113,10 @@ void avahi_dbus_service_browser_callback(AvahiSServiceBrowser *b, AvahiIfIndex i
         if (avahi_dbus_is_our_own_service(i->client, interface, protocol, name, type, domain) > 0)
             flags |= AVAHI_LOOKUP_RESULT_OUR_OWN;
     }
+    
+    i_interface = (int32_t) interface;
+    i_protocol = (int32_t) protocol;
+    u_flags = (uint32_t) flags;
     
     if (event == AVAHI_BROWSER_NEW || event == AVAHI_BROWSER_REMOVE) {
         assert(name);

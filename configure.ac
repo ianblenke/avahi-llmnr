@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1325 2006-09-13 20:15:35Z lennart $
+# $Id: configure.ac 1328 2006-09-21 00:18:11Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,7 +21,7 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.14],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.15],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
@@ -104,9 +104,25 @@ AC_DEFINE([HAVE_SYS_SYSCTL_H],[],[Support for sys/sysctl.h])
 , [], [
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/param.h>
 ])
 
 AM_CONDITIONAL(HAVE_SYS_SYSCTL_H, [ test x"$HAVE_SYS_SYSCTL_H" = xyes ])
+
+#
+# Check for lifconf struct; only present on Solaris
+#
+AC_MSG_CHECKING(for struct lifconf)
+AC_CACHE_VAL(avahi_cv_has_struct_lifconf,
+[AC_TRY_COMPILE(
+[#include <sys/socket.h>
+#include <net/if.h>
+],[sizeof (struct lifconf);],
+avahi_cv_has_struct_lifconf=yes,avahi_cv_has_struct_lifconf=no)])
+AC_MSG_RESULT($avahi_cv_has_struct_lifconf)
+if test $avahi_cv_has_struct_lifconf = yes; then
+    AC_DEFINE(HAVE_STRUCT_LIFCONF,1,[Define if there is a struct lifconf.])
+fi
 
 #
 # Check for struct ip_mreqn

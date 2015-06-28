@@ -1,4 +1,4 @@
-/* $Id: iface-pfroute.c 1223 2006-06-21 21:34:59Z lennart $ */
+/* $Id: iface-pfroute.c 1328 2006-09-21 00:18:11Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -318,7 +318,7 @@ void avahi_interface_monitor_free_osdep(AvahiInterfaceMonitor *m) {
     }
 }
 
-#ifndef HAVE_SYS_SYSCTL_H
+#if defined (SIOCGLIFNUM) && defined(HAVE_STRUCT_LIFCONF) /* Solaris 8 and later; Sol 7? */
 /*
  * I got this function from GNU zsbra
  */
@@ -428,7 +428,7 @@ static void if_add_interface(struct lifreq *lifreq, AvahiInterfaceMonitor *m, in
 #endif
 
 void avahi_interface_monitor_sync(AvahiInterfaceMonitor *m) {
-#ifdef HAVE_SYS_SYSCTL_H
+#ifndef HAVE_STRUCT_LIFCONF
   size_t needed;
   int mib[6];
   char *buf, *lim, *next, count = 0;
@@ -473,7 +473,7 @@ void avahi_interface_monitor_sync(AvahiInterfaceMonitor *m) {
   avahi_interface_monitor_check_relevant(m);
   avahi_interface_monitor_update_rrs(m, 0);
   avahi_log_info("Network interface enumeration completed.");
-#else
+#elif defined (SIOCGLIFNUM) && defined(HAVE_STRUCT_LIFCONF) /* Solaris 8 and later; Sol 7? */
     int sockfd;
     int ret;
     int n;

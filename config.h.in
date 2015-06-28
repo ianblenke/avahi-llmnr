@@ -205,6 +205,9 @@
 /* Support for struct ip_mreqn */
 #undef HAVE_STRUCT_IP_MREQN
 
+/* Define if there is a struct lifconf. */
+#undef HAVE_STRUCT_LIFCONF
+
 /* Define to 1 if you have the <syslog.h> header file. */
 #undef HAVE_SYSLOG_H
 
