@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 
-<!-- $Id: ssh.service 995 2005-11-17 15:26:53Z lennart $ -->
+<!-- $Id: ssh.service 1391 2007-02-07 11:54:54Z lennart $ -->
 
 <!--
   This file is part of avahi.
@@ -26,7 +26,7 @@
 
 <service-group>
 
-  <name replace-wildcards="yes">Remote Terminal on %h</name>
+  <name replace-wildcards="yes">%h</name>
 
   <service>
     <type>_ssh._tcp</type>

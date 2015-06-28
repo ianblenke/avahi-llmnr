@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1368 2007-01-05 22:36:12Z lennart $
+# $Id: Makefile.am 1436 2007-04-17 11:35:58Z lennart $
 
 # This file is part of avahi.
 #
@@ -53,7 +53,6 @@ endif
 
 avahi-discover.desktop: avahi-discover.desktop.in
 	sed -e 's,@bindir\@,$(bindir),g' $< > $@
-	chmod +x $@
 
 avahi-discover: avahi-discover.in
 	sed -e 's,@PYTHON\@,$(PYTHON),g' \

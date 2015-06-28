@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1286 2006-08-30 16:07:26Z lennart $
+# $Id: Makefile.am 1430 2007-04-17 10:29:49Z lennart $
 
 # This file is part of avahi.
 #
@@ -105,30 +105,39 @@ DIST_COMMON = $(am__configure_deps) $(srcdir)/Makefile.am \
 @HAVE_DBUS_TRUE@	$(srcdir)/avahi-client/lookup.h \
 @HAVE_DBUS_TRUE@	$(srcdir)/avahi-client/publish.h
 
-@ENABLE_CORE_DOCS_TRUE@am__append_5 = \
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_5 = \
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	$(srcdir)/avahi-ui/avahi-ui.h
+
+@ENABLE_CORE_DOCS_TRUE@am__append_6 = \
 @ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/core.h \
 @ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/lookup.h \
 @ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/publish.h \
 @ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/rr.h \
 @ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/log.h
 
-@HAVE_DBUS_TRUE@am__append_6 = avahi-client.pc
-@HAVE_DBUS_TRUE@am__append_7 = avahi-client.pc
-@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_8 = avahi-compat-howl.pc
-@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_9 = avahi-compat-howl.pc
-@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_10 = avahi-compat-libdns_sd.pc
-@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_11 = avahi-compat-libdns_sd.pc
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_12 = avahi-sharp.pc
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_13 = avahi-sharp.pc
-@HAVE_GLIB_TRUE@am__append_14 = avahi-glib.pc
-@HAVE_GLIB_TRUE@am__append_15 = avahi-glib.pc
-@HAVE_QT3_TRUE@am__append_16 = avahi-qt3.pc
-@HAVE_QT3_TRUE@am__append_17 = avahi-qt3.pc
-@HAVE_QT4_TRUE@am__append_18 = avahi-qt4.pc
-@HAVE_QT4_TRUE@am__append_19 = avahi-qt4.pc
+@HAVE_GTK_TRUE@am__append_7 = \
+@HAVE_GTK_TRUE@	$(srcdir)/avahi-ui/avahi-ui.h
+
+@HAVE_DBUS_TRUE@am__append_8 = avahi-client.pc
+@HAVE_DBUS_TRUE@am__append_9 = avahi-client.pc
+@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_10 = avahi-compat-howl.pc
+@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_11 = avahi-compat-howl.pc
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_12 = avahi-compat-libdns_sd.pc
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_13 = avahi-compat-libdns_sd.pc
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_14 = avahi-sharp.pc
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_15 = avahi-sharp.pc
+@HAVE_GLIB_TRUE@am__append_16 = avahi-glib.pc
+@HAVE_GLIB_TRUE@am__append_17 = avahi-glib.pc
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_18 = avahi-ui.pc
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_19 = avahi-ui.pc
+@HAVE_QT3_TRUE@am__append_20 = avahi-qt3.pc
+@HAVE_QT3_TRUE@am__append_21 = avahi-qt3.pc
+@HAVE_QT4_TRUE@am__append_22 = avahi-qt4.pc
+@HAVE_QT4_TRUE@am__append_23 = avahi-qt4.pc
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
+	$(top_srcdir)/common/gcc_stack_protect.m4 \
 	$(top_srcdir)/common/python.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/common/doxygen.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -289,6 +298,8 @@ HAVE_GLIB_FALSE = @HAVE_GLIB_FALSE@
 HAVE_GLIB_TRUE = @HAVE_GLIB_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_INOTIFY_FALSE = @HAVE_INOTIFY_FALSE@
+HAVE_INOTIFY_TRUE = @HAVE_INOTIFY_TRUE@
 HAVE_LIBDAEMON_FALSE = @HAVE_LIBDAEMON_FALSE@
 HAVE_LIBDAEMON_TRUE = @HAVE_LIBDAEMON_TRUE@
 HAVE_MONODOC_FALSE = @HAVE_MONODOC_FALSE@
@@ -327,6 +338,7 @@ LIBAVAHI_CORE_VERSION_INFO = @LIBAVAHI_CORE_VERSION_INFO@
 LIBAVAHI_GLIB_VERSION_INFO = @LIBAVAHI_GLIB_VERSION_INFO@
 LIBAVAHI_QT3_VERSION_INFO = @LIBAVAHI_QT3_VERSION_INFO@
 LIBAVAHI_QT4_VERSION_INFO = @LIBAVAHI_QT4_VERSION_INFO@
+LIBAVAHI_UI_VERSION_INFO = @LIBAVAHI_UI_VERSION_INFO@
 LIBDAEMON_CFLAGS = @LIBDAEMON_CFLAGS@
 LIBDAEMON_LIBS = @LIBDAEMON_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -499,7 +511,8 @@ EXTRA_DIST = \
 	avahi-qt4.pc.in \
 	avahi-sharp.pc.in \
 	avahi-compat-libdns_sd.pc.in \
-	avahi-compat-howl.pc.in
+	avahi-compat-howl.pc.in \
+	avahi-ui.pc.in
 
 SUBDIRS = \
 	common \
@@ -521,7 +534,8 @@ SUBDIRS = \
 	service-type-database \
 	avahi-compat-libdns_sd \
 	avahi-compat-howl \
-	avahi-autoipd
+	avahi-autoipd \
+	avahi-ui
 
 DX_INPUT = $(srcdir)/avahi-common/address.h \
 	$(srcdir)/avahi-common/strlst.h \
@@ -533,16 +547,16 @@ DX_INPUT = $(srcdir)/avahi-common/address.h \
 	$(srcdir)/avahi-common/thread-watch.h \
 	$(srcdir)/avahi-common/timeval.h $(am__append_1) \
 	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5)
+	$(am__append_5) $(am__append_6) $(am__append_7)
 DX_EXAMPLE_PATH = $(srcdir)/examples
 DX_EXAMPLE_PATTERNS = *.c
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = avahi-core.pc $(am__append_6) $(am__append_8) \
-	$(am__append_10) $(am__append_12) $(am__append_14) \
-	$(am__append_16) $(am__append_18)
-CLEANFILES = avahi-core.pc $(am__append_7) $(am__append_9) \
-	$(am__append_11) $(am__append_13) $(am__append_15) \
-	$(am__append_17) $(am__append_19)
+pkgconfig_DATA = avahi-core.pc $(am__append_8) $(am__append_10) \
+	$(am__append_12) $(am__append_14) $(am__append_16) \
+	$(am__append_18) $(am__append_20) $(am__append_22)
+CLEANFILES = avahi-core.pc $(am__append_9) $(am__append_11) \
+	$(am__append_13) $(am__append_15) $(am__append_17) \
+	$(am__append_19) $(am__append_21) $(am__append_23)
 MOSTLYCLEANFILES = $(DX_CLEANFILES)
 DISTCHECK_CONFIGURE_FLAGS = \
 	--disable-monodoc
@@ -1083,6 +1097,11 @@ avahi-core.pc: avahi-core.pc.in
 @HAVE_GLIB_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \
 @HAVE_GLIB_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
 @HAVE_GLIB_TRUE@	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
+
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@avahi-ui.pc: avahi-ui.pc.in
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
 
 @HAVE_QT3_TRUE@avahi-qt3.pc: avahi-qt3.pc.in
 @HAVE_QT3_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \

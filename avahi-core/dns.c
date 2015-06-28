@@ -1,4 +1,4 @@
-/* $Id: dns.c 1353 2006-12-29 12:50:03Z lathiat $ */
+/* $Id: dns.c 1407 2007-04-12 20:53:56Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include <sys/types.h>
 #include <netinet/in.h>
 
 #include <avahi-common/defs.h>
@@ -588,6 +589,7 @@ static int parse_rdata(AvahiDnsPacket *p, AvahiRecord *r, uint16_t rdlength) {
             if (rdlength > 0) {
 
                 r->data.generic.data = avahi_memdup(avahi_dns_packet_get_rptr(p), rdlength);
+                r->data.generic.size = rdlength; 
                 
                 if (avahi_dns_packet_skip(p, rdlength) < 0)
                     return -1;
@@ -753,7 +755,7 @@ static int append_rdata(AvahiDnsPacket *p, AvahiRecord *r) {
         default:
 
             if (r->data.generic.size)
-                if (avahi_dns_packet_append_bytes(p, r->data.generic.data, r->data.generic.size))
+                if (!avahi_dns_packet_append_bytes(p, r->data.generic.data, r->data.generic.size))
                     return -1;
 
             break;
@@ -785,7 +787,7 @@ uint8_t* avahi_dns_packet_append_record(AvahiDnsPacket *p, AvahiRecord *r, int c
         goto fail;
     
     size = avahi_dns_packet_extend(p, 0) - start;
-    assert(size <= 0xFFFF);
+    assert(size <= AVAHI_DNS_RDATA_MAX);
 
 /*     avahi_log_debug("appended %u", size); */
 

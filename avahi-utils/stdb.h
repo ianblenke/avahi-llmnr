@@ -1,7 +1,7 @@
 #ifndef foostdbhfoo
 #define foostdbhfoo
 
-/* $Id: stdb.h 902 2005-10-27 22:49:37Z lennart $ */
+/* $Id: stdb.h 1414 2007-04-12 22:14:40Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -26,5 +26,7 @@
 
 const char* stdb_lookup(const char *name);
 void stdb_shutdown(void);
+char *stdb_getent(void);
+void stdb_setent(void);
 
 #endif

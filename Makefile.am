@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1286 2006-08-30 16:07:26Z lennart $
+# $Id: Makefile.am 1430 2007-04-17 10:29:49Z lennart $
 
 # This file is part of avahi.
 #
@@ -46,7 +46,8 @@ EXTRA_DIST = \
 	avahi-qt4.pc.in \
 	avahi-sharp.pc.in \
 	avahi-compat-libdns_sd.pc.in \
-	avahi-compat-howl.pc.in
+	avahi-compat-howl.pc.in \
+	avahi-ui.pc.in
 
 SUBDIRS = \
 	common \
@@ -68,7 +69,8 @@ SUBDIRS = \
 	service-type-database \
 	avahi-compat-libdns_sd \
 	avahi-compat-howl \
-	avahi-autoipd
+	avahi-autoipd \
+	avahi-ui
 
 DX_INPUT = \
 	$(srcdir)/avahi-common/address.h \
@@ -109,6 +111,13 @@ DX_INPUT += \
 	$(srcdir)/avahi-client/publish.h
 endif
 
+if HAVE_DBUS
+if HAVE_GTK
+DX_INPUT += \
+	$(srcdir)/avahi-ui/avahi-ui.h
+endif
+endif
+
 if ENABLE_CORE_DOCS
 DX_INPUT += \
 	$(srcdir)/avahi-core/core.h \
@@ -116,6 +125,11 @@ DX_INPUT += \
 	$(srcdir)/avahi-core/publish.h \
 	$(srcdir)/avahi-core/rr.h \
 	$(srcdir)/avahi-core/log.h
+endif
+
+if HAVE_GTK
+DX_INPUT += \
+	$(srcdir)/avahi-ui/avahi-ui.h
 endif
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -191,6 +205,21 @@ avahi-glib.pc: avahi-glib.pc.in
 
 CLEANFILES += avahi-glib.pc
 
+endif
+
+if HAVE_GTK
+if HAVE_DBUS
+
+pkgconfig_DATA += avahi-ui.pc
+
+avahi-ui.pc: avahi-ui.pc.in
+	sed -e 's,@prefix\@,$(prefix),g' \
+	    -e 's,@libdir\@,$(libdir),g' \
+	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
+
+CLEANFILES += avahi-ui.pc
+
+endif
 endif
 
 if HAVE_QT3

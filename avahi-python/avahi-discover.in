@@ -1,6 +1,6 @@
 #!@PYTHON@
 # -*-python-*-
-# $Id: avahi-discover.in 1349 2006-12-28 16:36:11Z lathiat $
+# $Id: avahi-discover.in 1417 2007-04-12 23:22:29Z lennart $
 
 # This file is part of avahi.
 #
@@ -33,7 +33,7 @@ except ImportError, e:
 # It's really important to do this, else you won't see any events
 ##
 try:
-    from dbus.dbus_bindings import DBusException
+    from dbus import DBusException
     import dbus.glib
 except ImportError, e:
     pass
@@ -56,7 +56,7 @@ service_type_db = avahi.ServiceTypeDatabase.ServiceTypeDatabase()
 class Main_window(SimpleGladeApp):
     def __init__(self, path="avahi-discover.glade", root="main_window", domain=None, **kwargs):
         path = os.path.join(glade_dir, path)
-        gtk.window_set_default_icon_name("gnome-networktool")
+        gtk.window_set_default_icon_name("network-wired")
         SimpleGladeApp.__init__(self, path, root, domain, **kwargs)
 
     def on_tree_view_cursor_changed(self, widget, *args):

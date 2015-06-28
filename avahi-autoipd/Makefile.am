@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1315 2006-09-02 18:34:03Z lennart $
+# $Id: Makefile.am 1404 2007-04-12 19:14:34Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -36,14 +36,29 @@ sbin_PROGRAMS = avahi-autoipd
 avahi_autoipd_SOURCES = \
 	main.c main.h \
 	 ../avahi-daemon/setproctitle.c  ../avahi-daemon/setproctitle.h \
-	iface.h iface-linux.c \
+	iface.h	\
 	../avahi-common/malloc.h ../avahi-common/malloc.c \
 	../avahi-common/timeval.h ../avahi-common/timeval.c
 
 avahi_autoipd_CFLAGS = $(AM_CFLAGS) $(LIBDAEMON_CFLAGS)
 avahi_autoipd_LDADD = $(AM_LDADD) $(LIBDAEMON_LIBS)
 
+if TARGET_FREEBSD
+avahi_autoipd_SOURCES += iface-bsd.c
+avahi_autoipd_LDADD += -lpcap
+else
+avahi_autoipd_SOURCES += iface-linux.c
+endif
+
 pkgsysconf_SCRIPTS=avahi-autoipd.action
+
+if TARGET_FREEBSD
+avahi-autoipd.action: avahi-autoipd.action.bsd
+	cp $< $@
+else
+avahi-autoipd.action: avahi-autoipd.action.linux
+	cp $< $@
+endif
 
 if TARGET_DEBIAN
 
@@ -76,6 +91,6 @@ endif
 endif
 endif
 
-EXTRA_DIST=avahi-autoipd.action dhclient-enter-hook.in dhclient-exit-hook.in
+EXTRA_DIST=avahi-autoipd.action dhclient-enter-hook.in dhclient-exit-hook.in avahi-autoipd.action.linux avahi-autoipd.action.bsd
 
-CLEANFILES=dhclient-enter-hook dhclient-exit-hook
+CLEANFILES=dhclient-enter-hook dhclient-exit-hook avahi-autoipd.action

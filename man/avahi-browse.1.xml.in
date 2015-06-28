@@ -2,7 +2,7 @@
 <!DOCTYPE manpage SYSTEM "xmltoman.dtd">
 <?xml-stylesheet type="text/xsl" href="xmltoman.xsl" ?>
 
-<!-- $Id: avahi-browse.1.xml.in 1309 2006-09-02 13:48:59Z lennart $ -->
+<!-- $Id: avahi-browse.1.xml.in 1414 2007-04-12 22:14:40Z lennart $ -->
 
 <!-- 
   This file is part of avahi.
@@ -29,6 +29,7 @@
       <cmd>avahi-browse [<arg>options</arg>] <arg>service-type</arg></cmd>
       <cmd>avahi-browse [<arg>options</arg>] <opt>--all</opt></cmd>
       <cmd>avahi-browse [<arg>options</arg>] <opt>--browse-domains</opt></cmd>
+      <cmd>avahi-browse [<arg>options</arg>] <opt>--dump-db</opt></cmd>
       <cmd>avahi-browse-domains [<arg>options</arg>]</cmd>
 	</synopsis>
 	
@@ -93,6 +94,11 @@
 	  <option>
 		<p><opt>-k | --no-db-lookup</opt></p>
 		<optdesc><p>Don't lookup services types in service type database.</p></optdesc>
+	  </option>
+
+	  <option>
+		<p><opt>-b | --dump-db</opt></p>
+		<optdesc><p>Dump the service type database (may be combined with -k)</p></optdesc>
 	  </option>
 
 	  <option>

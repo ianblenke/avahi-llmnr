@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1364 2007-01-05 00:21:19Z lennart $
+# $Id: Makefile.am 1428 2007-04-15 13:04:30Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -53,7 +53,8 @@ avahi_daemon_SOURCES = \
 	static-hosts.c static-hosts.h \
 	ini-file-parser.c ini-file-parser.h \
 	setproctitle.c setproctitle.h \
-	../avahi-client/check-nss.c
+	../avahi-client/check-nss.c \
+	inotify-nosys.h
 
 avahi_daemon_CFLAGS = $(AM_CFLAGS) $(LIBDAEMON_CFLAGS)
 avahi_daemon_LDADD = $(AM_LDADD) ../avahi-common/libavahi-common.la ../avahi-core/libavahi-core.la $(LIBDAEMON_LIBS) -lexpat

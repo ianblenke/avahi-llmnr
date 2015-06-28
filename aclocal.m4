@@ -7557,5 +7557,6 @@ AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
 m4_include([common/acx_pthread.m4])
+m4_include([common/gcc_stack_protect.m4])
 m4_include([common/python.m4])
 m4_include([acinclude.m4])

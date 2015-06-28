@@ -1,4 +1,4 @@
-/* $Id: iface.c 1365 2007-01-05 22:18:34Z lennart $ */
+/* $Id: iface.c 1399 2007-03-24 11:41:03Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -539,7 +539,7 @@ AvahiInterface* avahi_interface_monitor_get_interface(AvahiInterfaceMonitor *m, 
 
 AvahiHwInterface* avahi_interface_monitor_get_hw_interface(AvahiInterfaceMonitor *m, AvahiIfIndex idx) {
     assert(m);
-    assert(idx > 0);
+    assert(idx >= 0);
 
     return avahi_hashmap_lookup(m->hashmap, &idx);
 }

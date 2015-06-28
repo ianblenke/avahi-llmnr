@@ -8,6 +8,8 @@ avahi-browse [\fIoptions\fB] --all\fB
 
 avahi-browse [\fIoptions\fB] --browse-domains\fB
 
+avahi-browse [\fIoptions\fB] --dump-db\fB
+
 avahi-browse-domains [\fIoptions\fB]
 \f1
 .SH DESCRIPTION
@@ -44,6 +46,9 @@ Don't fail if the daemon is not found running. Instead, wait until it appears. I
 .TP
 \fB-k | --no-db-lookup\f1
 Don't lookup services types in service type database.
+.TP
+\fB-b | --dump-db\f1
+Dump the service type database (may be combined with -k)
 .TP
 \fB-h | --help\f1
 Show help.

@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1380 2007-02-04 11:39:06Z lennart $
+# $Id: Makefile.am 1394 2007-02-08 11:33:36Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -50,10 +50,12 @@ build-db: build-db.in
 	chmod +x $@
 
 service-types.db.pag: service-types.db
+	mv service-types.db.coming.pag service-types.db.pag
 service-types.db.dir: service-types.db
+	mv service-types.db.coming.dir service-types.db.dir
 service-types.db: service-types build-db
 	$(PYTHON) build-db $< $@.coming
-	mv $@.coming $@
+	if test -f "$@.coming"; then mv $@.coming $@; fi
 
 CLEANFILES = service-types.db* build-db
 

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 883 2005-10-26 21:39:40Z lennart $
+# $Id: Makefile.am 1420 2007-04-12 23:40:57Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -61,6 +61,7 @@ host_triplet = @host@
 @ENABLE_TESTS_TRUE@	avahi-test$(EXEEXT) \
 @ENABLE_TESTS_TRUE@	conformance-test$(EXEEXT) \
 @ENABLE_TESTS_TRUE@	avahi-reflector$(EXEEXT) dns-test$(EXEEXT) \
+@ENABLE_TESTS_TRUE@	dns-spin-test$(EXEEXT) \
 @ENABLE_TESTS_TRUE@	timeeventq-test$(EXEEXT) \
 @ENABLE_TESTS_TRUE@	hashmap-test$(EXEEXT) querier-test$(EXEEXT) \
 @ENABLE_TESTS_TRUE@	update-test$(EXEEXT)
@@ -76,6 +77,7 @@ DIST_COMMON = $(avahiinclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
+	$(top_srcdir)/common/gcc_stack_protect.m4 \
 	$(top_srcdir)/common/python.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/common/doxygen.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -148,6 +150,9 @@ am_conformance_test_OBJECTS =  \
 conformance_test_OBJECTS = $(am_conformance_test_OBJECTS)
 conformance_test_DEPENDENCIES = ../avahi-common/libavahi-common.la \
 	libavahi-core.la
+am_dns_spin_test_OBJECTS = dns_spin_test-dns-spin-test.$(OBJEXT)
+dns_spin_test_OBJECTS = $(am_dns_spin_test_OBJECTS)
+dns_spin_test_DEPENDENCIES = libavahi-core.la
 am_dns_test_OBJECTS = dns_test-dns.$(OBJEXT) \
 	dns_test-dns-test.$(OBJEXT) dns_test-log.$(OBJEXT) \
 	dns_test-util.$(OBJEXT) dns_test-rr.$(OBJEXT) \
@@ -189,15 +194,16 @@ LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libavahi_core_la_SOURCES) $(avahi_reflector_SOURCES) \
 	$(avahi_test_SOURCES) $(conformance_test_SOURCES) \
-	$(dns_test_SOURCES) $(hashmap_test_SOURCES) \
-	$(prioq_test_SOURCES) $(querier_test_SOURCES) \
-	$(timeeventq_test_SOURCES) $(update_test_SOURCES)
-DIST_SOURCES = $(am__libavahi_core_la_SOURCES_DIST) \
-	$(avahi_reflector_SOURCES) $(avahi_test_SOURCES) \
-	$(conformance_test_SOURCES) $(dns_test_SOURCES) \
+	$(dns_spin_test_SOURCES) $(dns_test_SOURCES) \
 	$(hashmap_test_SOURCES) $(prioq_test_SOURCES) \
 	$(querier_test_SOURCES) $(timeeventq_test_SOURCES) \
 	$(update_test_SOURCES)
+DIST_SOURCES = $(am__libavahi_core_la_SOURCES_DIST) \
+	$(avahi_reflector_SOURCES) $(avahi_test_SOURCES) \
+	$(conformance_test_SOURCES) $(dns_spin_test_SOURCES) \
+	$(dns_test_SOURCES) $(hashmap_test_SOURCES) \
+	$(prioq_test_SOURCES) $(querier_test_SOURCES) \
+	$(timeeventq_test_SOURCES) $(update_test_SOURCES)
 avahiincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(avahiinclude_HEADERS)
 ETAGS = etags
@@ -323,6 +329,8 @@ HAVE_GLIB_FALSE = @HAVE_GLIB_FALSE@
 HAVE_GLIB_TRUE = @HAVE_GLIB_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_INOTIFY_FALSE = @HAVE_INOTIFY_FALSE@
+HAVE_INOTIFY_TRUE = @HAVE_INOTIFY_TRUE@
 HAVE_LIBDAEMON_FALSE = @HAVE_LIBDAEMON_FALSE@
 HAVE_LIBDAEMON_TRUE = @HAVE_LIBDAEMON_TRUE@
 HAVE_MONODOC_FALSE = @HAVE_MONODOC_FALSE@
@@ -361,6 +369,7 @@ LIBAVAHI_CORE_VERSION_INFO = @LIBAVAHI_CORE_VERSION_INFO@
 LIBAVAHI_GLIB_VERSION_INFO = @LIBAVAHI_GLIB_VERSION_INFO@
 LIBAVAHI_QT3_VERSION_INFO = @LIBAVAHI_QT3_VERSION_INFO@
 LIBAVAHI_QT4_VERSION_INFO = @LIBAVAHI_QT4_VERSION_INFO@
+LIBAVAHI_UI_VERSION_INFO = @LIBAVAHI_UI_VERSION_INFO@
 LIBDAEMON_CFLAGS = @LIBDAEMON_CFLAGS@
 LIBDAEMON_LIBS = @LIBDAEMON_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -497,6 +506,11 @@ avahiinclude_HEADERS = \
 lib_LTLIBRARIES = \
 	libavahi-core.la 
 
+@ENABLE_TESTS_TRUE@TESTS = \
+@ENABLE_TESTS_TRUE@	dns-spin-test \
+@ENABLE_TESTS_TRUE@	dns-test \
+@ENABLE_TESTS_TRUE@	hashmap-test
+
 libavahi_core_la_SOURCES = timeeventq.c timeeventq.h iface.c iface.h \
 	server.c internal.h entry.c prioq.c prioq.h cache.c cache.h \
 	socket.c socket.h response-sched.c response-sched.h \
@@ -555,6 +569,11 @@ dns_test_SOURCES = \
 
 dns_test_CFLAGS = $(AM_CFLAGS)
 dns_test_LDADD = $(AM_LDADD) ../avahi-common/libavahi-common.la
+dns_spin_test_SOURCES = \
+	dns-spin-test.c
+
+dns_spin_test_CFLAGS = $(AM_CFLAGS)
+dns_spin_test_LDADD = $(AM_LDADD) libavahi-core.la
 timeeventq_test_SOURCES = \
 	timeeventq-test.c \
 	timeeventq.h timeeventq.c \
@@ -648,6 +667,9 @@ avahi-test$(EXEEXT): $(avahi_test_OBJECTS) $(avahi_test_DEPENDENCIES)
 conformance-test$(EXEEXT): $(conformance_test_OBJECTS) $(conformance_test_DEPENDENCIES) 
 	@rm -f conformance-test$(EXEEXT)
 	$(LINK) $(conformance_test_LDFLAGS) $(conformance_test_OBJECTS) $(conformance_test_LDADD) $(LIBS)
+dns-spin-test$(EXEEXT): $(dns_spin_test_OBJECTS) $(dns_spin_test_DEPENDENCIES) 
+	@rm -f dns-spin-test$(EXEEXT)
+	$(LINK) $(dns_spin_test_LDFLAGS) $(dns_spin_test_OBJECTS) $(dns_spin_test_LDADD) $(LIBS)
 dns-test$(EXEEXT): $(dns_test_OBJECTS) $(dns_test_DEPENDENCIES) 
 	@rm -f dns-test$(EXEEXT)
 	$(LINK) $(dns_test_LDFLAGS) $(dns_test_OBJECTS) $(dns_test_LDADD) $(LIBS)
@@ -676,6 +698,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_reflector-avahi-reflector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_test-avahi-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conformance_test-conformance-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_spin_test-dns-spin-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_test-dns-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_test-dns.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_test-domain-util.Po@am__quote@
@@ -1030,6 +1053,20 @@ conformance_test-conformance-test.obj: conformance-test.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(conformance_test_CFLAGS) $(CFLAGS) -c -o conformance_test-conformance-test.obj `if test -f 'conformance-test.c'; then $(CYGPATH_W) 'conformance-test.c'; else $(CYGPATH_W) '$(srcdir)/conformance-test.c'; fi`
 
+dns_spin_test-dns-spin-test.o: dns-spin-test.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_spin_test_CFLAGS) $(CFLAGS) -MT dns_spin_test-dns-spin-test.o -MD -MP -MF "$(DEPDIR)/dns_spin_test-dns-spin-test.Tpo" -c -o dns_spin_test-dns-spin-test.o `test -f 'dns-spin-test.c' || echo '$(srcdir)/'`dns-spin-test.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/dns_spin_test-dns-spin-test.Tpo" "$(DEPDIR)/dns_spin_test-dns-spin-test.Po"; else rm -f "$(DEPDIR)/dns_spin_test-dns-spin-test.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns-spin-test.c' object='dns_spin_test-dns-spin-test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_spin_test_CFLAGS) $(CFLAGS) -c -o dns_spin_test-dns-spin-test.o `test -f 'dns-spin-test.c' || echo '$(srcdir)/'`dns-spin-test.c
+
+dns_spin_test-dns-spin-test.obj: dns-spin-test.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_spin_test_CFLAGS) $(CFLAGS) -MT dns_spin_test-dns-spin-test.obj -MD -MP -MF "$(DEPDIR)/dns_spin_test-dns-spin-test.Tpo" -c -o dns_spin_test-dns-spin-test.obj `if test -f 'dns-spin-test.c'; then $(CYGPATH_W) 'dns-spin-test.c'; else $(CYGPATH_W) '$(srcdir)/dns-spin-test.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/dns_spin_test-dns-spin-test.Tpo" "$(DEPDIR)/dns_spin_test-dns-spin-test.Po"; else rm -f "$(DEPDIR)/dns_spin_test-dns-spin-test.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dns-spin-test.c' object='dns_spin_test-dns-spin-test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_spin_test_CFLAGS) $(CFLAGS) -c -o dns_spin_test-dns-spin-test.obj `if test -f 'dns-spin-test.c'; then $(CYGPATH_W) 'dns-spin-test.c'; else $(CYGPATH_W) '$(srcdir)/dns-spin-test.c'; fi`
+
 dns_test-dns.o: dns.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_test_CFLAGS) $(CFLAGS) -MT dns_test-dns.o -MD -MP -MF "$(DEPDIR)/dns_test-dns.Tpo" -c -o dns_test-dns.o `test -f 'dns.c' || echo '$(srcdir)/'`dns.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/dns_test-dns.Tpo" "$(DEPDIR)/dns_test-dns.Po"; else rm -f "$(DEPDIR)/dns_test-dns.Tpo"; exit 1; fi
@@ -1357,6 +1394,79 @@ GTAGS:
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
+check-TESTS: $(TESTS)
+	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
+	srcdir=$(srcdir); export srcdir; \
+	list='$(TESTS)'; \
+	if test -n "$$list"; then \
+	  for tst in $$list; do \
+	    if test -f ./$$tst; then dir=./; \
+	    elif test -f $$tst; then dir=; \
+	    else dir="$(srcdir)/"; fi; \
+	    if $(TESTS_ENVIRONMENT) $${dir}$$tst; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *" $$tst "*) \
+		xpass=`expr $$xpass + 1`; \
+		failed=`expr $$failed + 1`; \
+		echo "XPASS: $$tst"; \
+	      ;; \
+	      *) \
+		echo "PASS: $$tst"; \
+	      ;; \
+	      esac; \
+	    elif test $$? -ne 77; then \
+	      all=`expr $$all + 1`; \
+	      case " $(XFAIL_TESTS) " in \
+	      *" $$tst "*) \
+		xfail=`expr $$xfail + 1`; \
+		echo "XFAIL: $$tst"; \
+	      ;; \
+	      *) \
+		failed=`expr $$failed + 1`; \
+		echo "FAIL: $$tst"; \
+	      ;; \
+	      esac; \
+	    else \
+	      skip=`expr $$skip + 1`; \
+	      echo "SKIP: $$tst"; \
+	    fi; \
+	  done; \
+	  if test "$$failed" -eq 0; then \
+	    if test "$$xfail" -eq 0; then \
+	      banner="All $$all tests passed"; \
+	    else \
+	      banner="All $$all tests behaved as expected ($$xfail expected failures)"; \
+	    fi; \
+	  else \
+	    if test "$$xpass" -eq 0; then \
+	      banner="$$failed of $$all tests failed"; \
+	    else \
+	      banner="$$failed of $$all tests did not behave as expected ($$xpass unexpected passes)"; \
+	    fi; \
+	  fi; \
+	  dashes="$$banner"; \
+	  skipped=""; \
+	  if test "$$skip" -ne 0; then \
+	    skipped="($$skip tests were not run)"; \
+	    test `echo "$$skipped" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$skipped"; \
+	  fi; \
+	  report=""; \
+	  if test "$$failed" -ne 0 && test -n "$(PACKAGE_BUGREPORT)"; then \
+	    report="Please report to $(PACKAGE_BUGREPORT)"; \
+	    test `echo "$$report" | wc -c` -le `echo "$$banner" | wc -c` || \
+	      dashes="$$report"; \
+	  fi; \
+	  dashes=`echo "$$dashes" | sed s/./=/g`; \
+	  echo "$$dashes"; \
+	  echo "$$banner"; \
+	  test -z "$$skipped" || echo "$$skipped"; \
+	  test -z "$$report" || echo "$$report"; \
+	  echo "$$dashes"; \
+	  test "$$failed" -eq 0; \
+	else :; fi
+
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
@@ -1385,6 +1495,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 installdirs:
@@ -1467,11 +1578,11 @@ ps-am:
 uninstall-am: uninstall-avahiincludeHEADERS uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
-.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-noinstPROGRAMS ctags \
-	distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am \
+.PHONY: CTAGS GTAGS all all-am check check-TESTS check-am clean \
+	clean-generic clean-libLTLIBRARIES clean-libtool \
+	clean-noinstPROGRAMS ctags distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
 	install-avahiincludeHEADERS install-data install-data-am \
 	install-exec install-exec-am install-info install-info-am \
 	install-libLTLIBRARIES install-man install-strip installcheck \

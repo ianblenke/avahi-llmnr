@@ -1,4 +1,4 @@
-/* $Id: avahi-resolve.c 1358 2006-12-31 16:52:13Z lennart $ */
+/* $Id: avahi-resolve.c 1424 2007-04-14 22:19:52Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -186,7 +186,6 @@ static int parse_command_line(Config *c, const char *argv0, int argc, char *argv
     c->proto = AVAHI_PROTO_UNSPEC;
     c->verbose = 0;
 
-    opterr = 0;
     while ((o = getopt_long(argc, argv, "hVnav46", long_options, NULL)) >= 0) {
 
         switch(o) {
@@ -212,7 +211,6 @@ static int parse_command_line(Config *c, const char *argv0, int argc, char *argv
                 c->proto = AVAHI_PROTO_INET6;
                 break;
             default:
-                fprintf(stderr, "Invalid command line argument: %s\n", argv[optind-1]);
                 return -1;
         }
     }

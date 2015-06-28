@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1380 2007-02-04 11:39:06Z lennart $
+# $Id: Makefile.am 1394 2007-02-08 11:33:36Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -62,6 +62,7 @@ subdir = service-type-database
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
+	$(top_srcdir)/common/gcc_stack_protect.m4 \
 	$(top_srcdir)/common/python.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/common/doxygen.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -202,6 +203,8 @@ HAVE_GLIB_FALSE = @HAVE_GLIB_FALSE@
 HAVE_GLIB_TRUE = @HAVE_GLIB_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_INOTIFY_FALSE = @HAVE_INOTIFY_FALSE@
+HAVE_INOTIFY_TRUE = @HAVE_INOTIFY_TRUE@
 HAVE_LIBDAEMON_FALSE = @HAVE_LIBDAEMON_FALSE@
 HAVE_LIBDAEMON_TRUE = @HAVE_LIBDAEMON_TRUE@
 HAVE_MONODOC_FALSE = @HAVE_MONODOC_FALSE@
@@ -240,6 +243,7 @@ LIBAVAHI_CORE_VERSION_INFO = @LIBAVAHI_CORE_VERSION_INFO@
 LIBAVAHI_GLIB_VERSION_INFO = @LIBAVAHI_GLIB_VERSION_INFO@
 LIBAVAHI_QT3_VERSION_INFO = @LIBAVAHI_QT3_VERSION_INFO@
 LIBAVAHI_QT4_VERSION_INFO = @LIBAVAHI_QT4_VERSION_INFO@
+LIBAVAHI_UI_VERSION_INFO = @LIBAVAHI_UI_VERSION_INFO@
 LIBDAEMON_CFLAGS = @LIBDAEMON_CFLAGS@
 LIBDAEMON_LIBS = @LIBDAEMON_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -565,10 +569,12 @@ uninstall-am: uninstall-info-am uninstall-pkgdataDATA
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	chmod +x $@
 
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db.pag: service-types.db
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	mv service-types.db.coming.pag service-types.db.pag
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db.dir: service-types.db
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	mv service-types.db.coming.dir service-types.db.dir
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db: service-types build-db
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	$(PYTHON) build-db $< $@.coming
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	mv $@.coming $@
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	if test -f "$@.coming"; then mv $@.coming $@; fi
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

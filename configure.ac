@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1367 2007-01-05 22:19:52Z lennart $
+# $Id: configure.ac 1440 2007-04-18 20:39:57Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,19 +21,20 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.17],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.18],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
-AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:3:4])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [5:0:0])
+AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:4:4])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [5:1:0])
 AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:2:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:1:0])
+AC_SUBST(LIBAVAHI_UI_VERSION_INFO, [0:0:0])
 
 # Do not touch these, since they we took this version-info from upstream HOWL/Bonjour
 AC_SUBST(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO, [1:0:0])
@@ -54,6 +55,79 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_GCC_TRADITIONAL
+
+# -fstack-protector
+AC_ARG_ENABLE([stack-protector],
+    [AS_HELP_STRING([--disable-stack-protector],
+        [Disable GCC's/libc's stack-smashing protection])],
+    [case "${enableval}" in
+         yes) enable_ssp=yes ;;
+          no) enable_ssp=no ;;
+           *) AC_MSG_ERROR([invalid value ${enableval} for --disable-stack-protector]) ;;
+     esac],
+    [enable_ssp=yes])
+
+if test x"$enable_ssp" = x"yes" && test x"$GCC" != x"yes"; then
+    AC_MSG_NOTICE([Disabling stack-smashing protection because compiler is not GCC])
+    enable_ssp=no
+fi
+
+if test x"$enable_ssp" = x"yes"; then
+    # Check for broken ssp in libc: http://www.avahi.org/ticket/105
+    # libc's brokenness will get in the way regardless of whether -lssp is
+    # provided, but provide it anyway (otherwise non-libc ssp would wrongly
+    # break here)
+
+    # Get -lssp if it exists
+    GCC_STACK_PROTECT_LIB
+
+    AC_MSG_CHECKING([whether stack-smashing protection is available])
+    ssp_old_cflags="$CFLAGS"
+    ssp_old_ldflags="$LDFLAGS"
+    CFLAGS="$CFLAGS -fstack-protector-all -fPIC"
+    LDFLAGS="$LDFLAGS -Wl,-z,defs"
+    cat confdefs.h > conftest.c
+    cat >>conftest.c <<_ACEOF
+void test_broken_ssp(c)
+    const char *c;
+{
+    char arr[[123]], *p; /* beware of possible double-braces if copying this */
+    for (p = arr; *c; ++p) {
+        *p = *c;
+        ++c;
+    }
+}
+_ACEOF
+    rm -f conftest.o
+
+    if $CC -c $CFLAGS $CPPFLAGS -o conftest.o conftest.c >/dev/null 2>&1; then
+        AC_MSG_RESULT([yes])
+        AC_MSG_CHECKING([whether stack-smashing protection is buggy])
+        if $CC -o conftest.so $LDFLAGS -shared conftest.o $LIBS >/dev/null 2>&1; then
+            AC_MSG_RESULT([no])
+        else
+            AC_MSG_RESULT([yes])
+            enable_ssp=no
+        fi
+    else
+        AC_MSG_RESULT([no])
+    fi
+
+    rm -f conftest.c conftest.o conftest.so
+
+    CFLAGS="$ssp_old_cflags"
+    LDFLAGS="$ssp_old_ldflags"
+fi
+
+if test x"$enable_ssp" = x"yes"; then
+    # Do this the long way so we don't call GCC_STACK_PROTECT_LIB twice
+    GCC_STACK_PROTECT_CC
+
+    AC_LANG_PUSH([C++])
+    GCC_STACK_PROTECT_CXX
+    AC_LANG_POP([C++])
+    # XXX: Update the enable_ssp value now for output later?
+fi
 
 # libtool stuff
 AC_PROG_LIBTOOL
@@ -218,7 +292,7 @@ test_gcc_flag() {
 # If using GCC specify some additional parameters
 if test "x$GCC" = "xyes" ; then
 
-    DESIRED_FLAGS="-Wall -W -Wextra -pedantic -pipe -Wformat -Wold-style-definition -Wdeclaration-after-statement -Wfloat-equal -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wredundant-decls -Wmissing-noreturn -Wshadow -Wendif-labels -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wcast-align -Wwrite-strings -Winline"
+    DESIRED_FLAGS="-Wall -W -Wextra -pedantic -pipe -Wformat -Wold-style-definition -Wdeclaration-after-statement -Wfloat-equal -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wredundant-decls -Wmissing-noreturn -Wshadow -Wendif-labels -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wcast-align -Wwrite-strings -Winline -fPIC"
 
     if test "x$HAVE_NETLINK" = "xyes" ; then
         # Test whether rtnetlink.h can be included when compiled with -std=c99
@@ -294,6 +368,16 @@ if test "x$HAVE_DLOPEN" = "xyes" ; then
     AC_DEFINE([HAVE_DLOPEN],1,[Have dlopen()])
 fi
 AM_CONDITIONAL(HAVE_DLOPEN, test "x$HAVE_DLOPEN" = "xyes")
+
+have_inotify=no
+AC_CHECK_HEADERS([linux/inotify.h], [have_inotify=yes])
+AC_CHECK_HEADERS([sys/inotify.h], [have_inotify=yes])
+
+AM_CONDITIONAL(HAVE_INOTIFY, test "x$have_inotify" = "xyes")
+
+if test "x$have_inotify" = "xyes" ; then
+   AC_DEFINE([HAVE_INOTIFY], 1, [Enable Linux inotify() usage])
+fi
 
 # Check for pkg-config manually first, as if its not installed the
 # PKG_PROG_PKG_CONFIG macro won't be defined.
@@ -735,7 +819,7 @@ fi
 AC_SUBST(AVAHI_PRIV_ACCESS_GROUP)
 AC_DEFINE_UNQUOTED(AVAHI_PRIV_ACCESS_GROUP,"$AVAHI_PRIV_ACCESS_GROUP", [Privileged access group for Avahi clients])
 
-AC_ARG_WITH(autoipd_user, AS_HELP_STRING([--with-autipd-user=<user>],[User for running the avahi-autoipd daemon (avahi-autoipd)]))
+AC_ARG_WITH(autoipd_user, AS_HELP_STRING([--with-autoipd-user=<user>],[User for running the avahi-autoipd daemon (avahi-autoipd)]))
 if test -z "$with_autoipd_user" ; then
     AVAHI_AUTOIPD_USER=avahi-autoipd
 else
@@ -909,6 +993,7 @@ avahi-compat-libdns_sd/Makefile
 avahi-compat-howl/Makefile
 avahi-compat-howl/samples/Makefile
 avahi-autoipd/Makefile
+avahi-ui/Makefile
 ])
 AC_OUTPUT
 
@@ -943,9 +1028,11 @@ echo "
     User for avahi-daemon:                     ${AVAHI_USER}
     Group for avahi-daemon:                    ${AVAHI_GROUP}
     Priviliged access group for Avahi clients: ${AVAHI_PRIV_ACCESS_GROUP}
-    User for avahi-autopid:                    ${AVAHI_AUTOIPD_USER}
+    User for avahi-autoipd:                    ${AVAHI_AUTOIPD_USER}
     Group for avahi-autoipd:                   ${AVAHI_AUTOIPD_GROUP}
     Enable chroot():                           ${enable_chroot}
+    Enable Linux inotify:                      ${have_inotify}
+    Enable stack-smashing protection:          ${enable_ssp}
 "
 
 BUILD_DAEMON="no   (You need libdaemon and expat!)"
@@ -972,7 +1059,14 @@ fi
 if test "x$ENABLE_COMPAT_HOWL" = "xyes" -a "x$BUILD_CLIENT" != "xyes" ; then
    ENABLE_COMPAT_HOWL="no   (You need libavahi-client!)"
 fi
+if test "x$ENABLE_AUTOIPD" = "xyes" -a "x$HAVE_LIBDAEMON" != "xyes" ; then
+   ENABLE_AUTOIPD="no   (You need libdaemon!)"
+fi
 
+BUILD_UI="no"
+if test "x$HAVE_GTK" = "xyes" -a "x$BUILD_CLIENT" = "xyes" ; then
+   BUILD_UI="yes"
+fi
 
 echo "\
     Building libavahi-core              yes
@@ -991,4 +1085,5 @@ echo "\
     Building tests:                     ${ENABLE_TESTS}
     Building avahi-core documentation:  ${ENABLE_CORE_DOCS}
     Building avahi-autoipd:             ${ENABLE_AUTOIPD}
+    Building libavahi-ui:               ${BUILD_UI}
 "

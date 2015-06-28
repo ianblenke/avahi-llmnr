@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1278 2006-08-25 19:17:08Z lennart $
+# $Id: Makefile.am 1401 2007-04-12 16:50:00Z lennart $
 
 # This file is part of avahi.
 #
@@ -50,10 +50,12 @@ ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
 	chmod +x $@
 endif
 
+avahi_PYTHON = $(avahi_SCRIPTS)
+
 if HAVE_PYGTK
 if HAVE_PYTHON_DBUS
 
-avahi_PYTHON = __init__.py SimpleGladeApp.py 
+avahi_PYTHON += __init__.py SimpleGladeApp.py 
 
 endif
 endif

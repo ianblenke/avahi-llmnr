@@ -1,7 +1,7 @@
 #ifndef foodnshfoo
 #define foodnshfoo
 
-/* $Id: dns.h 1341 2006-12-16 15:00:11Z lathiat $ */
+/* $Id: dns.h 1405 2007-04-12 20:43:29Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -25,10 +25,11 @@
 #include "rr.h"
 #include "hashmap.h"
 
-#define AVAHI_DNS_PACKET_SIZE_MAX 9000
 #define AVAHI_DNS_PACKET_HEADER_SIZE 12
 #define AVAHI_DNS_PACKET_EXTRA_SIZE 48
 #define AVAHI_DNS_LABELS_MAX 127
+#define AVAHI_DNS_RDATA_MAX 0xFFFF
+#define AVAHI_DNS_PACKET_SIZE_MAX (AVAHI_DNS_PACKET_HEADER_SIZE + 256 + 2 + 2 + 4 + 2 + AVAHI_DNS_RDATA_MAX)
 
 typedef struct AvahiDnsPacket {
     size_t size, rindex, max_size;
@@ -105,8 +106,6 @@ size_t avahi_dns_packet_space(AvahiDnsPacket *p);
 #define AVAHI_MDNS_SUFFIX_LOCAL "local"
 #define AVAHI_MDNS_SUFFIX_ADDR_IPV4 "254.169.in-addr.arpa"
 #define AVAHI_MDNS_SUFFIX_ADDR_IPV6 "0.8.e.f.ip6.arpa"
-
-#define AVAHI_DNS_RDATA_MAX 65535
 
 #endif
 

@@ -1,4 +1,4 @@
-/* $Id: response-sched.c 1084 2006-01-17 12:25:54Z lennart $ */
+/* $Id: response-sched.c 1405 2007-04-12 20:43:29Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -247,10 +247,7 @@ static void send_response_packet(AvahiResponseScheduler *s, AvahiResponseJob *rj
         /* OK, the packet was too small, so create one that fits */
         size = avahi_record_get_estimate_size(rj->record) + AVAHI_DNS_PACKET_HEADER_SIZE;
 
-        if (size > AVAHI_DNS_PACKET_SIZE_MAX)
-            size = AVAHI_DNS_PACKET_SIZE_MAX;
-        
-        if (!(p = avahi_dns_packet_new_response(size, 1)))
+        if (!(p = avahi_dns_packet_new_response(size + AVAHI_DNS_PACKET_EXTRA_SIZE, 1)))
             return; /* OOM */
 
         if (!packet_add_response_job(s, p, rj)) {

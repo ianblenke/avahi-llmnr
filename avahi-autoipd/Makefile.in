@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1315 2006-09-02 18:34:03Z lennart $
+# $Id: Makefile.am 1404 2007-04-12 19:14:34Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -57,10 +57,14 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@sbin_PROGRAMS = avahi-autoipd$(EXEEXT)
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_FREEBSD_TRUE@am__append_1 = iface-bsd.c
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_FREEBSD_TRUE@am__append_2 = -lpcap
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_FREEBSD_FALSE@am__append_3 = iface-linux.c
 subdir = avahi-autoipd
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
+	$(top_srcdir)/common/gcc_stack_protect.m4 \
 	$(top_srcdir)/common/python.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/common/doxygen.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -73,17 +77,21 @@ sbinPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(sbin_PROGRAMS)
 am__avahi_autoipd_SOURCES_DIST = main.c main.h \
 	../avahi-daemon/setproctitle.c ../avahi-daemon/setproctitle.h \
-	iface.h iface-linux.c ../avahi-common/malloc.h \
-	../avahi-common/malloc.c ../avahi-common/timeval.h \
-	../avahi-common/timeval.c
+	iface.h ../avahi-common/malloc.h ../avahi-common/malloc.c \
+	../avahi-common/timeval.h ../avahi-common/timeval.c \
+	iface-bsd.c iface-linux.c
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_FREEBSD_TRUE@am__objects_1 = avahi_autoipd-iface-bsd.$(OBJEXT)
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_FREEBSD_FALSE@am__objects_2 = avahi_autoipd-iface-linux.$(OBJEXT)
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@am_avahi_autoipd_OBJECTS = avahi_autoipd-main.$(OBJEXT) \
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_autoipd-setproctitle.$(OBJEXT) \
-@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_autoipd-iface-linux.$(OBJEXT) \
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_autoipd-malloc.$(OBJEXT) \
-@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_autoipd-timeval.$(OBJEXT)
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi_autoipd-timeval.$(OBJEXT) \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__objects_1) \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__objects_2)
 avahi_autoipd_OBJECTS = $(am_avahi_autoipd_OBJECTS)
 am__DEPENDENCIES_1 =
-@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_autoipd_DEPENDENCIES = $(am__DEPENDENCIES_1)
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_autoipd_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_1)
 pkgsysconfSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(noinst_SCRIPTS) $(pkgsysconf_SCRIPTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -222,6 +230,8 @@ HAVE_GLIB_FALSE = @HAVE_GLIB_FALSE@
 HAVE_GLIB_TRUE = @HAVE_GLIB_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
+HAVE_INOTIFY_FALSE = @HAVE_INOTIFY_FALSE@
+HAVE_INOTIFY_TRUE = @HAVE_INOTIFY_TRUE@
 HAVE_LIBDAEMON_FALSE = @HAVE_LIBDAEMON_FALSE@
 HAVE_LIBDAEMON_TRUE = @HAVE_LIBDAEMON_TRUE@
 HAVE_MONODOC_FALSE = @HAVE_MONODOC_FALSE@
@@ -260,6 +270,7 @@ LIBAVAHI_CORE_VERSION_INFO = @LIBAVAHI_CORE_VERSION_INFO@
 LIBAVAHI_GLIB_VERSION_INFO = @LIBAVAHI_GLIB_VERSION_INFO@
 LIBAVAHI_QT3_VERSION_INFO = @LIBAVAHI_QT3_VERSION_INFO@
 LIBAVAHI_QT4_VERSION_INFO = @LIBAVAHI_QT4_VERSION_INFO@
+LIBAVAHI_UI_VERSION_INFO = @LIBAVAHI_UI_VERSION_INFO@
 LIBDAEMON_CFLAGS = @LIBDAEMON_CFLAGS@
 LIBDAEMON_LIBS = @LIBDAEMON_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -391,22 +402,29 @@ target_alias = @target_alias@
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	-DAVAHI_RUNTIME_DIR=\"$(avahi_runtime_dir)/\" \
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	-DAVAHI_IPCONF_SCRIPT=\"$(pkgsysconfdir)/avahi-autoipd.action\" \
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	-DAVAHI_IPDATA_DIR=\"$(localstatedir)/lib/avahi-autoipd\"
-@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_autoipd_SOURCES = \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_autoipd_SOURCES =  \
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	main.c main.h \
-@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	 ../avahi-daemon/setproctitle.c  ../avahi-daemon/setproctitle.h \
-@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	iface.h iface-linux.c \
-@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/malloc.h ../avahi-common/malloc.c \
-@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/timeval.h ../avahi-common/timeval.c
-
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-daemon/setproctitle.c \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-daemon/setproctitle.h \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	iface.h \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/malloc.h \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/malloc.c \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/timeval.h \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/timeval.c \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_1) \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_3)
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_autoipd_CFLAGS = $(AM_CFLAGS) $(LIBDAEMON_CFLAGS)
-@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_autoipd_LDADD = $(AM_LDADD) $(LIBDAEMON_LIBS)
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_autoipd_LDADD =  \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(AM_LDADD) \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(LIBDAEMON_LIBS) \
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_2)
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@pkgsysconf_SCRIPTS = avahi-autoipd.action
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_DEBIAN_TRUE@noinst_SCRIPTS = dhclient-enter-hook dhclient-exit-hook
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_DEBIAN_TRUE@BUILD = dhclient-exit-hook dhclient-enter-hook
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_DEBIAN_TRUE@dhcliententerdir = $(sysconfdir)/dhcp3/dhclient-enter-hooks.d
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_DEBIAN_TRUE@dhclientexitdir = $(sysconfdir)/dhcp3/dhclient-exit-hooks.d
-EXTRA_DIST = avahi-autoipd.action dhclient-enter-hook.in dhclient-exit-hook.in
-CLEANFILES = dhclient-enter-hook dhclient-exit-hook
+EXTRA_DIST = avahi-autoipd.action dhclient-enter-hook.in dhclient-exit-hook.in avahi-autoipd.action.linux avahi-autoipd.action.bsd
+CLEANFILES = dhclient-enter-hook dhclient-exit-hook avahi-autoipd.action
 all: all-am
 
 .SUFFIXES:
@@ -497,6 +515,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_autoipd-iface-bsd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_autoipd-iface-linux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_autoipd-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_autoipd-malloc.Po@am__quote@
@@ -552,20 +571,6 @@ avahi_autoipd-setproctitle.obj: ../avahi-daemon/setproctitle.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -c -o avahi_autoipd-setproctitle.obj `if test -f '../avahi-daemon/setproctitle.c'; then $(CYGPATH_W) '../avahi-daemon/setproctitle.c'; else $(CYGPATH_W) '$(srcdir)/../avahi-daemon/setproctitle.c'; fi`
 
-avahi_autoipd-iface-linux.o: iface-linux.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -MT avahi_autoipd-iface-linux.o -MD -MP -MF "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo" -c -o avahi_autoipd-iface-linux.o `test -f 'iface-linux.c' || echo '$(srcdir)/'`iface-linux.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo" "$(DEPDIR)/avahi_autoipd-iface-linux.Po"; else rm -f "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='iface-linux.c' object='avahi_autoipd-iface-linux.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -c -o avahi_autoipd-iface-linux.o `test -f 'iface-linux.c' || echo '$(srcdir)/'`iface-linux.c
-
-avahi_autoipd-iface-linux.obj: iface-linux.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -MT avahi_autoipd-iface-linux.obj -MD -MP -MF "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo" -c -o avahi_autoipd-iface-linux.obj `if test -f 'iface-linux.c'; then $(CYGPATH_W) 'iface-linux.c'; else $(CYGPATH_W) '$(srcdir)/iface-linux.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo" "$(DEPDIR)/avahi_autoipd-iface-linux.Po"; else rm -f "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='iface-linux.c' object='avahi_autoipd-iface-linux.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -c -o avahi_autoipd-iface-linux.obj `if test -f 'iface-linux.c'; then $(CYGPATH_W) 'iface-linux.c'; else $(CYGPATH_W) '$(srcdir)/iface-linux.c'; fi`
-
 avahi_autoipd-malloc.o: ../avahi-common/malloc.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -MT avahi_autoipd-malloc.o -MD -MP -MF "$(DEPDIR)/avahi_autoipd-malloc.Tpo" -c -o avahi_autoipd-malloc.o `test -f '../avahi-common/malloc.c' || echo '$(srcdir)/'`../avahi-common/malloc.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_autoipd-malloc.Tpo" "$(DEPDIR)/avahi_autoipd-malloc.Po"; else rm -f "$(DEPDIR)/avahi_autoipd-malloc.Tpo"; exit 1; fi
@@ -593,6 +598,34 @@ avahi_autoipd-timeval.obj: ../avahi-common/timeval.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../avahi-common/timeval.c' object='avahi_autoipd-timeval.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -c -o avahi_autoipd-timeval.obj `if test -f '../avahi-common/timeval.c'; then $(CYGPATH_W) '../avahi-common/timeval.c'; else $(CYGPATH_W) '$(srcdir)/../avahi-common/timeval.c'; fi`
+
+avahi_autoipd-iface-bsd.o: iface-bsd.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -MT avahi_autoipd-iface-bsd.o -MD -MP -MF "$(DEPDIR)/avahi_autoipd-iface-bsd.Tpo" -c -o avahi_autoipd-iface-bsd.o `test -f 'iface-bsd.c' || echo '$(srcdir)/'`iface-bsd.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_autoipd-iface-bsd.Tpo" "$(DEPDIR)/avahi_autoipd-iface-bsd.Po"; else rm -f "$(DEPDIR)/avahi_autoipd-iface-bsd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='iface-bsd.c' object='avahi_autoipd-iface-bsd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -c -o avahi_autoipd-iface-bsd.o `test -f 'iface-bsd.c' || echo '$(srcdir)/'`iface-bsd.c
+
+avahi_autoipd-iface-bsd.obj: iface-bsd.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -MT avahi_autoipd-iface-bsd.obj -MD -MP -MF "$(DEPDIR)/avahi_autoipd-iface-bsd.Tpo" -c -o avahi_autoipd-iface-bsd.obj `if test -f 'iface-bsd.c'; then $(CYGPATH_W) 'iface-bsd.c'; else $(CYGPATH_W) '$(srcdir)/iface-bsd.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_autoipd-iface-bsd.Tpo" "$(DEPDIR)/avahi_autoipd-iface-bsd.Po"; else rm -f "$(DEPDIR)/avahi_autoipd-iface-bsd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='iface-bsd.c' object='avahi_autoipd-iface-bsd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -c -o avahi_autoipd-iface-bsd.obj `if test -f 'iface-bsd.c'; then $(CYGPATH_W) 'iface-bsd.c'; else $(CYGPATH_W) '$(srcdir)/iface-bsd.c'; fi`
+
+avahi_autoipd-iface-linux.o: iface-linux.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -MT avahi_autoipd-iface-linux.o -MD -MP -MF "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo" -c -o avahi_autoipd-iface-linux.o `test -f 'iface-linux.c' || echo '$(srcdir)/'`iface-linux.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo" "$(DEPDIR)/avahi_autoipd-iface-linux.Po"; else rm -f "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='iface-linux.c' object='avahi_autoipd-iface-linux.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -c -o avahi_autoipd-iface-linux.o `test -f 'iface-linux.c' || echo '$(srcdir)/'`iface-linux.c
+
+avahi_autoipd-iface-linux.obj: iface-linux.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -MT avahi_autoipd-iface-linux.obj -MD -MP -MF "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo" -c -o avahi_autoipd-iface-linux.obj `if test -f 'iface-linux.c'; then $(CYGPATH_W) 'iface-linux.c'; else $(CYGPATH_W) '$(srcdir)/iface-linux.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo" "$(DEPDIR)/avahi_autoipd-iface-linux.Po"; else rm -f "$(DEPDIR)/avahi_autoipd-iface-linux.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='iface-linux.c' object='avahi_autoipd-iface-linux.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_autoipd_CFLAGS) $(CFLAGS) -c -o avahi_autoipd-iface-linux.obj `if test -f 'iface-linux.c'; then $(CYGPATH_W) 'iface-linux.c'; else $(CYGPATH_W) '$(srcdir)/iface-linux.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -787,6 +820,11 @@ uninstall-am: uninstall-info-am uninstall-pkgsysconfSCRIPTS \
 	uninstall-info-am uninstall-pkgsysconfSCRIPTS \
 	uninstall-sbinPROGRAMS
 
+
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_FREEBSD_TRUE@avahi-autoipd.action: avahi-autoipd.action.bsd
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_FREEBSD_TRUE@	cp $< $@
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_FREEBSD_FALSE@avahi-autoipd.action: avahi-autoipd.action.linux
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_FREEBSD_FALSE@	cp $< $@
 
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_DEBIAN_TRUE@dhclient-enter-hook: dhclient-enter-hook.in
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_DEBIAN_TRUE@	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@

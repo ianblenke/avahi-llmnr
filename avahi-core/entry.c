@@ -1,4 +1,4 @@
-/* $Id: entry.c 1169 2006-03-02 01:30:15Z lennart $ */
+/* $Id: entry.c 1400 2007-03-30 19:20:29Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -1014,6 +1014,11 @@ void avahi_s_entry_group_change_state(AvahiSEntryGroup *g, AvahiEntryGroupState 
         
         if (avahi_age(&g->established_at) > 5000000)
             g->n_register_try = 0;
+    } else if (g->state == AVAHI_ENTRY_GROUP_REGISTERING) {
+        if (g->register_time_event) {
+            avahi_time_event_free(g->register_time_event);
+            g->register_time_event = NULL;
+        }
     }
     
     if (state == AVAHI_ENTRY_GROUP_ESTABLISHED)
@@ -1153,14 +1158,7 @@ void avahi_s_entry_group_reset(AvahiSEntryGroup *g) {
     }
     g->server->need_entry_cleanup = 1;
 
-    if (g->register_time_event) {
-        avahi_time_event_free(g->register_time_event);
-        g->register_time_event = NULL;
-    }
-    
     g->n_probing = 0;
-
-    gettimeofday(&g->register_time, NULL);
 
     avahi_s_entry_group_change_state(g, AVAHI_ENTRY_GROUP_UNCOMMITED);
 }
