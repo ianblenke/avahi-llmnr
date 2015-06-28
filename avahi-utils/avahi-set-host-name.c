@@ -1,4 +1,4 @@
-/* $Id: avahi-set-host-name.c 1424 2007-04-14 22:19:52Z lennart $ */
+/* $Id: avahi-set-host-name.c 1512 2007-08-12 15:43:42Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -43,7 +43,7 @@
 typedef enum {
     COMMAND_UNSPEC, 
     COMMAND_HELP,
-    COMMAND_VERSION,
+    COMMAND_VERSION
 } Command;
 
 typedef struct Config {

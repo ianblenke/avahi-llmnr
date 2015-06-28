@@ -1,7 +1,7 @@
 #ifndef foocorehfoo
 #define foocorehfoo
 
-/* $Id: core.h 1365 2007-01-05 22:18:34Z lennart $ */
+/* $Id: core.h 1513 2007-08-12 15:45:03Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -149,6 +149,9 @@ uint32_t avahi_server_get_local_service_cookie(AvahiServer *s);
 
 /** Set the wide area DNS servers */
 int avahi_server_set_wide_area_servers(AvahiServer *s, const AvahiAddress *a, unsigned n);
+
+/** Set the browsing domains */
+int avahi_server_set_browse_domains(AvahiServer *s, AvahiStringList *domains);
 
 /** Return the current configuration of the server \since 0.6.17 */
 const AvahiServerConfig* avahi_server_get_config(AvahiServer *s);

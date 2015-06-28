@@ -201,6 +201,8 @@ HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
 HAVE_INOTIFY_FALSE = @HAVE_INOTIFY_FALSE@
 HAVE_INOTIFY_TRUE = @HAVE_INOTIFY_TRUE@
+HAVE_KQUEUE_FALSE = @HAVE_KQUEUE_FALSE@
+HAVE_KQUEUE_TRUE = @HAVE_KQUEUE_TRUE@
 HAVE_LIBDAEMON_FALSE = @HAVE_LIBDAEMON_FALSE@
 HAVE_LIBDAEMON_TRUE = @HAVE_LIBDAEMON_TRUE@
 HAVE_MONODOC_FALSE = @HAVE_MONODOC_FALSE@
@@ -376,8 +378,8 @@ EXTRA_DIST = \
 	$(srcdir)/$(ASSEMBLY).config.in         \
 	$(srcdir)/bssh.cs
 
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@monodocdir = $(MONODOC_DIR)
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@monodoc_DATA = avahi-ui-sharp-docs.zip avahi-ui-sharp-docs.tree avahi-ui-sharp-docs.source
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@monodocdir = $(MONODOC_DIR)
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@monodoc_DATA = avahi-ui-sharp-docs.zip avahi-ui-sharp-docs.tree avahi-ui-sharp-docs.source
 all: all-am
 
 .SUFFIXES:
@@ -505,8 +507,10 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 @HAVE_DBUS_FALSE@install-data-hook:
+@HAVE_GTK_FALSE@install-data-hook:
 @HAVE_MONO_FALSE@install-data-hook:
 @HAVE_DBUS_FALSE@uninstall-hook:
+@HAVE_GTK_FALSE@uninstall-hook:
 @HAVE_MONO_FALSE@uninstall-hook:
 clean: clean-am
 
@@ -579,21 +583,21 @@ $(ASSEMBLY).config: $(ASSEMBLY).config.in
 bssh.exe: $(srcdir)/bssh.cs $(ASSEMBLY)
 	mcs -out:$@ $(srcdir)/bssh.cs -r:./avahi-ui-sharp.dll -r:../avahi-sharp/avahi-sharp.dll -pkg:gtk-sharp-2.0 -r:Mono.Posix
 
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@all: $(ASSEMBLY) $(ASSEMBLY).config bssh.exe
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONO_TRUE@all: $(ASSEMBLY) $(ASSEMBLY).config bssh.exe
 
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@update-docs: $(ASSEMBLY)
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@	$(MONODOCER) -assembly:$(ASSEMBLY) -path:en
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@update-docs: $(ASSEMBLY)
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@	$(MONODOCER) -assembly:$(ASSEMBLY) -path:en
 
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@avahi-ui-sharp-docs.zip: avahi-ui-sharp-docs.tree
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@avahi-ui-sharp-docs.zip: avahi-ui-sharp-docs.tree
 
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@avahi-ui-sharp-docs.tree: $(srcdir)/en/*/*
-@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@	$(MDASSEMBLER) --out avahi-ui-sharp-docs --ecma $(srcdir)/en
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@avahi-ui-sharp-docs.tree: $(srcdir)/en/*/*
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@	$(MDASSEMBLER) --out avahi-ui-sharp-docs --ecma $(srcdir)/en
 
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@install-data-hook: $(ASSEMBLY)
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@	$(GACUTIL) /i $(ASSEMBLY) /package avahi-ui-sharp /gacdir $(libdir) /root $(DESTDIR)$(libdir)
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONO_TRUE@install-data-hook: $(ASSEMBLY)
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONO_TRUE@	$(GACUTIL) /i $(ASSEMBLY) /package avahi-ui-sharp /gacdir $(libdir) /root $(DESTDIR)$(libdir)
 
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@uninstall-hook: $(ASSEMBLY)
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@	$(GACUTIL) /u avahi-ui-sharp /package avahi-ui-sharp /gacdir $(libdir) /root $(DESTDIR)$(libdir)
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONO_TRUE@uninstall-hook: $(ASSEMBLY)
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@@HAVE_MONO_TRUE@	$(GACUTIL) /u avahi-ui-sharp /package avahi-ui-sharp /gacdir $(libdir) /root $(DESTDIR)$(libdir)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

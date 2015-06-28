@@ -1,4 +1,4 @@
-/* $Id: fdutil.c 299 2005-08-12 00:25:52Z lennart $ */
+/* $Id: fdutil.c 1494 2007-07-10 22:39:30Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -23,6 +23,7 @@
 #include <config.h>
 #endif
 
+#include <sys/select.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <assert.h>

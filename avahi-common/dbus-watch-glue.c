@@ -1,4 +1,4 @@
-/* $Id: dbus-watch-glue.c 1239 2006-07-22 00:52:50Z lennart $ */
+/* $Id: dbus-watch-glue.c 1507 2007-08-12 15:39:18Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -134,7 +134,7 @@ static dbus_bool_t update_watch(const AvahiPoll *poll_api, DBusWatch *dbus_watch
 
         if (!(avahi_watch = poll_api->watch_new(
                   poll_api,
-                  dbus_watch_get_fd(dbus_watch),
+                  dbus_watch_get_unix_fd(dbus_watch),
                   translate_dbus_to_avahi(dbus_watch_get_flags(dbus_watch)),
                   watch_callback,
                   dbus_watch)))

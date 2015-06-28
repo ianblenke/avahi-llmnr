@@ -1,4 +1,4 @@
-/* $Id: check-nss-test.c 1092 2006-01-20 22:56:11Z lennart $ */
+/* $Id: check-nss-test.c 1509 2007-08-12 15:40:25Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -29,4 +29,5 @@
 
 int main(AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
     printf("NSS Support available: %s\n", avahi_nss_support() ? "yes" : "no");
+    return 0;
 }

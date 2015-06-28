@@ -1,7 +1,7 @@
 #ifndef foointernalhfoo
 #define foointernalhfoo
 
-/* $Id: internal.h 980 2005-11-16 01:15:46Z lennart $ */
+/* $Id: internal.h 1508 2007-08-12 15:39:53Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -157,8 +157,6 @@ struct AvahiServer {
 
     AvahiMulticastLookupEngine *multicast_lookup_engine;
     AvahiWideAreaLookupEngine *wide_area_lookup_engine;
-
-    AvahiStringList *static_browse_domains;
 };
 
 void avahi_entry_free(AvahiServer*s, AvahiEntry *e);

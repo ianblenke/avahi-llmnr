@@ -1,7 +1,7 @@
 #ifndef foodnshfoo
 #define foodnshfoo
 
-/* $Id: dns.h 1405 2007-04-12 20:43:29Z lennart $ */
+/* $Id: dns.h 1493 2007-07-07 21:22:19Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -51,6 +51,8 @@ uint16_t avahi_dns_packet_get_field(AvahiDnsPacket *p, unsigned idx);
 void avahi_dns_packet_inc_field(AvahiDnsPacket *p, unsigned idx);
 
 uint8_t *avahi_dns_packet_extend(AvahiDnsPacket *p, size_t l);
+
+void avahi_dns_packet_cleanup_name_table(AvahiDnsPacket *p);
 
 uint8_t *avahi_dns_packet_append_uint16(AvahiDnsPacket *p, uint16_t v);
 uint8_t *avahi_dns_packet_append_uint32(AvahiDnsPacket *p, uint32_t v);

@@ -1,7 +1,7 @@
 #ifndef foodefshfoo
 #define foodefshfoo
 
-/* $Id: defs.h 1477 2007-05-09 19:45:54Z lennart $ */
+/* $Id: defs.h 1511 2007-08-12 15:41:45Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -333,12 +333,12 @@ enum {
     AVAHI_DNS_TYPE_MX = 0x0F,
     AVAHI_DNS_TYPE_TXT = 0x10,
     AVAHI_DNS_TYPE_AAAA = 0x1C,
-    AVAHI_DNS_TYPE_SRV = 0x21,
+    AVAHI_DNS_TYPE_SRV = 0x21
 };
 
 /** DNS record classes, see RFC 1035 */
 enum {
-    AVAHI_DNS_CLASS_IN = 0x01,          /**< Probably the only class we will ever use */
+    AVAHI_DNS_CLASS_IN = 0x01          /**< Probably the only class we will ever use */
 };
 
 /** @} */

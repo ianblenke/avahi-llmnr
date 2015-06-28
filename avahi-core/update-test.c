@@ -1,4 +1,4 @@
-/* $Id: update-test.c 1112 2006-01-27 20:32:46Z lennart $ */
+/* $Id: update-test.c 1509 2007-08-12 15:40:25Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -89,4 +89,5 @@ int main(AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
     poll_api->timeout_new(poll_api, avahi_elapse_time(&tv, 1000*10, 0), modify_txt_callback, server);
 
     avahi_simple_poll_loop(simple_poll);
+    return 0;
 }

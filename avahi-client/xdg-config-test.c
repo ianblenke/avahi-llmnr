@@ -1,4 +1,4 @@
-/* $Id: xdg-config-test.c 927 2005-11-04 01:05:48Z lennart $ */
+/* $Id: xdg-config-test.c 1509 2007-08-12 15:40:25Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -35,4 +35,6 @@ int main(AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
     
     if (f)
         fclose(f);
+
+    return 0;
 }

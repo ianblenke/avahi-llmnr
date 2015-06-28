@@ -1,4 +1,4 @@
-/* $Id: utf8-test.c 1201 2006-04-24 21:51:00Z lennart $ */
+/* $Id: utf8-test.c 1504 2007-08-12 14:03:27Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -34,4 +34,6 @@ int main(AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
     assert(avahi_utf8_valid("hallo"));
     assert(!avahi_utf8_valid("üxknürz"));
     assert(avahi_utf8_valid("Ã¼xknÃ¼rz"));
+    
+    return 0;
 }

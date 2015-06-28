@@ -1,4 +1,4 @@
-/* $Id: avahi-ui.c 1464 2007-05-08 23:59:43Z lennart $ */
+/* $Id: avahi-ui.c 1494 2007-07-10 22:39:30Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -23,6 +23,8 @@
 #include <config.h>
 #endif
 
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <string.h>
 #include <stdarg.h>
 #include <net/if.h>

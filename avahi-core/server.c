@@ -1,4 +1,4 @@
-/* $Id: server.c 1463 2007-05-08 22:50:58Z lennart $ */
+/* $Id: server.c 1513 2007-08-12 15:45:03Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -610,11 +610,9 @@ static void handle_query_packet(AvahiServer *s, AvahiDnsPacket *p, AvahiInterfac
                 goto fail;
             }
             
-            if (handle_conflict(s, i, record, unique)) {
-                avahi_response_scheduler_suppress(i->response_scheduler, record, a);
-                avahi_record_list_drop(s->record_list, record);
-                avahi_cache_stop_poof(i->cache, record, a);
-            }
+            avahi_response_scheduler_suppress(i->response_scheduler, record, a);
+            avahi_record_list_drop(s->record_list, record);
+            avahi_cache_stop_poof(i->cache, record, a);
             
             avahi_record_unref(record);
         }
@@ -1292,12 +1290,22 @@ int avahi_server_set_domain_name(AvahiServer *s, const char *domain_name) {
 }
 
 static int valid_server_config(const AvahiServerConfig *sc) {
+    AvahiStringList *l;
 
+    assert(sc);
+
+    if (sc->n_wide_area_servers > AVAHI_WIDE_AREA_SERVERS_MAX)
+        return AVAHI_ERR_INVALID_CONFIG;
+    
     if (sc->host_name && !avahi_is_valid_host_name(sc->host_name))
         return AVAHI_ERR_INVALID_HOST_NAME;
     
     if (sc->domain_name && !avahi_is_valid_domain_name(sc->domain_name))
         return AVAHI_ERR_INVALID_DOMAIN_NAME;
+
+    for (l = sc->browse_domains; l; l = l->next)
+        if (!avahi_is_valid_domain_name((char*) l->text))
+            return AVAHI_ERR_INVALID_DOMAIN_NAME;
 
     return AVAHI_OK;
 }
@@ -1738,4 +1746,20 @@ const AvahiServerConfig* avahi_server_get_config(AvahiServer *s) {
     assert(s);
 
     return &s->config;
+}
+
+/** Set the browsing domains */
+int avahi_server_set_browse_domains(AvahiServer *s, AvahiStringList *domains) {
+    AvahiStringList *l;
+    
+    assert(s);
+
+    for (l = s->config.browse_domains; l; l = l->next)
+        if (!avahi_is_valid_domain_name((char*) l->text))
+            return avahi_server_set_errno(s, AVAHI_ERR_INVALID_DOMAIN_NAME);
+    
+    avahi_string_list_free(s->config.browse_domains);
+    s->config.browse_domains = avahi_string_list_copy(domains);
+
+    return AVAHI_OK;
 }

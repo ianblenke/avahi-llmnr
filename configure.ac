@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1490 2007-06-22 16:31:14Z lennart $
+# $Id: configure.ac 1515 2007-08-12 16:08:21Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,20 +21,20 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.20],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.21],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
-AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:4:4])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [5:2:0])
-AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:2:2])
+AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:5:4])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [5:3:0])
+AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:3:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:1:0])
-AC_SUBST(LIBAVAHI_UI_VERSION_INFO, [0:1:0])
+AC_SUBST(LIBAVAHI_UI_VERSION_INFO, [0:2:0])
 
 # Do not touch these, since they we took this version-info from upstream HOWL/Bonjour
 AC_SUBST(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO, [1:0:0])
@@ -341,7 +341,7 @@ AC_HEADER_SYS_WAIT
  # Solaris stuff 
  AC_SEARCH_LIBS([inet_ntop],[nsl]) 
  AC_SEARCH_LIBS([recv],[socket]) 
- AC_CHECK_DECL([CMSG_SPACE],,CFLAGS="$CFLAGS -D_XOPEN_SOURCE=600 -D__EXTENSIONS__") 
+ AC_CHECK_DECL([CMSG_SPACE],,CFLAGS="$CFLAGS -D_XOPEN_SOURCE=500 -D__EXTENSIONS__") 
 
 # Checks for library functions.
 AC_FUNC_MEMCMP
@@ -382,6 +382,15 @@ AM_CONDITIONAL(HAVE_INOTIFY, test "x$have_inotify" = "xyes")
 
 if test "x$have_inotify" = "xyes" ; then
    AC_DEFINE([HAVE_INOTIFY], 1, [Enable Linux inotify() usage])
+fi
+
+have_kqueue=yes
+AC_CHECK_FUNCS([kqueue],,have_kqueue=no)
+
+AM_CONDITIONAL(HAVE_KQUEUE, test "x$have_kqueue" = "xyes")
+
+if test "x$have_kqueue" = "xyes" ; then
+    AC_DEFINE([HAVE_KQUEUE], 1, [Enable BSD kqueue() usage])
 fi
 
 # Check for pkg-config manually first, as if its not installed the
