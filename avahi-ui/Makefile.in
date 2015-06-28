@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1435 2007-04-17 11:35:15Z lennart $
+# $Id: Makefile.am 1457 2007-05-08 21:57:32Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -63,8 +63,8 @@ host_triplet = @host@
 @HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@@HAVE_GTK_TRUE@am__append_3 = -lgdbm
 @HAVE_DBM_TRUE@@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_4 = ../avahi-utils/stdb.h ../avahi-utils/stdb.c
 @HAVE_DBM_TRUE@@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_5 = -DDATABASE_FILE=\"$(pkgdatadir)/service-types.db\"
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@bin_PROGRAMS = zssh$(EXEEXT)
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_6 = zssh.desktop zvnc.desktop
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@bin_PROGRAMS = bssh$(EXEEXT)
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_6 = bssh.desktop bvnc.desktop
 subdir = avahi-ui
 DIST_COMMON = $(am__avahiinclude_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -107,10 +107,10 @@ libavahi_ui_la_OBJECTS = $(am_libavahi_ui_la_OBJECTS)
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	$(libdir)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am__zssh_SOURCES_DIST = zssh.c
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am_zssh_OBJECTS = zssh-zssh.$(OBJEXT)
-zssh_OBJECTS = $(am_zssh_OBJECTS)
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@zssh_DEPENDENCIES =  \
+am__bssh_SOURCES_DIST = bssh.c
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am_bssh_OBJECTS = bssh-bssh.$(OBJEXT)
+bssh_OBJECTS = $(am_bssh_OBJECTS)
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@bssh_DEPENDENCIES =  \
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	$(am__DEPENDENCIES_1) \
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	../avahi-client/libavahi-client.la \
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	../avahi-common/libavahi-common.la \
@@ -126,9 +126,9 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libavahi_ui_la_SOURCES) $(zssh_SOURCES)
+SOURCES = $(libavahi_ui_la_SOURCES) $(bssh_SOURCES)
 DIST_SOURCES = $(am__libavahi_ui_la_SOURCES_DIST) \
-	$(am__zssh_SOURCES_DIST)
+	$(am__bssh_SOURCES_DIST)
 desktopDATA_INSTALL = $(INSTALL_DATA)
 DATA = $(desktop_DATA)
 am__avahiinclude_HEADERS_DIST = avahi-ui.h
@@ -425,7 +425,7 @@ target_alias = @target_alias@
 AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")'
 desktopdir = $(datadir)/applications
 desktop_DATA = $(am__append_6)
-EXTRA_DIST = zssh.desktop.in zvnc.desktop.in
+EXTRA_DIST = bssh.desktop.in bvnc.desktop.in
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@avahiincludedir = $(includedir)/avahi-ui
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@avahiinclude_HEADERS = \
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	avahi-ui.h
@@ -445,9 +445,9 @@ EXTRA_DIST = zssh.desktop.in zvnc.desktop.in
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	../avahi-glib/libavahi-glib.la \
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	$(GTK20_LIBS) $(am__append_3)
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@libavahi_ui_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info $(LIBAVAHI_UI_VERSION_INFO)
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@zssh_SOURCES = zssh.c
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@zssh_CFLAGS = $(AM_CFLAGS) $(GTK20_CFLAGS)
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@zssh_LDADD = $(AM_LDADD) $(GTK20_LIBS) ../avahi-client/libavahi-client.la ../avahi-common/libavahi-common.la libavahi-ui.la
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@bssh_SOURCES = bssh.c
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@bssh_CFLAGS = $(AM_CFLAGS) $(GTK20_CFLAGS)
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@bssh_LDADD = $(AM_LDADD) $(GTK20_LIBS) ../avahi-client/libavahi-client.la ../avahi-common/libavahi-common.la libavahi-ui.la
 CLEANFILES = $(desktop_DATA)
 all: all-am
 
@@ -539,9 +539,9 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-zssh$(EXEEXT): $(zssh_OBJECTS) $(zssh_DEPENDENCIES) 
-	@rm -f zssh$(EXEEXT)
-	$(LINK) $(zssh_LDFLAGS) $(zssh_OBJECTS) $(zssh_LDADD) $(LIBS)
+bssh$(EXEEXT): $(bssh_OBJECTS) $(bssh_DEPENDENCIES) 
+	@rm -f bssh$(EXEEXT)
+	$(LINK) $(bssh_LDFLAGS) $(bssh_OBJECTS) $(bssh_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -549,9 +549,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bssh-bssh.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_ui_la-avahi-ui.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_ui_la-stdb.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zssh-zssh.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -588,19 +588,19 @@ libavahi_ui_la-stdb.lo: ../avahi-utils/stdb.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libavahi_ui_la_CFLAGS) $(CFLAGS) -c -o libavahi_ui_la-stdb.lo `test -f '../avahi-utils/stdb.c' || echo '$(srcdir)/'`../avahi-utils/stdb.c
 
-zssh-zssh.o: zssh.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(zssh_CFLAGS) $(CFLAGS) -MT zssh-zssh.o -MD -MP -MF "$(DEPDIR)/zssh-zssh.Tpo" -c -o zssh-zssh.o `test -f 'zssh.c' || echo '$(srcdir)/'`zssh.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/zssh-zssh.Tpo" "$(DEPDIR)/zssh-zssh.Po"; else rm -f "$(DEPDIR)/zssh-zssh.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='zssh.c' object='zssh-zssh.o' libtool=no @AMDEPBACKSLASH@
+bssh-bssh.o: bssh.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bssh_CFLAGS) $(CFLAGS) -MT bssh-bssh.o -MD -MP -MF "$(DEPDIR)/bssh-bssh.Tpo" -c -o bssh-bssh.o `test -f 'bssh.c' || echo '$(srcdir)/'`bssh.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/bssh-bssh.Tpo" "$(DEPDIR)/bssh-bssh.Po"; else rm -f "$(DEPDIR)/bssh-bssh.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bssh.c' object='bssh-bssh.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(zssh_CFLAGS) $(CFLAGS) -c -o zssh-zssh.o `test -f 'zssh.c' || echo '$(srcdir)/'`zssh.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bssh_CFLAGS) $(CFLAGS) -c -o bssh-bssh.o `test -f 'bssh.c' || echo '$(srcdir)/'`bssh.c
 
-zssh-zssh.obj: zssh.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(zssh_CFLAGS) $(CFLAGS) -MT zssh-zssh.obj -MD -MP -MF "$(DEPDIR)/zssh-zssh.Tpo" -c -o zssh-zssh.obj `if test -f 'zssh.c'; then $(CYGPATH_W) 'zssh.c'; else $(CYGPATH_W) '$(srcdir)/zssh.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/zssh-zssh.Tpo" "$(DEPDIR)/zssh-zssh.Po"; else rm -f "$(DEPDIR)/zssh-zssh.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='zssh.c' object='zssh-zssh.obj' libtool=no @AMDEPBACKSLASH@
+bssh-bssh.obj: bssh.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bssh_CFLAGS) $(CFLAGS) -MT bssh-bssh.obj -MD -MP -MF "$(DEPDIR)/bssh-bssh.Tpo" -c -o bssh-bssh.obj `if test -f 'bssh.c'; then $(CYGPATH_W) 'bssh.c'; else $(CYGPATH_W) '$(srcdir)/bssh.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/bssh-bssh.Tpo" "$(DEPDIR)/bssh-bssh.Po"; else rm -f "$(DEPDIR)/bssh-bssh.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bssh.c' object='bssh-bssh.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(zssh_CFLAGS) $(CFLAGS) -c -o zssh-zssh.obj `if test -f 'zssh.c'; then $(CYGPATH_W) 'zssh.c'; else $(CYGPATH_W) '$(srcdir)/zssh.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bssh_CFLAGS) $(CFLAGS) -c -o bssh-bssh.obj `if test -f 'bssh.c'; then $(CYGPATH_W) 'bssh.c'; else $(CYGPATH_W) '$(srcdir)/bssh.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -831,13 +831,13 @@ uninstall-am: uninstall-avahiincludeHEADERS uninstall-binPROGRAMS \
 
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@install-exec-local:
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	cd $(DESTDIR)/$(bindir) && \
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@		rm -f zvnc && \
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@		$(LN_S) zssh zvnc
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@		rm -f bvnc && \
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@		$(LN_S) bssh bvnc
 
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@zssh.desktop: zssh.desktop.in
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@bssh.desktop: bssh.desktop.in
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	sed -e 's,@bindir\@,$(bindir),g' $< > $@
 
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@zvnc.desktop: zvnc.desktop.in
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@bvnc.desktop: bvnc.desktop.in
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	sed -e 's,@bindir\@,$(bindir),g' $< > $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

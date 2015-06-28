@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1471 2007-05-09 14:30:19Z lennart $
+# $Id: Makefile.am 1251 2006-08-21 23:31:59Z lennart $
 
 # This file is part of avahi.
 #
@@ -55,25 +55,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@am__append_1 = \
-@BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@	avahi-browse.1 \
-@BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@	avahi-resolve.1 \
-@BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@	avahi-publish.1 \
-@BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@	avahi-set-host-name.1
-
-@BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_2 = \
-@BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	bssh.1
-
-@BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@@HAVE_PYTHON_TRUE@am__append_3 = \
-@BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-discover.1 \
-@BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-bookmarks.1
-
-@BUILD_MANPAGES_TRUE@@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_4 = \
-@BUILD_MANPAGES_TRUE@@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi-autoipd.8 \
-@BUILD_MANPAGES_TRUE@@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi-autoipd.action.8
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@am__append_5 = $(man_MANS)
-subdir = man
+subdir = avahi-ui-sharp
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
@@ -87,14 +69,15 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 SOURCES =
 DIST_SOURCES =
-man1dir = $(mandir)/man1
-am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)" \
-	"$(DESTDIR)$(man8dir)"
-man5dir = $(mandir)/man5
-man8dir = $(mandir)/man8
-NROFF = nroff
-MANS = $(man_MANS)
-DATA = $(noinst_DATA)
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+am__installdirs = "$(DESTDIR)$(monodocdir)"
+monodocDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(monodoc_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
@@ -379,53 +362,22 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-pkgsysconfdir = $(sysconfdir)/avahi
-servicedir = $(pkgsysconfdir)/services
-@BUILD_MANPAGES_TRUE@man_MANS = avahi-daemon.8 avahi-dnsconfd.8 \
-@BUILD_MANPAGES_TRUE@	avahi-daemon.conf.5 \
-@BUILD_MANPAGES_TRUE@	avahi-dnsconfd.action.8 avahi.service.5 \
-@BUILD_MANPAGES_TRUE@	avahi.hosts.5 $(am__append_1) \
-@BUILD_MANPAGES_TRUE@	$(am__append_2) $(am__append_3) \
-@BUILD_MANPAGES_TRUE@	$(am__append_4)
-@BUILD_MANPAGES_TRUE@noinst_DATA = \
-@BUILD_MANPAGES_TRUE@	avahi-browse.1.xml \
-@BUILD_MANPAGES_TRUE@	avahi-publish.1.xml \
-@BUILD_MANPAGES_TRUE@	avahi-resolve.1.xml \
-@BUILD_MANPAGES_TRUE@	avahi-set-host-name.1.xml \
-@BUILD_MANPAGES_TRUE@	avahi-daemon.8.xml \
-@BUILD_MANPAGES_TRUE@	avahi-discover.1.xml \
-@BUILD_MANPAGES_TRUE@	avahi-bookmarks.1.xml \
-@BUILD_MANPAGES_TRUE@	avahi-dnsconfd.8.xml \
-@BUILD_MANPAGES_TRUE@	avahi-daemon.conf.5.xml \
-@BUILD_MANPAGES_TRUE@	avahi-dnsconfd.action.8.xml \
-@BUILD_MANPAGES_TRUE@	avahi.service.5.xml \
-@BUILD_MANPAGES_TRUE@	avahi.hosts.5.xml \
-@BUILD_MANPAGES_TRUE@	avahi-autoipd.8.xml \
-@BUILD_MANPAGES_TRUE@	avahi-autoipd.action.8.xml \
-@BUILD_MANPAGES_TRUE@	bssh.1.xml
+ASSEMBLY = avahi-ui-sharp.dll
+CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb $(ASSEMBLY).config zssh.exe
+AVAHISOURCES = \
+	$(srcdir)/ServiceDialog.cs
 
-@BUILD_MANPAGES_TRUE@CLEANFILES = $(noinst_DATA) $(am__append_5)
 EXTRA_DIST = \
-	$(man_MANS) \
-	avahi-browse.1.xml.in \
-	avahi-publish.1.xml.in \
-	avahi-resolve.1.xml.in \
-	avahi-set-host-name.1.xml.in \
-	avahi-daemon.8.xml.in \
-	avahi-discover.1.xml.in \
-	avahi-bookmarks.1.xml.in \
-	avahi-dnsconfd.8.xml.in \
-	avahi-daemon.conf.5.xml.in \
-	avahi-dnsconfd.action.8.xml.in \
-	avahi.service.5.xml.in \
-	avahi.hosts.5.xml.in \
-	avahi-autoipd.action.8.xml.in \
-	avahi-autoipd.8.xml.in \
-	bssh.1.xml.in \
-	xmltoman.css \
-	xmltoman.xsl \
-	xmltoman.dtd
+	$(AVAHISOURCES)				\
+	$(srcdir)/avahi-ui-sharp-docs.source	\
+	$(srcdir)/en/*.xml			\
+	$(srcdir)/en/*/*.xml			\
+	$(srcdir)/gencfg.sh                     \
+	$(srcdir)/$(ASSEMBLY).config.in         \
+	$(srcdir)/zssh.cs
 
+@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@monodocdir = $(MONODOC_DIR)
+@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@monodoc_DATA = avahi-ui-sharp-docs.zip avahi-ui-sharp-docs.tree avahi-ui-sharp-docs.source
 all: all-am
 
 .SUFFIXES:
@@ -438,9 +390,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  man/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  avahi-ui-sharp/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  man/Makefile
+	  $(AUTOMAKE) --foreign  avahi-ui-sharp/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -468,140 +420,22 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-install-man1: $(man1_MANS) $(man_MANS)
+install-monodocDATA: $(monodoc_DATA)
 	@$(NORMAL_INSTALL)
-	test -z "$(man1dir)" || $(mkdir_p) "$(DESTDIR)$(man1dir)"
-	@list='$(man1_MANS) $(dist_man1_MANS) $(nodist_man1_MANS)'; \
-	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
-	for i in $$l2; do \
-	  case "$$i" in \
-	    *.1*) list="$$list $$i" ;; \
-	  esac; \
-	done; \
-	for i in $$list; do \
-	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
-	  else file=$$i; fi; \
-	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
-	  case "$$ext" in \
-	    1*) ;; \
-	    *) ext='1' ;; \
-	  esac; \
-	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
-	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
-	  echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man1dir)/$$inst'"; \
-	  $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man1dir)/$$inst"; \
+	test -z "$(monodocdir)" || $(mkdir_p) "$(DESTDIR)$(monodocdir)"
+	@list='$(monodoc_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(monodocDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(monodocdir)/$$f'"; \
+	  $(monodocDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(monodocdir)/$$f"; \
 	done
-uninstall-man1:
+
+uninstall-monodocDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(man1_MANS) $(dist_man1_MANS) $(nodist_man1_MANS)'; \
-	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
-	for i in $$l2; do \
-	  case "$$i" in \
-	    *.1*) list="$$list $$i" ;; \
-	  esac; \
-	done; \
-	for i in $$list; do \
-	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
-	  case "$$ext" in \
-	    1*) ;; \
-	    *) ext='1' ;; \
-	  esac; \
-	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
-	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
-	  echo " rm -f '$(DESTDIR)$(man1dir)/$$inst'"; \
-	  rm -f "$(DESTDIR)$(man1dir)/$$inst"; \
-	done
-install-man5: $(man5_MANS) $(man_MANS)
-	@$(NORMAL_INSTALL)
-	test -z "$(man5dir)" || $(mkdir_p) "$(DESTDIR)$(man5dir)"
-	@list='$(man5_MANS) $(dist_man5_MANS) $(nodist_man5_MANS)'; \
-	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
-	for i in $$l2; do \
-	  case "$$i" in \
-	    *.5*) list="$$list $$i" ;; \
-	  esac; \
-	done; \
-	for i in $$list; do \
-	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
-	  else file=$$i; fi; \
-	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
-	  case "$$ext" in \
-	    5*) ;; \
-	    *) ext='5' ;; \
-	  esac; \
-	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
-	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
-	  echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man5dir)/$$inst'"; \
-	  $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man5dir)/$$inst"; \
-	done
-uninstall-man5:
-	@$(NORMAL_UNINSTALL)
-	@list='$(man5_MANS) $(dist_man5_MANS) $(nodist_man5_MANS)'; \
-	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
-	for i in $$l2; do \
-	  case "$$i" in \
-	    *.5*) list="$$list $$i" ;; \
-	  esac; \
-	done; \
-	for i in $$list; do \
-	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
-	  case "$$ext" in \
-	    5*) ;; \
-	    *) ext='5' ;; \
-	  esac; \
-	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
-	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
-	  echo " rm -f '$(DESTDIR)$(man5dir)/$$inst'"; \
-	  rm -f "$(DESTDIR)$(man5dir)/$$inst"; \
-	done
-install-man8: $(man8_MANS) $(man_MANS)
-	@$(NORMAL_INSTALL)
-	test -z "$(man8dir)" || $(mkdir_p) "$(DESTDIR)$(man8dir)"
-	@list='$(man8_MANS) $(dist_man8_MANS) $(nodist_man8_MANS)'; \
-	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
-	for i in $$l2; do \
-	  case "$$i" in \
-	    *.8*) list="$$list $$i" ;; \
-	  esac; \
-	done; \
-	for i in $$list; do \
-	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
-	  else file=$$i; fi; \
-	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
-	  case "$$ext" in \
-	    8*) ;; \
-	    *) ext='8' ;; \
-	  esac; \
-	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
-	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
-	  echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man8dir)/$$inst'"; \
-	  $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man8dir)/$$inst"; \
-	done
-uninstall-man8:
-	@$(NORMAL_UNINSTALL)
-	@list='$(man8_MANS) $(dist_man8_MANS) $(nodist_man8_MANS)'; \
-	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
-	for i in $$l2; do \
-	  case "$$i" in \
-	    *.8*) list="$$list $$i" ;; \
-	  esac; \
-	done; \
-	for i in $$list; do \
-	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
-	  case "$$ext" in \
-	    8*) ;; \
-	    *) ext='8' ;; \
-	  esac; \
-	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
-	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
-	  echo " rm -f '$(DESTDIR)$(man8dir)/$$inst'"; \
-	  rm -f "$(DESTDIR)$(man8dir)/$$inst"; \
+	@list='$(monodoc_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(monodocdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(monodocdir)/$$f"; \
 	done
 tags: TAGS
 TAGS:
@@ -611,6 +445,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
+	$(mkdir_p) $(distdir)/$(srcdir) $(distdir)/$(srcdir)/en $(distdir)/$(srcdir)/en/*
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -639,9 +474,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(MANS) $(DATA)
+all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)" "$(DESTDIR)$(man8dir)"; do \
+	for dir in "$(DESTDIR)$(monodocdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -669,7 +504,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@HAVE_DBUS_FALSE@install-exec-local:
+@HAVE_DBUS_FALSE@install-data-hook:
+@HAVE_MONO_FALSE@install-data-hook:
+@HAVE_DBUS_FALSE@uninstall-hook:
+@HAVE_MONO_FALSE@uninstall-hook:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool mostlyclean-am
@@ -688,13 +526,15 @@ info: info-am
 
 info-am:
 
-install-data-am: install-man
+install-data-am: install-monodocDATA
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 
-install-exec-am: install-exec-local
+install-exec-am:
 
 install-info: install-info-am
 
-install-man: install-man1 install-man5 install-man8
+install-man:
 
 installcheck-am:
 
@@ -714,154 +554,46 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-info-am uninstall-man
-
-uninstall-man: uninstall-man1 uninstall-man5 uninstall-man8
+uninstall-am: uninstall-info-am uninstall-monodocDATA
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-exec install-exec-am \
-	install-exec-local install-info install-info-am install-man \
-	install-man1 install-man5 install-man8 install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
-	uninstall-info-am uninstall-man uninstall-man1 uninstall-man5 \
-	uninstall-man8
+	install-data install-data-am install-data-hook install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-monodocDATA install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am uninstall uninstall-am uninstall-hook \
+	uninstall-info-am uninstall-monodocDATA
 
 
-@BUILD_MANPAGES_TRUE@avahi-browse.1.xml: avahi-browse.1.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed -e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+$(ASSEMBLY): $(AVAHISOURCES)
+	mcs -keyfile:$(top_srcdir)/avahi-sharp/avahi.snk -target:library -out:$@ -debug $(AVAHISOURCES) -pkg:gtk-sharp-2.0 -r:$(top_builddir)/avahi-sharp/avahi-sharp.dll -r:Mono.Posix
 
-@BUILD_MANPAGES_TRUE@avahi-publish.1.xml: avahi-publish.1.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+$(ASSEMBLY).config: $(ASSEMBLY).config.in
+	$(srcdir)/gencfg.sh $(top_builddir)/avahi-common/libavahi-common.la < $< > $@
 
-@BUILD_MANPAGES_TRUE@avahi-resolve.1.xml: avahi-resolve.1.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+zssh.exe: $(srcdir)/zssh.cs
+	mcs -out:$@ $^ -r:./avahi-ui-sharp.dll -pkg:gtk-sharp-2.0 -r:Mono.Posix
 
-@BUILD_MANPAGES_TRUE@avahi-set-host-name.1.xml: avahi-set-host-name.1.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@all: $(ASSEMBLY) $(ASSEMBLY).config zssh.exe
 
-@BUILD_MANPAGES_TRUE@avahi-daemon.8.xml: avahi-daemon.8.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed -e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@servicedir\@,$(servicedir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@update-docs: $(ASSEMBLY)
+@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@	$(MONODOCER) -assembly:$(ASSEMBLY) -path:en
 
-@BUILD_MANPAGES_TRUE@avahi-discover.1.xml: avahi-discover.1.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@avahi-ui-sharp-docs.zip: avahi-ui-sharp-docs.tree
 
-@BUILD_MANPAGES_TRUE@avahi-bookmarks.1.xml: avahi-bookmarks.1.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@avahi-ui-sharp-docs.tree: $(srcdir)/en/*/*
+@HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@	$(MDASSEMBLER) --out avahi-ui-sharp-docs --ecma $(srcdir)/en
 
-@BUILD_MANPAGES_TRUE@avahi-dnsconfd.8.xml: avahi-dnsconfd.8.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@install-data-hook: $(ASSEMBLY)
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@	$(GACUTIL) /i $(ASSEMBLY) /package avahi-ui-sharp /gacdir $(libdir) /root $(DESTDIR)$(libdir)
 
-@BUILD_MANPAGES_TRUE@avahi-daemon.conf.5.xml: avahi-daemon.conf.5.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
-
-@BUILD_MANPAGES_TRUE@avahi-dnsconfd.action.8.xml: avahi-dnsconfd.action.8.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
-
-@BUILD_MANPAGES_TRUE@avahi.service.5.xml: avahi.service.5.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@servicedir\@,$(servicedir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
-
-@BUILD_MANPAGES_TRUE@avahi.hosts.5.xml: avahi.hosts.5.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
-
-@BUILD_MANPAGES_TRUE@avahi-autoipd.action.8.xml: avahi-autoipd.action.8.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
-
-@BUILD_MANPAGES_TRUE@avahi-autoipd.8.xml: avahi-autoipd.8.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
-
-@BUILD_MANPAGES_TRUE@bssh.1.xml: bssh.1.xml.in Makefile
-@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
-@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
-@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-browse.1: avahi-browse.1.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-publish.1: avahi-publish.1.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-resolve.1: avahi-resolve.1.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-set-host-name.1: avahi-set-host-name.1.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-daemon.8: avahi-daemon.8.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-discover.1: avahi-discover.1.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-bookmarks.1: avahi-bookmarks.1.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-dnsconfd.8: avahi-dnsconfd.8.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-daemon.conf.5: avahi-daemon.conf.5.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-dnsconfd.action.8: avahi-dnsconfd.action.8.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi.service.5: avahi.service.5.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi.hosts.5: avahi.hosts.5.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-autoipd.action.8: avahi-autoipd.action.8.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-autoipd.8: avahi-autoipd.8.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@bssh.1: bssh.1.xml Makefile
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
-
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@xmllint: $(noinst_DATA)
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	for f in $(noinst_DATA) ; do \
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@			xmllint --noout --valid "$$f" || exit 1 ; \
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	done
-
-@HAVE_DBUS_TRUE@install-exec-local:
-@HAVE_DBUS_TRUE@	mkdir -p $(DESTDIR)/$(mandir)/man1 && \
-@HAVE_DBUS_TRUE@		cd $(DESTDIR)/$(mandir)/man1 && \
-@HAVE_DBUS_TRUE@		rm -f avahi-resolve-host-name.1 avahi-resolve-address.1 avahi-browse-domains.1 avahi-publish-address.1 avahi-publish-service.1 && \
-@HAVE_DBUS_TRUE@		$(LN_S) avahi-resolve.1 avahi-resolve-host-name.1 && \
-@HAVE_DBUS_TRUE@		$(LN_S) avahi-resolve.1 avahi-resolve-address.1 && \
-@HAVE_DBUS_TRUE@		$(LN_S) avahi-browse.1 avahi-browse-domains.1 && \
-@HAVE_DBUS_TRUE@		$(LN_S) avahi-publish.1 avahi-publish-address.1 && \
-@HAVE_DBUS_TRUE@                $(LN_S) avahi-publish.1 avahi-publish-service.1 && \
-@HAVE_DBUS_TRUE@                $(LN_S) bssh.1 bvnc.1
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@uninstall-hook: $(ASSEMBLY)
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@	$(GACUTIL) /u avahi-ui-sharp /package avahi-ui-sharp /gacdir $(libdir) /root $(DESTDIR)$(libdir)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

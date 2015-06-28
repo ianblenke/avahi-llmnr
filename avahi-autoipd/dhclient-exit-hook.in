@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: dhclient-exit-hook.in 1313 2006-09-02 16:35:18Z lennart $
+# $Id: dhclient-exit-hook.in 1443 2007-04-19 17:56:30Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -23,11 +23,11 @@ case "$reason" in
     MEDIUM|ARPCHECK|ARPSEND|NBI)
         ;;
 
-    PREINIT|BOUND|RENEW|REBIND|REBOOT|STOP)
+    PREINIT|BOUND|RENEW|REBIND|REBOOT|STOP|RELEASE)
         # Stopping avahi-autoipd is left for the enter hook
         ;;
     
-    EXPIRE|FAIL|RELEASE|TIMEOUT)
+    EXPIRE|FAIL|TIMEOUT)
         @sbindir@/avahi-autoipd -wD $interface 2> /dev/null
         ;;
 esac

@@ -2,7 +2,7 @@
 <!DOCTYPE manpage SYSTEM "xmltoman.dtd">
 <?xml-stylesheet type="text/xsl" href="xmltoman.xsl" ?>
 
-<!-- $Id: avahi-daemon.conf.5.xml.in 1366 2007-01-05 22:19:28Z lennart $ -->
+<!-- $Id: avahi-daemon.conf.5.xml.in 1463 2007-05-08 22:50:58Z lennart $ -->
 
 <!-- 
   This file is part of avahi.
@@ -165,7 +165,7 @@
         which is chosen randomly on daemon startup. This can be used
         to detect if two services on two different
         interfaces/protocols are actually identical. Defaults to
-        "yes".</p>
+        "no".</p>
       </option>
 
       <option>

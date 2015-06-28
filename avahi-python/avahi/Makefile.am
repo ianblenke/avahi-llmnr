@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1401 2007-04-12 16:50:00Z lennart $
+# $Id: Makefile.am 1451 2007-04-21 18:48:27Z lennart $
 
 # This file is part of avahi.
 #
@@ -25,7 +25,7 @@ avahidir = $(pythondir)/avahi
 
 
 if HAVE_GDBM
-avahi_SCRIPTS = ServiceTypeDatabase.py
+nodist_avahi_SCRIPTS = ServiceTypeDatabase.py
 
 ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
 	sed -e 's,@PYTHON\@,$(PYTHON),g' \
@@ -38,7 +38,7 @@ ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
 endif
 
 if HAVE_DBM
-avahi_SCRIPTS = ServiceTypeDatabase.py
+nodist_avahi_SCRIPTS = ServiceTypeDatabase.py
 
 ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
 	sed -e 's,@PYTHON\@,$(PYTHON),g' \
@@ -62,5 +62,3 @@ endif
 endif
 
 CLEANFILES=*.pyc *.pyo ServiceTypeDatabase.py
-
-

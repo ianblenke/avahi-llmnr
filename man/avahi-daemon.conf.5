@@ -36,7 +36,7 @@ avahi-daemon.conf \- avahi-daemon configuration file
 .TP
 \fBdisable-user-service-publishing=\f1 Takes a boolean value ("yes" or "no"). If set to "yes", Avahi will still publish address records and suchlike but will not allow user applications to publish services. Use this is a security measure. This option defaults to "no"
 .TP
-\fBadd-service-cookie=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" an implicit TXT entry will be added to all locally registered services, containing a cookie value which is chosen randomly on daemon startup. This can be used to detect if two services on two different interfaces/protocols are actually identical. Defaults to "yes".
+\fBadd-service-cookie=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" an implicit TXT entry will be added to all locally registered services, containing a cookie value which is chosen randomly on daemon startup. This can be used to detect if two services on two different interfaces/protocols are actually identical. Defaults to "no".
 .TP
 \fBpublish-addresses=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" avahi-daemon will register mDNS address records for all local IP addresses. Unless you want to use avahi-daemon exclusively for browsing it's recommended to enable this. If you plan to register local services you need to enable this option. Defaults to "yes".
 .TP

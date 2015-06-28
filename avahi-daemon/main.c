@@ -1,4 +1,4 @@
-/* $Id: main.c 1426 2007-04-15 00:34:30Z lennart $ */
+/* $Id: main.c 1470 2007-05-09 13:09:09Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -42,10 +42,12 @@
 #include <sys/resource.h>
 #include <sys/socket.h>
 
+#ifdef HAVE_INOTIFY
 #ifdef HAVE_SYS_INOTIFY_H
 #include <sys/inotify.h>
 #else
 #include "inotify-nosys.h"
+#endif
 #endif
 
 #include <libdaemon/dfork.h>
@@ -675,8 +677,16 @@ static void add_inotify_watches(void) {
     c = config.use_chroot;
 #endif
     
-    inotify_add_watch(inotify_fd, c ? "/services" : AVAHI_SERVICE_DIR, IN_CLOSE_WRITE|IN_DELETE|IN_DELETE_SELF|IN_MOVED_FROM|IN_MOVED_TO|IN_MOVE_SELF|IN_ONLYDIR);
-    inotify_add_watch(inotify_fd, c ? "/" : AVAHI_CONFIG_DIR, IN_CLOSE_WRITE|IN_DELETE|IN_DELETE_SELF|IN_MOVED_FROM|IN_MOVED_TO|IN_MOVE_SELF|IN_ONLYDIR);
+    inotify_add_watch(inotify_fd, c ? "/services" : AVAHI_SERVICE_DIR, IN_CLOSE_WRITE|IN_DELETE|IN_DELETE_SELF|IN_MOVED_FROM|IN_MOVED_TO|IN_MOVE_SELF
+#ifdef IN_ONLYDIR
+                      |IN_ONLYDIR
+#endif
+    );
+    inotify_add_watch(inotify_fd, c ? "/" : AVAHI_CONFIG_DIR, IN_CLOSE_WRITE|IN_DELETE|IN_DELETE_SELF|IN_MOVED_FROM|IN_MOVED_TO|IN_MOVE_SELF
+#ifdef IN_ONLYDIR
+                      |IN_ONLYDIR
+#endif
+    );
 }
 
 #endif

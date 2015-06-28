@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1430 2007-04-17 10:29:49Z lennart $
+# $Id: Makefile.am 1477 2007-05-09 19:45:54Z lennart $
 
 # This file is part of avahi.
 #
@@ -45,6 +45,7 @@ EXTRA_DIST = \
 	avahi-qt3.pc.in \
 	avahi-qt4.pc.in \
 	avahi-sharp.pc.in \
+	avahi-ui-sharp.pc.in \
 	avahi-compat-libdns_sd.pc.in \
 	avahi-compat-howl.pc.in \
 	avahi-ui.pc.in
@@ -70,20 +71,20 @@ SUBDIRS = \
 	avahi-compat-libdns_sd \
 	avahi-compat-howl \
 	avahi-autoipd \
-	avahi-ui
+	avahi-ui \
+	avahi-ui-sharp
 
 DX_INPUT = \
 	$(srcdir)/avahi-common/address.h \
+	$(srcdir)/avahi-common/malloc.h \
 	$(srcdir)/avahi-common/strlst.h \
 	$(srcdir)/avahi-common/alternative.h \
 	$(srcdir)/avahi-common/defs.h \
 	$(srcdir)/avahi-common/error.h \
-	$(srcdir)/avahi-common/malloc.h \
 	$(srcdir)/avahi-common/domain.h \
 	$(srcdir)/avahi-common/watch.h \
 	$(srcdir)/avahi-common/simple-watch.h \
-	$(srcdir)/avahi-common/thread-watch.h \
-	$(srcdir)/avahi-common/timeval.h
+	$(srcdir)/avahi-common/thread-watch.h
 
 DX_EXAMPLE_PATH = $(srcdir)/examples
 DX_EXAMPLE_PATTERNS = *.c
@@ -181,14 +182,19 @@ endif
 
 if HAVE_MONO
 
-pkgconfig_DATA += avahi-sharp.pc
+pkgconfig_DATA += avahi-sharp.pc avahi-ui-sharp.pc
 
 avahi-sharp.pc: avahi-sharp.pc.in
 	sed -e 's,@prefix\@,$(prefix),g' \
 	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' \
 	    -e 's,@libdir\@,$(libdir),g' $< > $@
 
-CLEANFILES += avahi-sharp.pc
+avahi-ui-sharp.pc: avahi-ui-sharp.pc.in
+	sed -e 's,@prefix\@,$(prefix),g' \
+	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' \
+	    -e 's,@libdir\@,$(libdir),g' $< > $@
+
+CLEANFILES += avahi-sharp.pc avahi-ui-sharp.pc
 
 endif
 

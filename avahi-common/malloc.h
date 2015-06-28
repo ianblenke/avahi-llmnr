@@ -1,7 +1,7 @@
 #ifndef foomallochfoo
 #define foomallochfoo
 
-/* $Id: malloc.h 1053 2006-01-04 12:45:45Z lennart $ */
+/* $Id: malloc.h 1477 2007-05-09 19:45:54Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -88,8 +88,10 @@ void avahi_set_allocator(const AvahiAllocator *a);
 /** Like sprintf() but store the result in a freshly allocated buffer. Free this with avahi_free() */
 char *avahi_strdup_printf(const char *fmt, ... ) AVAHI_GCC_PRINTF_ATTR12;
 
+/** \cond fulldocs */
 /** Same as avahi_strdup_printf() but take a va_list instead of varargs */
 char *avahi_strdup_vprintf(const char *fmt, va_list ap);
+/** \endcond */
 
 AVAHI_C_DECL_END
 

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1404 2007-04-12 19:14:34Z lennart $
+# $Id: Makefile.am 1451 2007-04-21 18:48:27Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -92,8 +92,8 @@ avahi_autoipd_OBJECTS = $(am_avahi_autoipd_OBJECTS)
 am__DEPENDENCIES_1 =
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_autoipd_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_1)
-pkgsysconfSCRIPT_INSTALL = $(INSTALL_SCRIPT)
-SCRIPTS = $(noinst_SCRIPTS) $(pkgsysconf_SCRIPTS)
+nodist_pkgsysconfSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+SCRIPTS = $(nodist_pkgsysconf_SCRIPTS) $(noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -418,12 +418,12 @@ target_alias = @target_alias@
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(AM_LDADD) \
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(LIBDAEMON_LIBS) \
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_2)
-@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@pkgsysconf_SCRIPTS = avahi-autoipd.action
+@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@nodist_pkgsysconf_SCRIPTS = avahi-autoipd.action
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_DEBIAN_TRUE@noinst_SCRIPTS = dhclient-enter-hook dhclient-exit-hook
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_DEBIAN_TRUE@BUILD = dhclient-exit-hook dhclient-enter-hook
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_DEBIAN_TRUE@dhcliententerdir = $(sysconfdir)/dhcp3/dhclient-enter-hooks.d
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_DEBIAN_TRUE@dhclientexitdir = $(sysconfdir)/dhcp3/dhclient-exit-hooks.d
-EXTRA_DIST = avahi-autoipd.action dhclient-enter-hook.in dhclient-exit-hook.in avahi-autoipd.action.linux avahi-autoipd.action.bsd
+EXTRA_DIST = dhclient-enter-hook.in dhclient-exit-hook.in avahi-autoipd.action.linux avahi-autoipd.action.bsd
 CLEANFILES = dhclient-enter-hook dhclient-exit-hook avahi-autoipd.action
 all: all-am
 
@@ -489,21 +489,21 @@ clean-sbinPROGRAMS:
 avahi-autoipd$(EXEEXT): $(avahi_autoipd_OBJECTS) $(avahi_autoipd_DEPENDENCIES) 
 	@rm -f avahi-autoipd$(EXEEXT)
 	$(LINK) $(avahi_autoipd_LDFLAGS) $(avahi_autoipd_OBJECTS) $(avahi_autoipd_LDADD) $(LIBS)
-install-pkgsysconfSCRIPTS: $(pkgsysconf_SCRIPTS)
+install-nodist_pkgsysconfSCRIPTS: $(nodist_pkgsysconf_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(pkgsysconfdir)" || $(mkdir_p) "$(DESTDIR)$(pkgsysconfdir)"
-	@list='$(pkgsysconf_SCRIPTS)'; for p in $$list; do \
+	@list='$(nodist_pkgsysconf_SCRIPTS)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  if test -f $$d$$p; then \
 	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
-	    echo " $(pkgsysconfSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(pkgsysconfdir)/$$f'"; \
-	    $(pkgsysconfSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(pkgsysconfdir)/$$f"; \
+	    echo " $(nodist_pkgsysconfSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(pkgsysconfdir)/$$f'"; \
+	    $(nodist_pkgsysconfSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(pkgsysconfdir)/$$f"; \
 	  else :; fi; \
 	done
 
-uninstall-pkgsysconfSCRIPTS:
+uninstall-nodist_pkgsysconfSCRIPTS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(pkgsysconf_SCRIPTS)'; for p in $$list; do \
+	@list='$(nodist_pkgsysconf_SCRIPTS)'; for p in $$list; do \
 	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
 	  echo " rm -f '$(DESTDIR)$(pkgsysconfdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(pkgsysconfdir)/$$f"; \
@@ -771,7 +771,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-pkgsysconfSCRIPTS
+install-data-am: install-nodist_pkgsysconfSCRIPTS
 
 install-exec-am: install-sbinPROGRAMS
 	@$(NORMAL_INSTALL)
@@ -801,7 +801,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-info-am uninstall-pkgsysconfSCRIPTS \
+uninstall-am: uninstall-info-am uninstall-nodist_pkgsysconfSCRIPTS \
 	uninstall-sbinPROGRAMS
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
@@ -812,13 +812,13 @@ uninstall-am: uninstall-info-am uninstall-pkgsysconfSCRIPTS \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-exec \
 	install-exec-am install-exec-hook install-info install-info-am \
-	install-man install-pkgsysconfSCRIPTS install-sbinPROGRAMS \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am uninstall-hook \
-	uninstall-info-am uninstall-pkgsysconfSCRIPTS \
-	uninstall-sbinPROGRAMS
+	install-man install-nodist_pkgsysconfSCRIPTS \
+	install-sbinPROGRAMS install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-hook uninstall-info-am \
+	uninstall-nodist_pkgsysconfSCRIPTS uninstall-sbinPROGRAMS
 
 
 @ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@@TARGET_FREEBSD_TRUE@avahi-autoipd.action: avahi-autoipd.action.bsd
