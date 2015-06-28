@@ -1,4 +1,4 @@
-/* $Id: announce.c 1084 2006-01-17 12:25:54Z lennart $ */
+/* $Id: announce.c 1365 2007-01-05 22:18:34Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -498,7 +498,7 @@ void avahi_goodbye_interface(AvahiServer *s, AvahiInterface *i, int send_goodbye
     assert(i);
 
     if (send_goodbye)
-        if (avahi_interface_is_relevant(i)) {
+        if (i->announcing) {
             AvahiEntry *e;
             
             for (e = s->entries; e; e = e->entries_next)

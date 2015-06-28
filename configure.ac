@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1348 2006-12-28 16:32:11Z lathiat $
+# $Id: configure.ac 1367 2007-01-05 22:19:52Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,7 +21,7 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.16],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.17],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
@@ -29,12 +29,14 @@ AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
 AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:3:4])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [4:5:0])
-AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:1:2])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [5:0:0])
+AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:2:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:1:0])
-AC_SUBST(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO, [1:1:0])
+
+# Do not touch these, since they we took this version-info from upstream HOWL/Bonjour
+AC_SUBST(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO, [1:0:0])
 AC_SUBST(LIBAVAHI_COMPAT_HOWL_VERSION_INFO, [0:0:0])
 AC_SUBST(HOWL_COMPAT_VERSION, [0.9.8])
 
@@ -55,6 +57,16 @@ AC_PROG_GCC_TRADITIONAL
 
 # libtool stuff
 AC_PROG_LIBTOOL
+
+AC_CACHE_CHECK([whether the C++ compiler works], [avahi_cv_sys_cxx_works], [
+    AC_LANG_PUSH([C++])
+    AC_COMPILE_IFELSE([int main() { return 0; }], [avahi_cv_sys_cxx_works=yes],
+        [avahi_cv_sys_cxx_works=no])
+    AC_LANG_POP([C++])
+    ])
+[ if [ "x$avahi_cv_sys_cxx_works" = "xno" ]; then ]
+    AC_MSG_FAILURE([The C++ compiler does not work])
+[ fi ]
 
 ACX_PTHREAD(,AC_MSG_ERROR([Missing POSIX Threads support]))
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1248 2006-08-21 16:43:44Z lennart $
+# $Id: Makefile.am 1373 2007-01-06 16:45:34Z lennart $
 
 # This file is part of avahi.
 #
@@ -66,8 +66,8 @@ null_test_LDADD = $(AM_LDADD) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS) ../avahi-common/
 # licensing restrictions.
 
 libdns_sd-test: libdns_sd-test.c libdns_sd.la
-	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) $(PTHREAD_CFLAGS) -o libdns_sd-test.o -c libdns_sd-test.c 
-	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(PTHREAD_CFLAGS) -o libdns_sd-test libdns_sd-test.o $(PTHREAD_LIBS) ../avahi-common/libavahi-common.la libdns_sd.la 
+	$(LIBTOOL) --mode=compile $(CC) $(AM_CFLAGS) $(PTHREAD_CFLAGS) -o libdns_sd-test.o -c libdns_sd-test.c 
+	$(LIBTOOL) --mode=link $(CC) $(AM_CFLAGS) $(PTHREAD_CFLAGS) -o libdns_sd-test libdns_sd-test.o $(PTHREAD_LIBS) ../avahi-common/libavahi-common.la libdns_sd.la 
 
 CLEANFILES = libdns_sd-test.o libdns_sd-test
 

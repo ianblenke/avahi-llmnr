@@ -1,4 +1,4 @@
-/* $Id: dns.c 1342 2006-12-16 15:10:48Z lathiat $ */
+/* $Id: dns.c 1353 2006-12-29 12:50:03Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -400,6 +400,8 @@ static int consume_labels(AvahiDnsPacket *p, unsigned idx, char *ret_name, size_
         } else
             return -1;
     }
+
+    return -1;
 }
 
 int avahi_dns_packet_consume_name(AvahiDnsPacket *p, char *ret_name, size_t l) {

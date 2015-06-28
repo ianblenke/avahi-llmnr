@@ -1,4 +1,4 @@
-/* $Id: main.c 1234 2006-07-15 11:48:31Z lennart $ */
+/* $Id: main.c 1358 2006-12-31 16:52:13Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -419,7 +419,7 @@ static int parse_command_line(int argc, char *argv[]) {
                 command = DAEMON_CHECK;
                 break;
             default:
-                fprintf(stderr, "Invalid command line argument: %c\n", c);
+                fprintf(stderr, "Invalid command line argument: %s\n", argv[optind-1]);
                 return -1;
         }
     }

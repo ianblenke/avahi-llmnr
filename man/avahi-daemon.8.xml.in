@@ -2,7 +2,7 @@
 <!DOCTYPE manpage SYSTEM "xmltoman.dtd">
 <?xml-stylesheet type="text/xsl" href="xmltoman.xsl" ?>
 
-<!-- $Id: avahi-daemon.8.xml.in 1309 2006-09-02 13:48:59Z lennart $ -->
+<!-- $Id: avahi-daemon.8.xml.in 1375 2007-01-06 17:35:10Z lennart $ -->
 
 <!-- 
   This file is part of avahi.
@@ -160,6 +160,8 @@
 	  <p>
         <manref name="avahi-daemon.conf" section="5"/>, <manref name="avahi.hosts" section="5"/>, <manref name="avahi.service" section="5"/>, <manref name="avahi-dnsconfd" section="8"/>, <manref name="avahi-set-host-name" section="1"/>
 	  </p>
+
+      <p>http://avahi.org/wiki/AvahiAndUnicastDotLocal documents the problems when using Avahi in a unicast DNS zone .local.</p>
 	</section>
 	
 	<section name="Comments">

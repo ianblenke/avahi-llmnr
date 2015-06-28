@@ -1,4 +1,4 @@
-# $Id: Makefile.am 988 2005-11-16 22:34:12Z lennart $
+# $Id: Makefile.am 1368 2007-01-05 22:36:12Z lennart $
 
 # This file is part of avahi.
 #
@@ -34,11 +34,22 @@ if HAVE_PYTHON_DBUS
 if HAVE_PYGTK
 
 pythonscripts = \
-	avahi-bookmarks \
-	avahi-discover
+	avahi-bookmarks
 
 desktopdir = $(datadir)/applications
-desktop_DATA = avahi-discover.desktop
+desktop_DATA = 
+
+if HAVE_GDBM
+pythonscripts += \
+	avahi-discover
+desktop_DATA += avahi-discover.desktop
+endif
+
+if HAVE_DBM
+pythonscripts += \
+	avahi-discover
+desktop_DATA += avahi-discover.desktop
+endif
 
 avahi-discover.desktop: avahi-discover.desktop.in
 	sed -e 's,@bindir\@,$(bindir),g' $< > $@

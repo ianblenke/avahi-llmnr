@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1294 2006-08-31 15:48:34Z lennart $
+# $Id: Makefile.am 1364 2007-01-05 00:21:19Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -115,7 +115,7 @@ avahi_daemon_SOURCES += \
 avahi_daemon_LDADD += \
 	$(DBUS_LIBS)
 
-avahi_daemon_CFLAGS += $(DBUS_CFLAGS)
+avahi_daemon_CFLAGS += $(DBUS_CFLAGS) -DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS=\"$(DBUS_SYSTEM_BUS_DEFAULT_ADDRESS)\"
 
 dbusservice_DATA = avahi-dbus.conf
 

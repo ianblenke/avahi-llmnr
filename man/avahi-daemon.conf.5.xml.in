@@ -2,7 +2,7 @@
 <!DOCTYPE manpage SYSTEM "xmltoman.dtd">
 <?xml-stylesheet type="text/xsl" href="xmltoman.xsl" ?>
 
-<!-- $Id: avahi-daemon.conf.5.xml.in 1309 2006-09-02 13:48:59Z lennart $ -->
+<!-- $Id: avahi-daemon.conf.5.xml.in 1366 2007-01-05 22:19:28Z lennart $ -->
 
 <!-- 
   This file is part of avahi.
@@ -221,6 +221,22 @@
         <file>/etc/resolv.conf</file> in addition to those specified
         with <opt>publish-dns-servers</opt>. Send avahi-daemon a
         SIGHUP to have it reload this file. Defaults to "no".</p>
+      </option>
+
+      <option>
+        <p><opt>publish-aaaa-on-ipv4=</opt> Takes a boolean value
+        ("yes" or "no"). If set to "yes" avahi-daemon will publish an
+        IPv6 AAAA record via IPv4, i.e. the local IPv6 addresses can be
+        resolved using an IPv4 transport. Only useful when IPv4 is
+        enabled with <opt>use-ipv4=true</opt>. Defaults to "yes".</p>
+      </option>
+
+      <option>
+        <p><opt>publish-a-on-ipv6=</opt> Takes a boolean value
+        ("yes" or "no"). If set to "yes" avahi-daemon will publish an
+        IPv4 A record via IPv6, i.e. the local IPv4 addresses can be
+        resolved using an IPv6 transport. Only useful when IPv6 is
+        enabled with <opt>use-ipv6=true</opt>. Defaults to "no".</p>
       </option>
 
     </section>

@@ -1,4 +1,4 @@
-/* $Id: wide-area.c 1204 2006-04-24 21:54:09Z lennart $ */
+/* $Id: wide-area.c 1371 2007-01-06 16:10:47Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -579,8 +579,8 @@ AvahiWideAreaLookupEngine *avahi_wide_area_engine_new(AvahiServer *s) {
     e->cleanup_dead = 0;
 
     /* Create sockets */
-    e->fd_ipv4 = avahi_open_unicast_socket_ipv4();
-    e->fd_ipv6 = avahi_open_unicast_socket_ipv6();
+    e->fd_ipv4 = s->config.use_ipv4 ? avahi_open_unicast_socket_ipv4() : -1;
+    e->fd_ipv6 = s->config.use_ipv6 ? avahi_open_unicast_socket_ipv6() : -1;
 
     if (e->fd_ipv4 < 0 && e->fd_ipv6 < 0) {
         avahi_log_error(__FILE__": Failed to create wide area sockets: %s", strerror(errno));

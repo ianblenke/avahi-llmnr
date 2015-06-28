@@ -1,7 +1,7 @@
 #ifndef fooclientpublishhfoo
 #define fooclientpublishhfoo
 
-/* $Id: publish.h 1151 2006-02-20 16:21:29Z lennart $ */
+/* $Id: publish.h 1359 2006-12-31 17:13:39Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -53,7 +53,7 @@ typedef void (*AvahiEntryGroupCallback) (
 /** Create a new AvahiEntryGroup object */
 AvahiEntryGroup* avahi_entry_group_new(
     AvahiClient* c,
-    AvahiEntryGroupCallback callback /**< This callback is called whenever the state of this entry group changes. May not be NULL. */,
+    AvahiEntryGroupCallback callback /**< This callback is called whenever the state of this entry group changes. May not be NULL. Please note that this function is called for the first time from within the avahi_entry_group_new() context! Thus, in the callback you should not make use of global variables that are initialized only after your call to avahi_entry_group_new(). A common mistake is to store the AvahiEntryGroup pointer returned by avahi_entry_group_new() in a global variable and assume that this global variable already contains the valid pointer when the callback is called for the first time. A work-around for this is to always use the AvahiEntryGroup pointer passed to the callback function instead of the global pointer. */,
     void *userdata /**< This arbitrary user data pointer will be passed to the callback functon */);
 
 /** Clean up and free an AvahiEntryGroup object */

@@ -1,4 +1,4 @@
-/* $Id: client-browse-services.c 937 2005-11-08 21:56:28Z lennart $ */
+/* $Id: client-browse-services.c 1377 2007-01-30 06:38:07Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -146,7 +146,7 @@ static void client_callback(AvahiClient *c, AvahiClientState state, AVAHI_GCC_UN
     /* Called whenever the client or server state changes */
 
     if (state == AVAHI_CLIENT_FAILURE) {
-        fprintf(stderr, "Server connection failre: %s\n", avahi_strerror(avahi_client_errno(c)));
+        fprintf(stderr, "Server connection failure: %s\n", avahi_strerror(avahi_client_errno(c)));
         avahi_simple_poll_quit(simple_poll);
     }
 }

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1248 2006-08-21 16:43:44Z lennart $
+# $Id: Makefile.am 1373 2007-01-06 16:45:34Z lennart $
 
 # This file is part of avahi.
 #
@@ -878,8 +878,8 @@ uninstall-am: uninstall-avahi_compat_libdns_sdHEADERS \
 # licensing restrictions.
 
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@libdns_sd-test: libdns_sd-test.c libdns_sd.la
-@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) $(PTHREAD_CFLAGS) -o libdns_sd-test.o -c libdns_sd-test.c 
-@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(PTHREAD_CFLAGS) -o libdns_sd-test libdns_sd-test.o $(PTHREAD_LIBS) ../avahi-common/libavahi-common.la libdns_sd.la 
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	$(LIBTOOL) --mode=compile $(CC) $(AM_CFLAGS) $(PTHREAD_CFLAGS) -o libdns_sd-test.o -c libdns_sd-test.c 
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	$(LIBTOOL) --mode=link $(CC) $(AM_CFLAGS) $(PTHREAD_CFLAGS) -o libdns_sd-test libdns_sd-test.o $(PTHREAD_LIBS) ../avahi-common/libavahi-common.la libdns_sd.la 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

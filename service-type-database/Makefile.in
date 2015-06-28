@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1293 2006-08-31 15:14:22Z lennart $
+# $Id: Makefile.am 1380 2007-02-04 11:39:06Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -556,7 +556,8 @@ uninstall-am: uninstall-info-am uninstall-pkgdataDATA
 @HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	chmod +x $@
 
 @HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db: service-types build-db
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	$(PYTHON) build-db $(srcdir)/$< $@
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	$(PYTHON) build-db $< $@.coming
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	mv $@.coming $@
 
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@build-db: build-db.in
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' \
@@ -566,7 +567,8 @@ uninstall-am: uninstall-info-am uninstall-pkgdataDATA
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db.pag: service-types.db
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db.dir: service-types.db
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db: service-types build-db
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	$(PYTHON) build-db $(srcdir)/$< $@
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	$(PYTHON) build-db $< $@.coming
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	mv $@.coming $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

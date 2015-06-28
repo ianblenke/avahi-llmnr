@@ -1,4 +1,4 @@
-# $Id: service-types 1323 2006-09-12 13:58:17Z lennart $
+# $Id: service-types 1376 2007-01-21 10:28:59Z lathiat $
 
 # This file is part of avahi.
 #
@@ -134,3 +134,4 @@ _rtp._udp:RTP Realtime Streaming Server
 
 _svn._tcp:Subversion Revision Control
 
+_presence_olpc._tcp:OLPC Presence

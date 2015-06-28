@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 988 2005-11-16 22:34:12Z lennart $
+# $Id: Makefile.am 1368 2007-01-05 22:36:12Z lennart $
 
 # This file is part of avahi.
 #
@@ -56,6 +56,14 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@HAVE_GDBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@am__append_1 = \
+@HAVE_GDBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-discover
+
+@HAVE_GDBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@am__append_2 = avahi-discover.desktop
+@HAVE_DBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@am__append_3 = \
+@HAVE_DBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-discover
+
+@HAVE_DBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@am__append_4 = avahi-discover.desktop
 subdir = avahi-python
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -379,12 +387,12 @@ EXTRA_DIST = \
 	avahi-discover.desktop.in
 
 SUBDIRS = avahi
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@pythonscripts = \
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-bookmarks \
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-discover
-
+@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@pythonscripts = avahi-bookmarks \
+@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	$(am__append_1) \
+@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	$(am__append_3)
 @HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@desktopdir = $(datadir)/applications
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@desktop_DATA = avahi-discover.desktop
+@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@desktop_DATA = $(am__append_2) \
+@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	$(am__append_4)
 @HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@bin_SCRIPTS = $(pythonscripts)
 @HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@CLEANFILES = $(pythonscripts) $(desktop_DATA)
 all: all-recursive

@@ -1,4 +1,4 @@
-/* $Id: main.c 1320 2006-09-04 21:50:40Z lennart $ */
+/* $Id: main.c 1358 2006-12-31 16:52:13Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -1259,7 +1259,7 @@ static int parse_command_line(int argc, char *argv[]) {
 #endif
 
             default:
-                fprintf(stderr, "Invalid command line argument: %c\n", c);
+                fprintf(stderr, "Invalid command line argument: %s\n", argv[optind-1]);
                 return -1;
         }
     }

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1294 2006-08-31 15:48:34Z lennart $
+# $Id: Makefile.am 1364 2007-01-05 00:21:19Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -95,7 +95,7 @@ host_triplet = @host@
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_6 = \
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(DBUS_LIBS)
 
-@HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_7 = $(DBUS_CFLAGS)
+@HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_7 = $(DBUS_CFLAGS) -DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS=\"$(DBUS_SYSTEM_BUS_DEFAULT_ADDRESS)\"
 subdir = avahi-daemon
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/avahi-dbus.conf.in

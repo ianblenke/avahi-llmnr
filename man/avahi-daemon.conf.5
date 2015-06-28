@@ -49,6 +49,10 @@ avahi-daemon.conf \- avahi-daemon configuration file
 \fBpublish-dns-servers=\f1 Takes a comma seperated list of IP addresses for unicast DNS servers. You can use this to announce unicast DNS servers via mDNS. When used in conjunction with avahi-dnsconfd on the client side this allows DHCP-like configuration of unicast DNS servers.
 .TP
 \fBpublish-resolv-conf-dns-servers=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" avahi-daemon will publish the unicast DNS servers specified in \fI/etc/resolv.conf\f1 in addition to those specified with \fBpublish-dns-servers\f1. Send avahi-daemon a SIGHUP to have it reload this file. Defaults to "no".
+.TP
+\fBpublish-aaaa-on-ipv4=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" avahi-daemon will publish an IPv6 AAAA record via IPv4, i.e. the local IPv6 addresses can be resolved using an IPv4 transport. Only useful when IPv4 is enabled with \fBuse-ipv4=true\f1. Defaults to "yes".
+.TP
+\fBpublish-a-on-ipv6=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" avahi-daemon will publish an IPv4 A record via IPv6, i.e. the local IPv4 addresses can be resolved using an IPv6 transport. Only useful when IPv6 is enabled with \fBuse-ipv6=true\f1. Defaults to "no".
 .SH SECTION [REFLECTOR]
 .TP
 \fBenable-reflector=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" avahi-daemon will reflect incoming mDNS requests to all local network interfaces, effectively allowing clients to browse mDNS/DNS-SD services on all networks connected to the gateway. The gateway is somewhat intelligent and should work with all kinds of mDNS traffic, though some functionality is lost (specifically the unicast reply bit, which is used rarely anyway). Make sure to not run multiple reflectors between the same networks, this might cause them to play Ping Pong with mDNS packets. Defaults to "no".

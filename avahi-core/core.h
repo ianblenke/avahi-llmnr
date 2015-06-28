@@ -1,7 +1,7 @@
 #ifndef foocorehfoo
 #define foocorehfoo
 
-/* $Id: core.h 1151 2006-02-20 16:21:29Z lennart $ */
+/* $Id: core.h 1365 2007-01-05 22:18:34Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -63,6 +63,8 @@ typedef struct AvahiServerConfig {
     AvahiStringList *browse_domains;  /**< Additional browsing domains */
     int disable_publishing;           /**< Disable publishing of any record */
     int allow_point_to_point;         /**< Enable publishing on POINTOPOINT interfaces */
+    int publish_a_on_ipv6;            /**< Publish an IPv4 A RR on IPv6 sockets */
+    int publish_aaaa_on_ipv4;         /**< Publish an IPv4 A RR on IPv6 sockets */
 } AvahiServerConfig;
 
 /** Allocate a new mDNS responder object. */
@@ -147,6 +149,9 @@ uint32_t avahi_server_get_local_service_cookie(AvahiServer *s);
 
 /** Set the wide area DNS servers */
 int avahi_server_set_wide_area_servers(AvahiServer *s, const AvahiAddress *a, unsigned n);
+
+/** Return the current configuration of the server \since 0.6.17 */
+const AvahiServerConfig* avahi_server_get_config(AvahiServer *s);
 
 AVAHI_C_DECL_END
 
