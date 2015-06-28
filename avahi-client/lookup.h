@@ -1,7 +1,7 @@
 #ifndef fooclientlookuphfoo
 #define fooclientlookuphfoo
 
-/* $Id: lookup.h 986 2005-11-16 19:37:09Z lennart $ */
+/* $Id: lookup.h 1151 2006-02-20 16:21:29Z lennart $ */
 
 /***
   This file is part of avahi.

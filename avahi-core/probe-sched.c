@@ -1,4 +1,4 @@
-/* $Id: probe-sched.c 1084 2006-01-17 12:25:54Z lennart $ */
+/* $Id: probe-sched.c 1153 2006-02-22 22:52:33Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -302,7 +302,7 @@ static void elapse_callback(AVAHI_GCC_UNUSED AvahiTimeEvent *e, void* data) {
             continue;
 
         if (!avahi_dns_packet_append_record(p, pj->record, 0, 0)) {
-            avahi_log_warn("Bad probe size estimate!");
+/*             avahi_log_warn("Bad probe size estimate!"); */
 
             /* Unmark all following jobs */
             for (; pj; pj = pj->jobs_next)

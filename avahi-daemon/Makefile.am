@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1133 2006-02-11 15:12:48Z lathiat $
+# $Id: Makefile.am 1152 2006-02-20 22:21:40Z sebest $
 #
 # This file is part of avahi.
 # 
@@ -158,3 +158,6 @@ xmllint:
 	for F in $(introspection_DATA) ; do \
 		xmllint --noout --valid $$F ; \
 	done
+
+install-data-local:
+	test -z "$(localstatedir)/run" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run"

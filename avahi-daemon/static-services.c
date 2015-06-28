@@ -1,4 +1,4 @@
-/* $Id: static-services.c 918 2005-11-01 18:34:33Z sebest $ */
+/* $Id: static-services.c 1162 2006-02-23 00:52:12Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -613,7 +613,7 @@ static int static_service_group_load(StaticServiceGroup *g) {
         }
 
         if (!XML_ParseBuffer(parser, n, n == 0)) {
-            avahi_log_error("XML_ParseBuffer() failed at line %d: %s.\n", XML_GetCurrentLineNumber(parser), XML_ErrorString(XML_GetErrorCode(parser)));
+            avahi_log_error("XML_ParseBuffer() failed at line %d: %s.\n", (int) XML_GetCurrentLineNumber(parser), XML_ErrorString(XML_GetErrorCode(parser)));
             goto finish;
         }
 

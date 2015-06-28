@@ -1,7 +1,7 @@
 #ifndef foothreadedwatchhfoo
 #define foothreadedwatchhfoo
 
-/* $Id: thread-watch.h 1093 2006-01-20 23:05:57Z lennart $ */
+/* $Id: thread-watch.h 1151 2006-02-20 16:21:29Z lennart $ */
 
 /***
   This file is part of avahi.

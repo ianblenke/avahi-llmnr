@@ -1,4 +1,4 @@
-/* $Id: iface-pfroute.c 993 2005-11-17 09:38:43Z sebest $ */
+/* $Id: iface-pfroute.c 1159 2006-02-23 00:00:57Z sebest $ */
 
 /***
   This file is part of avahi.
@@ -80,7 +80,7 @@ static void rtm_info(struct rt_msghdr *rtm, AvahiInterfaceMonitor *m)
     (!m->server->config.use_iff_running || (ifm->ifm_flags & IFF_RUNNING)) &&
     !(ifm->ifm_flags & IFF_LOOPBACK) &&
     (ifm->ifm_flags & IFF_MULTICAST) &&
-    !(ifm->ifm_flags & IFF_POINTOPOINT);
+    (m->server->config.allow_point_to_point || !(ifm->ifm_flags & IFF_POINTOPOINT));
   
   avahi_free(hw->name);
   hw->name = avahi_strndup(sdl->sdl_data, sdl->sdl_nlen);

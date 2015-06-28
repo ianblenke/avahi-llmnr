@@ -1,7 +1,7 @@
 #ifndef fooclienthfoo
 #define fooclienthfoo
 
-/* $Id: client.h 1119 2006-01-30 19:48:03Z lennart $ */
+/* $Id: client.h 1151 2006-02-20 16:21:29Z lennart $ */
 
 /***
   This file is part of avahi.

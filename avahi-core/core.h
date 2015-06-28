@@ -1,7 +1,7 @@
 #ifndef foocorehfoo
 #define foocorehfoo
 
-/* $Id: core.h 930 2005-11-06 02:08:32Z lennart $ */
+/* $Id: core.h 1151 2006-02-20 16:21:29Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -62,6 +62,7 @@ typedef struct AvahiServerConfig {
     int disallow_other_stacks;        /**< Make sure that only one mDNS responder is run at the same time on the local machine. If this is enable Avahi will not set SO_REUSADDR on its sockets, effectively preventing other stacks from running on the local machine */
     AvahiStringList *browse_domains;  /**< Additional browsing domains */
     int disable_publishing;           /**< Disable publishing of any record */
+    int allow_point_to_point;         /**< Enable publishing on POINTOPOINT interfaces */
 } AvahiServerConfig;
 
 /** Allocate a new mDNS responder object. */

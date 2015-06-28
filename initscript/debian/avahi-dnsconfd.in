@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: avahi-dnsconfd.in 1129 2006-02-04 14:10:16Z sebest $
+# $Id: avahi-dnsconfd.in 1145 2006-02-17 01:03:46Z sebest $
 
 # This file is part of avahi.
 #
@@ -150,7 +150,7 @@ case "$1" in
         ;;
     reload|restart|force-reload)
         log_begin_msg "Restarting $DESC: $NAME"
-        d_stop
+        $DAEMON -c && d_stop
         d_start
         log_end_msg $?
         ;;

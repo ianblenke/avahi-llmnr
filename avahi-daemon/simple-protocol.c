@@ -1,4 +1,4 @@
-/* $Id: simple-protocol.c 907 2005-10-30 18:21:57Z lennart $ */
+/* $Id: simple-protocol.c 1161 2006-02-23 00:44:03Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -32,6 +32,7 @@
 #include <sys/un.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 
 #include <avahi-common/llist.h>
 #include <avahi-common/malloc.h>
@@ -470,7 +471,7 @@ int simple_protocol_setup(const AvahiPoll *poll_api) {
 
     unlink(AVAHI_SOCKET);
     
-    if (bind(server->fd, &sa, sizeof(sa)) < 0) {
+    if (bind(server->fd, (struct sockaddr*) &sa, sizeof(sa)) < 0) {
         avahi_log_warn("bind(): %s", strerror(errno));
         goto fail;
     }

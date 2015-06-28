@@ -1,7 +1,7 @@
 #ifndef foowatchhfoo
 #define foowatchhfoo
 
-/* $Id: watch.h 1108 2006-01-27 00:42:18Z lennart $ */
+/* $Id: watch.h 1151 2006-02-20 16:21:29Z lennart $ */
 
 /***
   This file is part of avahi.

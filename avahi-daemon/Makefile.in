@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1133 2006-02-11 15:12:48Z lathiat $
+# $Id: Makefile.am 1152 2006-02-20 22:21:40Z sebest $
 #
 # This file is part of avahi.
 # 
@@ -1271,8 +1271,9 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dbusserviceDATA install-introspectionDATA \
-	install-pkgdataDATA install-pkgsysconfDATA install-serviceDATA
+install-data-am: install-data-local install-dbusserviceDATA \
+	install-introspectionDATA install-pkgdataDATA \
+	install-pkgsysconfDATA install-serviceDATA
 
 install-exec-am: install-sbinPROGRAMS
 
@@ -1310,8 +1311,8 @@ uninstall-am: uninstall-dbusserviceDATA uninstall-info-am \
 	distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
-	install-data-am install-dbusserviceDATA install-exec \
-	install-exec-am install-info install-info-am \
+	install-data-am install-data-local install-dbusserviceDATA \
+	install-exec install-exec-am install-info install-info-am \
 	install-introspectionDATA install-man install-pkgdataDATA \
 	install-pkgsysconfDATA install-sbinPROGRAMS \
 	install-serviceDATA install-strip installcheck installcheck-am \
@@ -1329,6 +1330,9 @@ xmllint:
 	for F in $(introspection_DATA) ; do \
 		xmllint --noout --valid $$F ; \
 	done
+
+install-data-local:
+	test -z "$(localstatedir)/run" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run"
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

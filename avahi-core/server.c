@@ -1,4 +1,4 @@
-/* $Id: server.c 1024 2005-11-23 22:40:19Z lennart $ */
+/* $Id: server.c 1146 2006-02-19 23:28:57Z sebest $ */
 
 /***
   This file is part of avahi.
@@ -1538,6 +1538,7 @@ AvahiServerConfig* avahi_server_config_init(AvahiServerConfig *c) {
     c->disallow_other_stacks = 0;
     c->browse_domains = NULL;
     c->disable_publishing = 0;
+    c->allow_point_to_point = 0;
     
     return c;
 }

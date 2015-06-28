@@ -1,7 +1,7 @@
 #ifndef foolookuphfoo
 #define foolookuphfoo
 
-/* $Id: lookup.h 872 2005-10-26 01:21:30Z lennart $ */
+/* $Id: lookup.h 1151 2006-02-20 16:21:29Z lennart $ */
 
 /***
   This file is part of avahi.
