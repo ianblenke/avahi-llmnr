@@ -1,4 +1,4 @@
-# $Id: service-types 653 2005-09-29 18:41:25Z lennart $
+# $Id: service-types 1062 2006-01-06 01:27:24Z lennart $
 
 # This file is part of avahi.
 #
@@ -87,3 +87,12 @@ _ipp._tcp:Internet Printer
 #_http-rss091._tcp:Web Syndication RSS 0.91
 
 #_http-rss20._tcp:Web Syndication RSS 2.0
+
+_dacp._tcp:iTunes Remote Control
+
+_realplayfavs._tcp:RealPlayer Shared Favorites
+
+_timbuktu._tcp:Timbuktu Remote Desktop Control
+
+_see._tcp:SubEthaEdit Collaborative Text Editor
+

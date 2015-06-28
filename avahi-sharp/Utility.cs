@@ -1,4 +1,4 @@
-/* $Id: Utility.cs 999 2005-11-17 21:11:13Z snorp $ */
+/* $Id: Utility.cs 1064 2006-01-07 21:05:24Z snorp $ */
 
 /***
   This file is part of avahi.
@@ -65,7 +65,7 @@ namespace Avahi
             if (str == null)
                 return null;
 
-            return Encoding.UTF8.GetBytes (str);
+            return Encoding.UTF8.GetBytes (str + "\0"); // lame.
         }
 
         private static IntPtr StringToPtr (string str)

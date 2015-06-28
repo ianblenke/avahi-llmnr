@@ -1,4 +1,4 @@
-/* $Id: AvahiTest.cs 1021 2005-11-20 17:37:32Z snorp $ */
+/* $Id: AvahiTest.cs 1064 2006-01-07 21:05:24Z snorp $ */
 
 /***
     This file is part of avahi.
@@ -36,9 +36,10 @@ public class AvahiTest {
 
         EntryGroup eg = new EntryGroup (client);
         eg.StateChanged += OnEntryGroupChanged;
-        eg.AddService ("foobar2", "_daap._tcp", client.DomainName,
+        eg.AddService ("foobar2", "_dingdong._tcp", client.DomainName,
                        444, new string[] { "foo=stuff", "bar=stuff2", "baz=stuff3" });
         eg.Commit ();
+        BrowseServiceTypes ("local");
         Console.WriteLine ("Press enter to quit");
         Console.ReadLine ();
     }
@@ -57,7 +58,7 @@ public class AvahiTest {
     private static void OnDomainAdded (object o, DomainInfoArgs args)
     {
         Console.WriteLine ("Got domain added: " + args.Domain.Domain);
-        BrowseServiceTypes (args.Domain.Domain);
+        // BrowseServiceTypes (args.Domain.Domain);
     }
 
     private static void BrowseServiceTypes (string domain)
