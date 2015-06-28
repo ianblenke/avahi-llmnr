@@ -1,4 +1,4 @@
-/* $Id: avahi-test.c 903 2005-10-28 22:30:56Z sebest $ */
+/* $Id: avahi-test.c 1224 2006-06-21 22:38:58Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -192,9 +192,11 @@ static void create_entries(int new_name) {
     r->data.cname.name = avahi_strdup("cocaine.local");
     
     if (avahi_server_add(server, group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 0, r) < 0) {
+        avahi_record_unref(r);
         avahi_log_error("Failed to add CNAME record");
         goto fail;
     }
+    avahi_record_unref(r);
 
     avahi_s_entry_group_commit(group);
     return;

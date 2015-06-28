@@ -1,4 +1,4 @@
-/* $Id: main.c 1200 2006-04-24 21:47:27Z lennart $ */
+/* $Id: main.c 1222 2006-06-21 21:29:37Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -594,10 +594,12 @@ static int load_config_file(DaemonConfig *c) {
                 } else if (strcasecmp(p->key, "rlimit-stack") == 0) {
                     c->rlimit_stack_set = 1;
                     c->rlimit_stack = atoi(p->value);
-#ifdef RLIMIT_NPROC
                 } else if (strcasecmp(p->key, "rlimit-nproc") == 0) {
+#ifdef RLIMIT_NPROC
                     c->rlimit_nproc_set = 1;
                     c->rlimit_nproc = atoi(p->value);
+#else
+                    avahi_log_error("Ignoring configuration key \"%s\" in group \"%s\"\n", p->key, g->name);
 #endif
                 } else {
                     avahi_log_error("Invalid configuration key \"%s\" in group \"%s\"\n", p->key, g->name);

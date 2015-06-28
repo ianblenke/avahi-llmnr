@@ -1,4 +1,4 @@
-/* $Id: client-test.c 937 2005-11-08 21:56:28Z lennart $ */
+/* $Id: client-test.c 1219 2006-05-15 15:17:03Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -50,7 +50,6 @@ static void avahi_entry_group2_callback (AvahiEntryGroup *g, AvahiEntryGroupStat
     printf ("ENTRY-GROUP2: Callback on %p, state -> %d, data -> %s\n", (void*) g, state, (char*)userdata);
 }
 
-
 static void avahi_domain_browser_callback(
     AvahiDomainBrowser *b,
     AvahiIfIndex interface,
@@ -60,7 +59,7 @@ static void avahi_domain_browser_callback(
     AVAHI_GCC_UNUSED AvahiLookupResultFlags flags,
     void *userdata) {
     
-    printf ("DOMAIN-BROWSER: Callback on %p, interface (%d), protocol (%d), event (%d), domain (%s), data (%s)\n", (void*) b, interface, protocol, event, domain, (char*)userdata);
+    printf ("DOMAIN-BROWSER: Callback on %p, interface (%d), protocol (%d), event (%d), domain (%s), data (%s)\n", (void*) b, interface, protocol, event, domain ? domain : "NULL", (char*)userdata);
 }
 
 static void avahi_service_resolver_callback(
@@ -103,7 +102,7 @@ static void avahi_service_browser_callback (
     
     AvahiServiceResolver *sr;
 
-    printf ("SERVICE-BROWSER: Callback on %p, interface (%d), protocol (%d), event (%d), name (%s), type (%s), domain (%s), data (%s)\n", (void*) b, interface, protocol, event, name, type, domain, (char*)userdata);
+    printf ("SERVICE-BROWSER: Callback on %p, interface (%d), protocol (%d), event (%d), name (%s), type (%s), domain (%s), data (%s)\n", (void*) b, interface, protocol, event, name ? name : "NULL", type, domain ? domain : "NULL", (char*)userdata);
 
     if (b && name)
     {
@@ -122,7 +121,7 @@ static void avahi_service_type_browser_callback (
     AVAHI_GCC_UNUSED AvahiLookupResultFlags flags,
     void *userdata) {
     
-    printf ("SERVICE-TYPE-BROWSER: Callback on %p, interface (%d), protocol (%d), event (%d), type (%s), domain (%s), data (%s)\n", (void*) b, interface, protocol, event, type, domain, (char*)userdata);
+    printf ("SERVICE-TYPE-BROWSER: Callback on %p, interface (%d), protocol (%d), event (%d), type (%s), domain (%s), data (%s)\n", (void*) b, interface, protocol, event, type ? type : "NULL", domain ? domain : "NULL", (char*)userdata);
 }
 
 static void avahi_address_resolver_callback (
@@ -224,6 +223,7 @@ int main (AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
     int error;
     uint32_t cookie;
     struct timeval tv;
+    AvahiAddress a;
 
     simple_poll = avahi_simple_poll_new();
     poll_api = avahi_simple_poll_get(simple_poll);
@@ -287,7 +287,7 @@ int main (AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
     else
         printf ("Successfully created hostname resolver object\n");
 
-    aar = avahi_address_parse ("224.0.0.251", AVAHI_PROTO_UNSPEC, aar);
+    aar = avahi_address_parse ("224.0.0.251", AVAHI_PROTO_UNSPEC, &a);
     if (aar == NULL) {
         printf ("failed to create address object\n");
     } else {

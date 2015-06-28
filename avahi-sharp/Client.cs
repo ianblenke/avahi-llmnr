@@ -1,4 +1,4 @@
-/* $Id: Client.cs 1177 2006-03-09 20:27:47Z snorp $ */
+/* $Id: Client.cs 1216 2006-05-08 02:27:25Z snorp $ */
 
 /***
   This file is part of avahi.
@@ -286,10 +286,15 @@ namespace Avahi
         public void Dispose ()
         {
             if (handle != IntPtr.Zero) {
-                avahi_client_free (handle);
-                avahi_simple_poll_quit (spoll);
-                avahi_simple_poll_free (spoll);
-                handle = IntPtr.Zero;
+                lock (this) {
+                    avahi_client_free (handle);
+                    handle = IntPtr.Zero;
+
+                    avahi_simple_poll_quit (spoll);
+                    Monitor.Wait (this);
+                    
+                    avahi_simple_poll_free (spoll);
+                }
             }
         }
 
@@ -370,6 +375,7 @@ namespace Avahi
             try {
                 lock (this) {
                     avahi_simple_poll_loop (spoll);
+                    Monitor.Pulse (this);
                 }
             } catch (Exception e) {
                 Console.Error.WriteLine ("Error in avahi-sharp event loop: " + e);

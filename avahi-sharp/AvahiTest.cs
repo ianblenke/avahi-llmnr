@@ -1,4 +1,4 @@
-/* $Id: AvahiTest.cs 1064 2006-01-07 21:05:24Z snorp $ */
+/* $Id: AvahiTest.cs 1215 2006-05-07 18:51:06Z snorp $ */
 
 /***
     This file is part of avahi.
@@ -42,6 +42,7 @@ public class AvahiTest {
         BrowseServiceTypes ("local");
         Console.WriteLine ("Press enter to quit");
         Console.ReadLine ();
+        client.Dispose ();
     }
 
     private static void OnEntryGroupChanged (object o, EntryGroupStateArgs args)

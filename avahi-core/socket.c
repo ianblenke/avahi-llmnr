@@ -1,4 +1,4 @@
-/* $Id: socket.c 1207 2006-05-04 20:22:23Z lennart $ */
+/* $Id: socket.c 1226 2006-06-22 10:16:09Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -714,7 +714,11 @@ AvahiDnsPacket *avahi_recv_dns_packet_ipv4(int fd, AvahiIPv4Address *ret_src_add
                     struct sockaddr_dl *sdl = (struct sockaddr_dl *) CMSG_DATA (cmsg);
                     
                     if (ret_iface)
+#ifdef __sun
+                        *ret_iface = *(uint_t*) sdl;
+#else
                         *ret_iface = (int) sdl->sdl_index;
+#endif
 
                     break;
                 }
