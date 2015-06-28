@@ -1,4 +1,4 @@
-/* $Id: main.c 1195 2006-04-24 00:48:36Z lennart $ */
+/* $Id: main.c 1234 2006-07-15 11:48:31Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -393,6 +393,7 @@ static int parse_command_line(int argc, char *argv[]) {
         { "version",   no_argument,       NULL, 'V' },
         { "refresh",   no_argument,       NULL, 'r' },
         { "check",     no_argument,       NULL, 'c' },
+        { NULL, 0, NULL, 0 }
     };
 
     opterr = 0;

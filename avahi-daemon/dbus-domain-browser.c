@@ -1,4 +1,4 @@
-/* $Id: dbus-domain-browser.c 901 2005-10-27 20:44:59Z lennart $ */
+/* $Id: dbus-domain-browser.c 1235 2006-07-15 20:15:30Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -38,8 +38,12 @@ void avahi_dbus_domain_browser_free(DomainBrowserInfo *i) {
 
     if (i->domain_browser)
         avahi_s_domain_browser_free(i->domain_browser);
-    dbus_connection_unregister_object_path(server->bus, i->path);
-    avahi_free(i->path);
+
+    if (i->path) {
+        dbus_connection_unregister_object_path(server->bus, i->path);
+        avahi_free(i->path);
+    }
+    
     AVAHI_LLIST_REMOVE(DomainBrowserInfo, domain_browsers, i->client->domain_browsers, i);
 
     i->client->n_objects--;

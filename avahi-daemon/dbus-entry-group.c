@@ -1,4 +1,4 @@
-/* $Id: dbus-entry-group.c 1118 2006-01-30 15:41:54Z lennart $ */
+/* $Id: dbus-entry-group.c 1235 2006-07-15 20:15:30Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -40,8 +40,11 @@ void avahi_dbus_entry_group_free(EntryGroupInfo *i) {
 
     if (i->entry_group)
         avahi_s_entry_group_free(i->entry_group);
-    dbus_connection_unregister_object_path(server->bus, i->path);
-    avahi_free(i->path);
+
+    if (i->path) {
+        dbus_connection_unregister_object_path(server->bus, i->path);
+        avahi_free(i->path);
+    }
     AVAHI_LLIST_REMOVE(EntryGroupInfo, entry_groups, i->client->entry_groups, i);
 
     i->client->n_objects--;

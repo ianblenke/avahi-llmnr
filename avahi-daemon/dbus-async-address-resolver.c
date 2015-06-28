@@ -1,4 +1,4 @@
-/* $Id: dbus-async-address-resolver.c 1047 2005-12-31 16:16:22Z lennart $ */
+/* $Id: dbus-async-address-resolver.c 1235 2006-07-15 20:15:30Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -38,7 +38,12 @@ void avahi_dbus_async_address_resolver_free(AsyncAddressResolverInfo *i) {
 
     if (i->address_resolver)
         avahi_s_address_resolver_free(i->address_resolver);
-    dbus_connection_unregister_object_path(server->bus, i->path);
+
+    if (i->path) {
+        dbus_connection_unregister_object_path(server->bus, i->path);
+        avahi_free(i->path);
+    }
+    
     AVAHI_LLIST_REMOVE(AsyncAddressResolverInfo, async_address_resolvers, i->client->async_address_resolvers, i);
 
     i->client->n_objects--;

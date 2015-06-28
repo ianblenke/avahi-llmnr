@@ -1,4 +1,4 @@
-# $Id: service-types 1228 2006-06-25 13:34:15Z lennart $
+# $Id: service-types 1231 2006-07-06 02:02:47Z lennart $
 
 # This file is part of avahi.
 #
@@ -114,3 +114,5 @@ _pulse-server._tcp:PulseAudio Sound Server
 _pulse-sink._tcp:PulseAudio Sound Sink
 _pulse-source._tcp:PulseAudio Sound Source
 
+_mpd._tcp:Music Player Daemon
+_smb._tcp:Microsoft Windows Network

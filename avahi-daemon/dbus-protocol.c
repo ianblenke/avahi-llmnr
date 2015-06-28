@@ -1,4 +1,4 @@
-/* $Id: dbus-protocol.c 1197 2006-04-24 01:48:56Z lennart $ */
+/* $Id: dbus-protocol.c 1238 2006-07-18 22:25:22Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -456,7 +456,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
         i = avahi_new(EntryGroupInfo, 1);
         i->id = ++client->current_id;
         i->client = client;
-        i->path = avahi_strdup_printf("/Client%u/EntryGroup%u", client->id, i->id);
+        i->path = NULL;
         i->n_entries = 0;
         AVAHI_LLIST_PREPEND(EntryGroupInfo, entry_groups, client->entry_groups, i);
         client->n_objects++;
@@ -466,6 +466,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
             return avahi_dbus_respond_error(c, m, avahi_server_errno(avahi_server), NULL);
         }
 
+        i->path = avahi_strdup_printf("/Client%u/EntryGroup%u", client->id, i->id);
         dbus_connection_register_object_path(c, i->path, &vtable, i);
         return avahi_dbus_respond_path(c, m, i->path);
         
@@ -599,7 +600,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
         i = avahi_new(DomainBrowserInfo, 1);
         i->id = ++client->current_id;
         i->client = client;
-        i->path = avahi_strdup_printf("/Client%u/DomainBrowser%u", client->id, i->id);
+        i->path = NULL;
         AVAHI_LLIST_PREPEND(DomainBrowserInfo, domain_browsers, client->domain_browsers, i);
         client->n_objects++;
 
@@ -607,7 +608,8 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
             avahi_dbus_domain_browser_free(i);
             return avahi_dbus_respond_error(c, m, avahi_server_errno(avahi_server), NULL);
         }
-        
+
+        i->path = avahi_strdup_printf("/Client%u/DomainBrowser%u", client->id, i->id);
         dbus_connection_register_object_path(c, i->path, &vtable, i);
         return avahi_dbus_respond_path(c, m, i->path);
 
@@ -653,7 +655,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
         i = avahi_new(ServiceTypeBrowserInfo, 1);
         i->id = ++client->current_id;
         i->client = client;
-        i->path = avahi_strdup_printf("/Client%u/ServiceTypeBrowser%u", client->id, i->id);
+        i->path = NULL;
         AVAHI_LLIST_PREPEND(ServiceTypeBrowserInfo, service_type_browsers, client->service_type_browsers, i);
         client->n_objects++;
 
@@ -662,6 +664,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
             return avahi_dbus_respond_error(c, m, avahi_server_errno(avahi_server), NULL);
         }
         
+        i->path = avahi_strdup_printf("/Client%u/ServiceTypeBrowser%u", client->id, i->id);
         dbus_connection_register_object_path(c, i->path, &vtable, i);
         return avahi_dbus_respond_path(c, m, i->path);
         
@@ -708,7 +711,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
         i = avahi_new(ServiceBrowserInfo, 1);
         i->id = ++client->current_id;
         i->client = client;
-        i->path = avahi_strdup_printf("/Client%u/ServiceBrowser%u", client->id, i->id);
+        i->path = NULL;
         AVAHI_LLIST_PREPEND(ServiceBrowserInfo, service_browsers, client->service_browsers, i);
         client->n_objects++;
 
@@ -716,7 +719,8 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
             avahi_dbus_service_browser_free(i);
             return avahi_dbus_respond_error(c, m, avahi_server_errno(avahi_server), NULL);
         }
-        
+
+        i->path = avahi_strdup_printf("/Client%u/ServiceBrowser%u", client->id, i->id);
         dbus_connection_register_object_path(c, i->path, &vtable, i);
         return avahi_dbus_respond_path(c, m, i->path);
         
@@ -818,7 +822,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
         i = avahi_new(AsyncServiceResolverInfo, 1);
         i->id = ++client->current_id;
         i->client = client;
-        i->path = avahi_strdup_printf("/Client%u/ServiceResolver%u", client->id, i->id);
+        i->path = NULL;
         AVAHI_LLIST_PREPEND(AsyncServiceResolverInfo, async_service_resolvers, client->async_service_resolvers, i);
         client->n_objects++;
 
@@ -829,6 +833,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
 
 /*         avahi_log_debug(__FILE__": [%s], new service resolver for <%s.%s.%s>", i->path, name, type, domain); */
         
+        i->path = avahi_strdup_printf("/Client%u/ServiceResolver%u", client->id, i->id);
         dbus_connection_register_object_path(c, i->path, &vtable, i);
         return avahi_dbus_respond_path(c, m, i->path);
 
@@ -872,7 +877,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
         i = avahi_new(AsyncHostNameResolverInfo, 1);
         i->id = ++client->current_id;
         i->client = client;
-        i->path = avahi_strdup_printf("/Client%u/HostNameResolver%u", client->id, i->id);
+        i->path = NULL;
         AVAHI_LLIST_PREPEND(AsyncHostNameResolverInfo, async_host_name_resolvers, client->async_host_name_resolvers, i);
         client->n_objects++;
 
@@ -880,7 +885,8 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
             avahi_dbus_async_host_name_resolver_free(i);
             return avahi_dbus_respond_error(c, m, avahi_server_errno(avahi_server), NULL);
         }
-        
+
+        i->path = avahi_strdup_printf("/Client%u/HostNameResolver%u", client->id, i->id);
         dbus_connection_register_object_path(c, i->path, &vtable, i);
         return avahi_dbus_respond_path(c, m, i->path);
 
@@ -927,7 +933,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
         i = avahi_new(AsyncAddressResolverInfo, 1);
         i->id = ++client->current_id;
         i->client = client;
-        i->path = avahi_strdup_printf("/Client%u/AddressResolver%u", client->id, i->id);
+        i->path = NULL;
         AVAHI_LLIST_PREPEND(AsyncAddressResolverInfo, async_address_resolvers, client->async_address_resolvers, i);
         client->n_objects++;
 
@@ -935,7 +941,8 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
             avahi_dbus_async_address_resolver_free(i);
             return avahi_dbus_respond_error(c, m, avahi_server_errno(avahi_server), NULL);
         }
-        
+
+        i->path = avahi_strdup_printf("/Client%u/AddressResolver%u", client->id, i->id);
         dbus_connection_register_object_path(c, i->path, &vtable, i);
         return avahi_dbus_respond_path(c, m, i->path);
         
@@ -985,7 +992,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
         i = avahi_new(RecordBrowserInfo, 1);
         i->id = ++client->current_id;
         i->client = client;
-        i->path = avahi_strdup_printf("/Client%u/RecordBrowser%u", client->id, i->id);
+        i->path = NULL;
         AVAHI_LLIST_PREPEND(RecordBrowserInfo, record_browsers, client->record_browsers, i);
         client->n_objects++;
 
@@ -1000,6 +1007,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
 
         avahi_key_unref(key);
         
+        i->path = avahi_strdup_printf("/Client%u/RecordBrowser%u", client->id, i->id);
         dbus_connection_register_object_path(c, i->path, &vtable, i);
         return avahi_dbus_respond_path(c, m, i->path);
     }
@@ -1107,7 +1115,11 @@ fail:
         dbus_error_free(&error);
 
     if (server->bus) {
+#if (DBUS_VERSION_MAJOR == 0) && (DBUS_VERSION_MINOR >= 62)
+        dbus_connection_close(server->bus);
+#else
         dbus_connection_disconnect(server->bus);
+#endif
         dbus_connection_unref(server->bus);
         server->bus = NULL;
     }
@@ -1124,7 +1136,11 @@ static void dbus_disconnect(void) {
     assert(server->n_clients == 0);
 
     if (server->bus) {
+#if (DBUS_VERSION_MAJOR == 0) && (DBUS_VERSION_MINOR >= 62)
+        dbus_connection_close(server->bus);
+#else
         dbus_connection_disconnect(server->bus);
+#endif
         dbus_connection_unref(server->bus);
         server->bus = NULL;
     }
@@ -1159,7 +1175,11 @@ int dbus_protocol_setup(const AvahiPoll *poll_api, int _disable_user_service_pub
 
 fail:
     if (server->bus) {
+#if (DBUS_VERSION_MAJOR == 0) && (DBUS_VERSION_MINOR >= 62)
+        dbus_connection_close(server->bus);
+#else
         dbus_connection_disconnect(server->bus);
+#endif
         dbus_connection_unref(server->bus);
     }
 
