@@ -1,7 +1,7 @@
 #ifndef foodnshfoo
 #define foodnshfoo
 
-/* $Id: dns.h 867 2005-10-25 19:24:40Z lennart $ */
+/* $Id: dns.h 1341 2006-12-16 15:00:11Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -28,6 +28,7 @@
 #define AVAHI_DNS_PACKET_SIZE_MAX 9000
 #define AVAHI_DNS_PACKET_HEADER_SIZE 12
 #define AVAHI_DNS_PACKET_EXTRA_SIZE 48
+#define AVAHI_DNS_LABELS_MAX 127
 
 typedef struct AvahiDnsPacket {
     size_t size, rindex, max_size;

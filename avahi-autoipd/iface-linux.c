@@ -1,4 +1,4 @@
-/* $Id: iface-linux.c 1291 2006-08-31 01:26:11Z lennart $ */
+/* $Id: iface-linux.c 1338 2006-12-11 22:43:57Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -39,6 +39,16 @@
 
 #include <avahi-common/llist.h>
 #include <avahi-common/malloc.h>
+
+#ifndef IFLA_RTA
+#include <linux/if_addr.h>
+#define IFLA_RTA(r)  ((struct rtattr*)(((char*)(r)) + NLMSG_ALIGN(sizeof(struct ifinfomsg))))
+#endif
+
+#ifndef IFA_RTA
+#include <linux/if_addr.h>
+#define IFA_RTA(r)  ((struct rtattr*)(((char*)(r)) + NLMSG_ALIGN(sizeof(struct ifaddrmsg))))
+#endif
 
 #include "iface.h"
 

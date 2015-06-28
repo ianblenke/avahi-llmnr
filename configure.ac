@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1328 2006-09-21 00:18:11Z lennart $
+# $Id: configure.ac 1348 2006-12-28 16:32:11Z lathiat $
 
 # This file is part of avahi.
 #
@@ -21,7 +21,7 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.15],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.16],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
@@ -29,12 +29,12 @@ AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
 AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:3:4])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [4:4:0])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [4:5:0])
 AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:1:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:1:0])
-AC_SUBST(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO, [1:0:0])
+AC_SUBST(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_COMPAT_HOWL_VERSION_INFO, [0:0:0])
 AC_SUBST(HOWL_COMPAT_VERSION, [0.9.8])
 
@@ -715,10 +715,10 @@ AC_SUBST(AVAHI_GROUP)
 AC_DEFINE_UNQUOTED(AVAHI_GROUP,"$AVAHI_GROUP", [Group for Avahi])
 
 AC_ARG_WITH(avahi_priv_access_group,AS_HELP_STRING([--with-avahi-priv-access-group=<group>],[Priviliged access group for Avahi clients (netdev)]))
-if test -z "$with_priv_access_group" ; then
+if test -z "$with_avahi_priv_access_group" ; then
     AVAHI_PRIV_ACCESS_GROUP=netdev
 else
-    AVAHI_PRIV_ACCESS_GROUP=$with_priv_access_group
+    AVAHI_PRIV_ACCESS_GROUP=$with_avahi_priv_access_group
 fi
 AC_SUBST(AVAHI_PRIV_ACCESS_GROUP)
 AC_DEFINE_UNQUOTED(AVAHI_PRIV_ACCESS_GROUP,"$AVAHI_PRIV_ACCESS_GROUP", [Privileged access group for Avahi clients])

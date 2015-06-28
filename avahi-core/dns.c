@@ -1,4 +1,4 @@
-/* $Id: dns.c 1203 2006-04-24 21:53:18Z lennart $ */
+/* $Id: dns.c 1342 2006-12-16 15:10:48Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -332,9 +332,11 @@ static int consume_labels(AvahiDnsPacket *p, unsigned idx, char *ret_name, size_
     int ret = 0;
     int compressed = 0;
     int first_label = 1;
+    unsigned label_ptr;
+    int i;
     assert(p && ret_name && l);
     
-    for (;;) {
+    for (i = 0; i < AVAHI_DNS_LABELS_MAX; i++) {
         uint8_t n;
 
         if (idx+1 > p->size)
@@ -384,7 +386,12 @@ static int consume_labels(AvahiDnsPacket *p, unsigned idx, char *ret_name, size_
             if (idx+2 > p->size)
                 return -1;
 
-            idx = ((unsigned) (AVAHI_DNS_PACKET_DATA(p)[idx] & ~0xC0)) << 8 | AVAHI_DNS_PACKET_DATA(p)[idx+1];
+            label_ptr = ((unsigned) (AVAHI_DNS_PACKET_DATA(p)[idx] & ~0xC0)) << 8 | AVAHI_DNS_PACKET_DATA(p)[idx+1];
+
+            if ((label_ptr < AVAHI_DNS_PACKET_HEADER_SIZE) || (label_ptr >= idx))
+                return -1;
+
+            idx = label_ptr;
 
             if (!compressed)
                 ret += 2;

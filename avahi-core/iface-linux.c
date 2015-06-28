@@ -1,4 +1,4 @@
-/* $Id: iface-linux.c 1146 2006-02-19 23:28:57Z sebest $ */
+/* $Id: iface-linux.c 1339 2006-12-12 02:12:03Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -33,6 +33,16 @@
 #include "log.h"
 #include "iface.h"
 #include "iface-linux.h"
+
+#ifndef IFLA_RTA
+#include <linux/if_addr.h>
+#define IFLA_RTA(r)  ((struct rtattr*)(((char*)(r)) + NLMSG_ALIGN(sizeof(struct ifinfomsg))))
+#endif
+
+#ifndef IFA_RTA
+#include <linux/if_addr.h>
+#define IFA_RTA(r)  ((struct rtattr*)(((char*)(r)) + NLMSG_ALIGN(sizeof(struct ifaddrmsg))))
+#endif
 
 static int netlink_list_items(AvahiNetlink *nl, uint16_t type, unsigned *ret_seq) {
     struct nlmsghdr *n;

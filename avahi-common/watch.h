@@ -1,7 +1,7 @@
 #ifndef foowatchhfoo
 #define foowatchhfoo
 
-/* $Id: watch.h 1151 2006-02-20 16:21:29Z lennart $ */
+/* $Id: watch.h 1335 2006-11-19 08:04:07Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -42,10 +42,10 @@ typedef struct AvahiPoll AvahiPoll;
 
 /** Type of watch events */
 typedef enum {
-    AVAHI_WATCH_IN = POLLIN,      /** Input event */
-    AVAHI_WATCH_OUT = POLLOUT,    /** Output event */
-    AVAHI_WATCH_ERR = POLLERR,    /** Error event */
-    AVAHI_WATCH_HUP = POLLHUP     /** Hangup event */
+    AVAHI_WATCH_IN = POLLIN,      /**< Input event */
+    AVAHI_WATCH_OUT = POLLOUT,    /**< Output event */
+    AVAHI_WATCH_ERR = POLLERR,    /**< Error event */
+    AVAHI_WATCH_HUP = POLLHUP     /**< Hangup event */
 } AvahiWatchEvent;
 
 /** Called whenever an I/O event happens  on an I/O watch */

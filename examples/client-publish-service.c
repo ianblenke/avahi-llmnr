@@ -1,4 +1,4 @@
-/* $Id: client-publish-service.c 1258 2006-08-22 01:48:13Z lennart $ */
+/* $Id: client-publish-service.c 1337 2006-12-11 22:35:04Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -44,7 +44,7 @@ static char *name = NULL;
 static void create_services(AvahiClient *c);
 
 static void entry_group_callback(AvahiEntryGroup *g, AvahiEntryGroupState state, AVAHI_GCC_UNUSED void *userdata) {
-    assert(g == group);
+    assert(g == group || group == NULL);
 
     /* Called whenever the entry group state changes */
 
