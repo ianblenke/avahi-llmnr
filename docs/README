@@ -1,6 +1,6 @@
 Avahi is a free, LGPL mDNS/DNS-SD implementation.
 
-Copyright 2004, 2005 by the Avahi developers.
+Copyright 2004-2006 by the Avahi developers.
 
 	http://avahi.org/
 
@@ -47,4 +47,4 @@ asking for support on the mailing list:
 	- Mailing list archive http://lists.freedesktop.org/archives/avahi/
 
 
-$Id: README 1058 2006-01-06 00:51:22Z lennart $
+$Id: README 1314 2006-09-02 16:40:53Z lennart $

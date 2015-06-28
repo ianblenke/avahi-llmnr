@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1273 2006-08-24 23:27:05Z lennart $
+# $Id: configure.ac 1325 2006-09-13 20:15:35Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,16 +21,16 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.13],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.14],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
-AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:2:4])
+AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:3:4])
 AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [4:4:0])
-AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:0:2])
+AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:1:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:1:0])
@@ -164,7 +164,7 @@ case $with_distro in
      AC_MSG_ERROR([Linux distribution autodetection failed, you must specify the distribution to target using --with-distro=DISTRO, set DISTRO to none if your distribution is not supported.])
      ;;
     *)
-     AC_MSG_ERROR([Your distribution (${with_distro}) is not yet supported, init scripts and dbus configuration will not be installed! (patches welcome), you can specify --with-distro=none to skip this check])
+     AC_MSG_ERROR([Your distribution (${with_distro}) is not yet supported, init scripts and D-Bus configuration will not be installed! (patches welcome), you can specify --with-distro=none to skip this check])
      ;;
 esac
 
@@ -372,10 +372,10 @@ fi
 AM_CONDITIONAL(HAVE_GTK, test "x$HAVE_GTK" = "xyes")
 
 #
-# D-BUS
+# D-Bus
 #
 AC_ARG_ENABLE(dbus,
-        AS_HELP_STRING([--disable-dbus],[Disable use of D-BUS]),
+        AS_HELP_STRING([--disable-dbus],[Disable use of D-Bus]),
         [case "${enableval}" in
                 yes) HAVE_DBUS=yes ;;
                 no)  HAVE_DBUS=no ;;
@@ -383,8 +383,8 @@ AC_ARG_ENABLE(dbus,
         esac],
         [HAVE_DBUS=yes]) 
 
-AC_ARG_WITH(dbus-sys, AS_HELP_STRING([--with-dbus-sys=<dir>], [where D-BUS system.d directory is]))
-AC_ARG_WITH(dbus-system-socket, AS_HELP_STRING([--with-dbus-system-address=<address>], [where the dbus system socket is, you probably want to put unix:path= at the start]))
+AC_ARG_WITH(dbus-sys, AS_HELP_STRING([--with-dbus-sys=<dir>], [Path to D-Bus system.d directory]))
+AC_ARG_WITH(dbus-system-socket, AS_HELP_STRING([--with-dbus-system-address=<address>], [Path to the D-Bus system socket, you probably want to put unix:path= at the start. Only needed for very old D-Bus releases]))
 
 DBUS_VERSION="Disabled"
 DBUS_SYS_DIR="Disabled"
@@ -392,7 +392,7 @@ DBUS_SYSTEM_BUS_DEFAULT_ADDRESS="Disabled"
 if test "x$HAVE_DBUS" = "xyes" ; then
     PKG_CHECK_MODULES(DBUS, [ dbus-1 >= 0.34 ])
 
-    AC_DEFINE(HAVE_DBUS, 1, [Whether we have D-BUS or not])
+    AC_DEFINE(HAVE_DBUS, 1, [Whether we have D-Bus or not])
 
     DBUS_VERSION=`$PKG_CONFIG dbus-1 --modversion`
     DBUS_VERSION_MAJOR=`echo $DBUS_VERSION | awk -F. '{print $1}'`
@@ -409,16 +409,16 @@ if test "x$HAVE_DBUS" = "xyes" ; then
     fi
 
     if test "z$DBUS_VERSION_MAJOR" = "z0" -a "z$DBUS_VERSION_MINOR" = "z0" -a "z$DBUS_VERSION_MICRO" = "z0"; then
-        echo "Error: Couldn't determine the version of your DBUS package."
+        echo "Error: Couldn't determine the version of your D-Bus package."
         echo "  This is probably an error in this script, please report it"
         echo "  along with the following information:"
-        echo "      Base DBUS version ='$DBUS_VERSION'"
+        echo "      Base D-Buss version ='$DBUS_VERSION'"
         echo "      DBUS_VERSION_MAJOR='$DBUS_VERSION_MAJOR'"
         echo "      DBUS_VERSION_MINOR='$DBUS_VERSION_MINOR'"
         echo "      DBUS_VERSION_MICRO='$DBUS_VERSION_MICRO'"
         exit 1
     else
-        echo "Your dbus version is $DBUS_VERSION_MAJOR,$DBUS_VERSION_MINOR,$DBUS_VERSION_MICRO."
+        echo "Your D-Bus version is $DBUS_VERSION_MAJOR,$DBUS_VERSION_MINOR,$DBUS_VERSION_MICRO."
         DBUS_CFLAGS="$DBUS_CFLAGS -DDBUS_VERSION_MAJOR=$DBUS_VERSION_MAJOR"
         DBUS_CFLAGS="$DBUS_CFLAGS -DDBUS_VERSION_MINOR=$DBUS_VERSION_MINOR"
         DBUS_CFLAGS="$DBUS_CFLAGS -DDBUS_VERSION_MICRO=$DBUS_VERSION_MICRO"
@@ -438,11 +438,11 @@ if test "x$HAVE_DBUS" = "xyes" ; then
     if ! test -z "$with_dbus_system_address" ; then
         DBUS_SYSTEM_BUS_DEFAULT_ADDRESS="$with_dbus_system_address"
     else
-        # This is ugly, but D-BUS doesn't export this address for us
+        # This is ugly, but D-Bus doesn't export this address for us
         # so we have to guess, pretty much all setups i've seen have 
         # it in /var/lib/dbus or /var/run/dbus, and its defaulted to
         # /var/run upstream so we will try guess first then default
-        # to /var/run/dbus
+        # to /var/run/dbus.
 
         DBUS_SYSTEM_BUS_DEFAULT_ADDRESS="unix:path=/var/run/dbus/system_bus_socket"
         TRY_SOCKETS="/var/lib/dbus/system_bus_socket /var/run/dbus/system_bus_socket ${localstatedir}/run/dbus/system_bus_socket ${prefix}/var/run/dbus/system_bus_socket"
@@ -454,6 +454,10 @@ if test "x$HAVE_DBUS" = "xyes" ; then
     fi
     AC_SUBST(DBUS_SYSTEM_BUS_DEFAULT_ADDRESS)
     
+    SAVED_LIBS="$LIBS"
+    LIBS="$LIBS $DBUS_LIBS"
+    AC_CHECK_FUNCS([dbus_connection_close dbus_bus_get_private])
+    LIBS="$SAVED_LIBS"
 fi
 AM_CONDITIONAL(HAVE_DBUS, test "x$HAVE_DBUS" = "xyes")
 
@@ -577,7 +581,7 @@ if test "x$HAVE_PYTHON" = "xyes" ; then
 
     if test "x$HAVE_DBUS" = "xyes" ; then
         AC_ARG_ENABLE(python-dbus,
-	    AS_HELP_STRING([--disable-python-dbus],[Disable use of D-BUS in Python]),
+	    AS_HELP_STRING([--disable-python-dbus],[Disable use of D-Bus in Python]),
             [case "${enableval}" in
                    yes) HAVE_PYTHON_DBUS=yes ;;
                    no)  HAVE_PYTHON_DBUS=no ;;
@@ -660,9 +664,23 @@ fi
 AM_CONDITIONAL(HAVE_MONODOC, test "x$HAVE_MONODOC" = "xyes")
 
 #
-# Defining Avahi User and Group.
+# Build autoipd?
 #
-AC_ARG_WITH(avahi_user, AS_HELP_STRING([--with-avahi-user=<user>],[User for running the Avahi daemon (avahi)]))
+AC_ARG_ENABLE(autoipd,
+        AS_HELP_STRING([--disable-autoipd],[Disable building of avahi-autoipd]),
+        [case "${enableval}" in
+                yes) ENABLE_AUTOIPD=yes ;;
+                no)  ENABLE_AUTOIPD=no ;;
+                *) AC_MSG_ERROR(bad value ${enableval} for --disable-autoipd) ;;
+        esac],
+        [ENABLE_AUTOIPD=yes])
+
+AM_CONDITIONAL(ENABLE_AUTOIPD, test "x$ENABLE_AUTOIPD" = "xyes")
+
+#
+# Defining users and groups
+#
+AC_ARG_WITH(avahi_user, AS_HELP_STRING([--with-avahi-user=<user>],[User for running avahi-daemon (avahi)]))
 if test -z "$with_avahi_user" ; then
     AVAHI_USER=avahi
 else
@@ -671,7 +689,7 @@ fi
 AC_SUBST(AVAHI_USER)
 AC_DEFINE_UNQUOTED(AVAHI_USER,"$AVAHI_USER", [User for running the Avahi daemon])
 
-AC_ARG_WITH(avahi_group,AS_HELP_STRING([--with-avahi-group=<group>],[Group for Avahi (avahi)]))
+AC_ARG_WITH(avahi_group,AS_HELP_STRING([--with-avahi-group=<group>],[Group for running avahi-daemon (avahi)]))
 if test -z "$with_avahi_group" ; then
     AVAHI_GROUP=avahi
 else
@@ -688,6 +706,24 @@ else
 fi
 AC_SUBST(AVAHI_PRIV_ACCESS_GROUP)
 AC_DEFINE_UNQUOTED(AVAHI_PRIV_ACCESS_GROUP,"$AVAHI_PRIV_ACCESS_GROUP", [Privileged access group for Avahi clients])
+
+AC_ARG_WITH(autoipd_user, AS_HELP_STRING([--with-autipd-user=<user>],[User for running the avahi-autoipd daemon (avahi-autoipd)]))
+if test -z "$with_autoipd_user" ; then
+    AVAHI_AUTOIPD_USER=avahi-autoipd
+else
+    AVAHI_AUTOIPD_USER=$with_autoipd_user
+fi
+AC_SUBST(AVAHI_AUTOIPD_USER)
+AC_DEFINE_UNQUOTED(AVAHI_AUTOIPD_USER,"$AVAHI_AUTOIPD_USER", [User for running the avahi-autoipd daemon])
+
+AC_ARG_WITH(autoipd_group,AS_HELP_STRING([--with-autoipd-group=<group>],[Group for running the avahi-autoipd daemon (avahi-autoipd)]))
+if test -z "$with_autoipd_group" ; then
+    AVAHI_AUTOIPD_GROUP=avahi-autoipd
+else
+    AVAHI_AUTOIPD_GROUP=$with_autoipd_group
+fi
+AC_SUBST(AVAHI_AUTOIPD_GROUP)
+AC_DEFINE_UNQUOTED(AVAHI_AUTOIPD_GROUP,"$AVAHI_AUTOIPD_GROUP", [Group for running the avahi-autoipd daemon])
 
 #
 # Avahi runtime dir
@@ -844,6 +880,7 @@ avahi-sharp/Makefile
 avahi-compat-libdns_sd/Makefile
 avahi-compat-howl/Makefile
 avahi-compat-howl/samples/Makefile
+avahi-autoipd/Makefile
 ])
 AC_OUTPUT
 
@@ -862,7 +899,7 @@ echo "
     CFLAGS:                                    ${CFLAGS}
     Enable GLIB:                               ${HAVE_GLIB}
     Enable GTK:                                ${HAVE_GTK}
-    Enable D-BUS:                              ${HAVE_DBUS}
+    Enable D-Bus:                              ${HAVE_DBUS}
     Enable Expat:                              ${HAVE_EXPAT}
     Enable GDBM:                               ${HAVE_GDBM}
     Enable DBM:                                ${HAVE_DBM}
@@ -875,9 +912,11 @@ echo "
     Enable Mono:                               ${HAVE_MONO}
     Enable Monodoc:                            ${HAVE_MONODOC}
     Distribution/OS:                           ${with_distro}
-    User for Avahi daemon:                     ${AVAHI_USER}
-    Group for Avahi daemon:                    ${AVAHI_GROUP}
-    Priviliged Access Group for Avahi Clients: ${AVAHI_PRIV_ACCESS_GROUP}
+    User for avahi-daemon:                     ${AVAHI_USER}
+    Group for avahi-daemon:                    ${AVAHI_GROUP}
+    Priviliged access group for Avahi clients: ${AVAHI_PRIV_ACCESS_GROUP}
+    User for avahi-autopid:                    ${AVAHI_AUTOIPD_USER}
+    Group for avahi-autoipd:                   ${AVAHI_AUTOIPD_GROUP}
     Enable chroot():                           ${enable_chroot}
 "
 
@@ -893,7 +932,7 @@ if test "x$BUILD_DAEMON" = "xyes" -a "x$HAVE_DBUS" = "xyes" -a "x$HAVE_PYTHON" =
     BUILD_PYTHON=yes
 fi
 
-BUILD_CLIENT="no   (You need avahi-daemon and dbus!)"
+BUILD_CLIENT="no   (You need avahi-daemon and D-Bus!)"
 
 if test "x$BUILD_DAEMON" = "xyes" -a "x$HAVE_DBUS" = "xyes" ; then
     BUILD_CLIENT=yes
@@ -923,4 +962,5 @@ echo "\
     Building avahi-compat-howl:         ${ENABLE_COMPAT_HOWL}
     Building tests:                     ${ENABLE_TESTS}
     Building avahi-core documentation:  ${ENABLE_CORE_DOCS}
+    Building avahi-autoipd:             ${ENABLE_AUTOIPD}
 "

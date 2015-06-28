@@ -22,7 +22,7 @@ avahi-daemon.conf \- avahi-daemon configuration file
 .TP
 \fBuse-iff-running=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" avahi-daemon monitors the IFF_RUNNING flag bit which is used by some (modern) network drivers to tell user space if a network cable is plugged in (in case of copper ethernet), or the network card is associated with some kind of network (in case of WLAN). If IFF_RUNNING is set avahi-daemon will automatically announce its services on that network. Unfortunately far too many network drivers do not support this flag or support it in a broken way. Therefore this option defaults to "no".
 .TP
-\fBenable-dbus=\f1 Takes either "yes", "no" or "warn". If set to "yes" avahi-daemon connects to D-BUS, offering an object oriented client API. It is only available if Avahi has been compiled with \fB--enable-dbus\f1 in which case it defaults to "yes". "warn" behaves like "yes", but the daemon starts up even when it fails to connect to a D-BUS daemon. In addition, if the connection to the D-BUS daemon is terminated we try to reconnect. (Unless we are in a chroot() environment where this definitely will fail.) 
+\fBenable-dbus=\f1 Takes either "yes", "no" or "warn". If set to "yes" avahi-daemon connects to D-Bus, offering an object oriented client API. It is only available if Avahi has been compiled with \fB--enable-dbus\f1 in which case it defaults to "yes". "warn" behaves like "yes", but the daemon starts up even when it fails to connect to a D-Bus daemon. In addition, if the connection to the D-Bus daemon is terminated we try to reconnect. (Unless we are in a chroot() environment where this definitely will fail.) 
 .TP
 \fBdisallow-other-stacks=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" no other process is allowed to bind to UDP port 5353. This effectively impedes other mDNS stacks from running on the host. Use this as a security measure to make sure that only Avahi is responsible for mDNS traffic. Please note that we do no recommend running multiple mDNS stacks on the same host simultaneously. This hampers reliability and is a waste of resources. However, to not annoy people this option defaults to "no".
 .TP
@@ -69,9 +69,9 @@ This section is used to define system resource limits for the daemon. See \fBset
 .TP
 \fBrlimit-stack=\f1 Value in bytes for RLIMIT_STACK (maximum size of the process stack). Sensible values are heavily system dependent.
 .TP
-\fBrlimit-nproc=\f1 Value for RLIMIT_NPROC (number of process of user). Since only a single avahi-daemon process is usually running you can set this safely to 1.
+\fBrlimit-nproc=\f1 Value for RLIMIT_NPROC (number of process of user). avahi-daemon forks of a helper process on systems where \fBchroot(2)\f1 is available. Therefore this value should not be set below 2.
 .SH AUTHORS
-The avahi developers <avahi (at) lists (dot) freedesktop (dot) org>; avahi is available from \fBhttp://avahi.org/\f1
+The Avahi Developers <avahi (at) lists (dot) freedesktop (dot) org>; Avahi is available from \fBhttp://avahi.org/\f1
 .SH SEE ALSO
 \fBavahi-daemon(8)\f1, \fBavahi-dnsconfd(8)\f1
 .SH COMMENTS

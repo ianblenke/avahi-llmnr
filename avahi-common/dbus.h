@@ -1,7 +1,7 @@
 #ifndef foodbushfoo
 #define foodbushfoo
 
-/* $Id: dbus.h 1266 2006-08-23 23:35:46Z lennart $ */
+/* $Id: dbus.h 1297 2006-08-31 17:22:29Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -22,7 +22,7 @@
   USA.
 ***/
 
-/** \file dbus.h Some definitions for the DBUS interface */
+/** \file dbus.h Some definitions for the D-Bus interface */
 
 #include <avahi-common/cdecl.h>
 #include <dbus/dbus.h>
@@ -41,14 +41,14 @@ AVAHI_C_DECL_BEGIN
 #define AVAHI_DBUS_INTERFACE_SERVICE_RESOLVER AVAHI_DBUS_NAME".ServiceResolver"
 #define AVAHI_DBUS_INTERFACE_RECORD_BROWSER AVAHI_DBUS_NAME".RecordBrowser"
 
-/** The DBUS API version identifier. The first byte specifies the API
+/** The D-Bus API version identifier. The first byte specifies the API
 release, the second byte specifies the revision. If the revision
 number is increased the API has been extended but is downwards
 compatible. If the release changes compatibility is lost.
 
 Avahi 0.6 implements API version 0x0201;
 Avahi 0.6.1 implements API version 0x0202 */
-#define AVAHI_DBUS_API_VERSION ((uint32_t) 0x0202)
+#define AVAHI_DBUS_API_VERSION ((uint32_t) 0x0203)
 
 #define AVAHI_DBUS_ERR_OK "org.freedesktop.Avahi.Success"
 #define AVAHI_DBUS_ERR_FAILURE "org.freedesktop.Avahi.Failure"

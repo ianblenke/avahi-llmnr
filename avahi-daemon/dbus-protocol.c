@@ -1,4 +1,4 @@
-/* $Id: dbus-protocol.c 1260 2006-08-22 01:49:25Z lennart $ */
+/* $Id: dbus-protocol.c 1299 2006-08-31 18:31:43Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -189,7 +189,7 @@ static DBusHandlerResult msg_signal_filter_impl(AVAHI_GCC_UNUSED DBusConnection 
         struct timeval tv;
 
         if (server->reconnect) {
-            avahi_log_warn("Disconnnected from D-BUS, trying to reconnect in %ims...", RECONNECT_MSEC);
+            avahi_log_warn("Disconnnected from D-Bus, trying to reconnect in %ims...", RECONNECT_MSEC);
             
             dbus_disconnect();
             
@@ -200,7 +200,7 @@ static DBusHandlerResult msg_signal_filter_impl(AVAHI_GCC_UNUSED DBusConnection 
             else
                 server->reconnect_timeout = server->poll_api->timeout_new(server->poll_api, &tv, reconnect_callback, NULL);
         } else {
-            avahi_log_warn("Disconnnected from D-BUS, exiting.");
+            avahi_log_warn("Disconnnected from D-Bus, exiting.");
             raise(SIGQUIT);
         }
             
@@ -346,9 +346,7 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
 
     } else if (dbus_message_is_method_call(m, AVAHI_DBUS_INTERFACE_SERVER, "GetNetworkInterfaceNameByIndex")) {
         int32_t idx;
-        int fd;
 	char name[IF_NAMESIZE];
-
         
         if (!(dbus_message_get_args(m, &error, DBUS_TYPE_INT32, &idx, DBUS_TYPE_INVALID))) {
             avahi_log_warn("Error parsing Server::GetNetworkInterfaceNameByIndex message");
@@ -358,29 +356,17 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
 #ifdef VALGRIND_WORKAROUND
         return respond_string(c, m, "blah");
 #else
-        
-        if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) 
-            if ((fd = socket(AF_INET6, SOCK_DGRAM, 0)) < 0) {
-                char txt[256];
-                snprintf(txt, sizeof(txt), "OS Error: %s", strerror(errno));
-                return avahi_dbus_respond_error(c, m, AVAHI_ERR_OS, txt);
-            }
-
         if ((!if_indextoname(idx, name))) {
             char txt[256];
             snprintf(txt, sizeof(txt), "OS Error: %s", strerror(errno));
-            close(fd);
             return avahi_dbus_respond_error(c, m, AVAHI_ERR_OS, txt);
         }
-
-        close(fd);
         
         return avahi_dbus_respond_string(c, m, name);
 #endif
         
     } else if (dbus_message_is_method_call(m, AVAHI_DBUS_INTERFACE_SERVER, "GetNetworkInterfaceIndexByName")) {
         char *n;
-        int fd;
         int32_t idx;
         
         if (!(dbus_message_get_args(m, &error, DBUS_TYPE_STRING, &n, DBUS_TYPE_INVALID)) || !n) {
@@ -391,21 +377,11 @@ static DBusHandlerResult msg_server_impl(DBusConnection *c, DBusMessage *m, AVAH
 #ifdef VALGRIND_WORKAROUND
         return respond_int32(c, m, 1);
 #else
-        if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) 
-            if ((fd = socket(AF_INET6, SOCK_DGRAM, 0)) < 0) {
-                char txt[256];
-                snprintf(txt, sizeof(txt), "OS Error: %s", strerror(errno));
-                return avahi_dbus_respond_error(c, m, AVAHI_ERR_OS, txt);
-            }
-
         if (!(idx = if_nametoindex(n))) {
             char txt[256];
             snprintf(txt, sizeof(txt), "OS Error: %s", strerror(errno));
-            close(fd);
             return avahi_dbus_respond_error(c, m, AVAHI_ERR_OS, txt);
         }
-
-        close(fd);
         
         return avahi_dbus_respond_int32(c, m, idx);
 #endif
@@ -1102,7 +1078,7 @@ static int dbus_connect(void) {
             goto fail;
         }
 
-        avahi_log_error("Failed to acquire DBUS name '"AVAHI_DBUS_NAME"'");
+        avahi_log_error("Failed to acquire D-Bus name '"AVAHI_DBUS_NAME"'");
         goto fail;
     }
 
@@ -1130,7 +1106,7 @@ fail:
         dbus_error_free(&error);
 
     if (server->bus) {
-#if (DBUS_VERSION_MAJOR == 0) && (DBUS_VERSION_MINOR >= 62)
+#ifdef HAVE_DBUS_CONNECTION_CLOSE
         dbus_connection_close(server->bus);
 #else
         dbus_connection_disconnect(server->bus);
@@ -1151,7 +1127,7 @@ static void dbus_disconnect(void) {
     assert(server->n_clients == 0);
 
     if (server->bus) {
-#if (DBUS_VERSION_MAJOR == 0) && (DBUS_VERSION_MINOR >= 62)
+#ifdef HAVE_DBUS_CONNECTION_CLOSE
         dbus_connection_close(server->bus);
 #else
         dbus_connection_disconnect(server->bus);
@@ -1180,7 +1156,7 @@ int dbus_protocol_setup(const AvahiPoll *poll_api, int _disable_user_service_pub
         if (!force)
             goto fail;
 
-        avahi_log_warn("WARNING: Failed to contact D-BUS daemon, retrying in %ims.", RECONNECT_MSEC);
+        avahi_log_warn("WARNING: Failed to contact D-Bus daemon, retrying in %ims.", RECONNECT_MSEC);
         
         avahi_elapse_time(&tv, RECONNECT_MSEC, 0);
         server->reconnect_timeout = server->poll_api->timeout_new(server->poll_api, &tv, reconnect_callback, NULL);
@@ -1190,7 +1166,7 @@ int dbus_protocol_setup(const AvahiPoll *poll_api, int _disable_user_service_pub
 
 fail:
     if (server->bus) {
-#if (DBUS_VERSION_MAJOR == 0) && (DBUS_VERSION_MINOR >= 62)
+#ifdef HAVE_DBUS_CONNECTION_CLOSE
         dbus_connection_close(server->bus);
 #else
         dbus_connection_disconnect(server->bus);

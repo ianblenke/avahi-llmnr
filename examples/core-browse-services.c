@@ -1,11 +1,11 @@
-/* $Id: core-browse-services.c 879 2005-10-26 21:27:40Z lennart $ */
+/* $Id: core-browse-services.c 1298 2006-08-31 17:26:29Z lennart $ */
 
 /* PLEASE NOTE *
  * This file demonstrates how to use Avahi's core API, this is
  * the embeddable mDNS stack for embedded applications.
  *
  * End user applications should *not* use this API and should use
- * the DBUS or C APIs, please see
+ * the D-Bus or C APIs, please see
  * client-browse-services.c and glib-integration.c
  * 
  * I repeat, you probably do *not* want to use this example.

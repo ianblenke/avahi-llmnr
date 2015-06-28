@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1165 2006-03-01 23:51:22Z lennart $
+# $Id: Makefile.am 1294 2006-08-31 15:48:34Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -70,7 +70,8 @@ pkgsysconf_DATA = \
 	hosts
 
 service_DATA = \
-	ssh.service
+	ssh.service \
+	sftp-ssh.service
 
 pkgdata_DATA = \
 	avahi-service.dtd
@@ -148,6 +149,7 @@ EXTRA_DIST = \
 	HostNameResolver.introspect \
 	RecordBrowser.introspect \
 	ssh.service \
+	sftp-ssh.service \
 	hosts \
 	example.service \
 	introspect.dtd \

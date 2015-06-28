@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1282 2006-08-25 19:38:38Z lennart $
+# $Id: Makefile.am 1286 2006-08-30 16:07:26Z lennart $
 
 # This file is part of avahi.
 #
@@ -67,8 +67,8 @@ SUBDIRS = \
 	tests \
 	service-type-database \
 	avahi-compat-libdns_sd \
-	avahi-compat-howl 
-
+	avahi-compat-howl \
+	avahi-autoipd
 
 DX_INPUT = \
 	$(srcdir)/avahi-common/address.h \

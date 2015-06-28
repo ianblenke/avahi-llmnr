@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1245 2006-08-06 11:54:31Z lennart $
+# $Id: Makefile.am 1293 2006-08-31 15:14:22Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -41,13 +41,15 @@ endif
 if HAVE_DBM
 
 noinst_SCRIPTS=build-db
-pkgdata_DATA+=service-types.db.*
+pkgdata_DATA+=service-types.db.pag service-types.db.dir
 
 build-db: build-db.in
 	sed -e 's,@PYTHON\@,$(PYTHON),g' \
 	    -e 's,@DBM\@,dbm,g' $< > $@
 	chmod +x $@
 
+service-types.db.pag: service-types.db
+service-types.db.dir: service-types.db
 service-types.db: service-types build-db
 	$(PYTHON) build-db $(srcdir)/$< $@
 

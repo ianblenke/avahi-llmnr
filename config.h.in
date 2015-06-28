@@ -1,5 +1,11 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Group for running the avahi-autoipd daemon */
+#undef AVAHI_AUTOIPD_GROUP
+
+/* User for running the avahi-autoipd daemon */
+#undef AVAHI_AUTOIPD_USER
+
 /* Group for Avahi */
 #undef AVAHI_GROUP
 
@@ -24,8 +30,14 @@
 /* Support for DBM */
 #undef HAVE_DBM
 
-/* Whether we have D-BUS or not */
+/* Whether we have D-Bus or not */
 #undef HAVE_DBUS
+
+/* Define to 1 if you have the `dbus_bus_get_private' function. */
+#undef HAVE_DBUS_BUS_GET_PRIVATE
+
+/* Define to 1 if you have the `dbus_connection_close' function. */
+#undef HAVE_DBUS_CONNECTION_CLOSE
 
 /* Define to 1 if you have the declaration of `environ', and to 0 if you
    don't. */

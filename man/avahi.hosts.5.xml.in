@@ -2,7 +2,7 @@
 <!DOCTYPE manpage SYSTEM "xmltoman.dtd">
 <?xml-stylesheet type="text/xsl" href="xmltoman.xsl" ?>
 
-<!-- $Id: avahi.hosts.5.xml.in 1138 2006-02-14 22:13:30Z lennart $ -->
+<!-- $Id: avahi.hosts.5.xml.in 1309 2006-09-02 13:48:59Z lennart $ -->
 
 <!-- 
   This file is part of avahi.
@@ -43,7 +43,7 @@
     </description>
 
 	<section name="Authors">
-	  <p>The avahi developers &lt;@PACKAGE_BUGREPORT@&gt;; avahi is
+	  <p>The Avahi Developers &lt;@PACKAGE_BUGREPORT@&gt;; Avahi is
 	  available from <url href="@PACKAGE_URL@"/></p>
 	</section>
 	

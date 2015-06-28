@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1282 2006-08-25 19:38:38Z lennart $
+# $Id: Makefile.am 1286 2006-08-30 16:07:26Z lennart $
 
 # This file is part of avahi.
 #
@@ -177,6 +177,8 @@ AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
+AVAHI_AUTOIPD_GROUP = @AVAHI_AUTOIPD_GROUP@
+AVAHI_AUTOIPD_USER = @AVAHI_AUTOIPD_USER@
 AVAHI_GROUP = @AVAHI_GROUP@
 AVAHI_PRIV_ACCESS_GROUP = @AVAHI_PRIV_ACCESS_GROUP@
 AVAHI_USER = @AVAHI_USER@
@@ -250,6 +252,8 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
+ENABLE_AUTOIPD_FALSE = @ENABLE_AUTOIPD_FALSE@
+ENABLE_AUTOIPD_TRUE = @ENABLE_AUTOIPD_TRUE@
 ENABLE_CHROOT_FALSE = @ENABLE_CHROOT_FALSE@
 ENABLE_CHROOT_TRUE = @ENABLE_CHROOT_TRUE@
 ENABLE_COMPAT_HOWL_FALSE = @ENABLE_COMPAT_HOWL_FALSE@
@@ -516,7 +520,8 @@ SUBDIRS = \
 	tests \
 	service-type-database \
 	avahi-compat-libdns_sd \
-	avahi-compat-howl 
+	avahi-compat-howl \
+	avahi-autoipd
 
 DX_INPUT = $(srcdir)/avahi-common/address.h \
 	$(srcdir)/avahi-common/strlst.h \

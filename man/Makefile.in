@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1264 2006-08-22 02:28:46Z lennart $
+# $Id: Makefile.am 1310 2006-09-02 13:51:05Z lennart $
 
 # This file is part of avahi.
 #
@@ -65,7 +65,11 @@ host_triplet = @host@
 @BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-discover.1 \
 @BUILD_MANPAGES_TRUE@@HAVE_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-bookmarks.1
 
-@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@am__append_3 = $(man_MANS)
+@BUILD_MANPAGES_TRUE@@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_3 = \
+@BUILD_MANPAGES_TRUE@@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi-autoipd.8 \
+@BUILD_MANPAGES_TRUE@@ENABLE_AUTOIPD_TRUE@@HAVE_LIBDAEMON_TRUE@	avahi-autoipd.action.8
+
+@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@am__append_4 = $(man_MANS)
 subdir = man
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -96,6 +100,8 @@ AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
+AVAHI_AUTOIPD_GROUP = @AVAHI_AUTOIPD_GROUP@
+AVAHI_AUTOIPD_USER = @AVAHI_AUTOIPD_USER@
 AVAHI_GROUP = @AVAHI_GROUP@
 AVAHI_PRIV_ACCESS_GROUP = @AVAHI_PRIV_ACCESS_GROUP@
 AVAHI_USER = @AVAHI_USER@
@@ -169,6 +175,8 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
+ENABLE_AUTOIPD_FALSE = @ENABLE_AUTOIPD_FALSE@
+ENABLE_AUTOIPD_TRUE = @ENABLE_AUTOIPD_TRUE@
 ENABLE_CHROOT_FALSE = @ENABLE_CHROOT_FALSE@
 ENABLE_CHROOT_TRUE = @ENABLE_CHROOT_TRUE@
 ENABLE_COMPAT_HOWL_FALSE = @ENABLE_COMPAT_HOWL_FALSE@
@@ -370,7 +378,7 @@ servicedir = $(pkgsysconfdir)/services
 @BUILD_MANPAGES_TRUE@	avahi-daemon.conf.5 \
 @BUILD_MANPAGES_TRUE@	avahi-dnsconfd.action.8 avahi.service.5 \
 @BUILD_MANPAGES_TRUE@	avahi.hosts.5 $(am__append_1) \
-@BUILD_MANPAGES_TRUE@	$(am__append_2)
+@BUILD_MANPAGES_TRUE@	$(am__append_2) $(am__append_3)
 @BUILD_MANPAGES_TRUE@noinst_DATA = \
 @BUILD_MANPAGES_TRUE@	avahi-browse.1.xml \
 @BUILD_MANPAGES_TRUE@	avahi-publish.1.xml \
@@ -383,9 +391,11 @@ servicedir = $(pkgsysconfdir)/services
 @BUILD_MANPAGES_TRUE@	avahi-daemon.conf.5.xml \
 @BUILD_MANPAGES_TRUE@	avahi-dnsconfd.action.8.xml \
 @BUILD_MANPAGES_TRUE@	avahi.service.5.xml \
-@BUILD_MANPAGES_TRUE@	avahi.hosts.5.xml
+@BUILD_MANPAGES_TRUE@	avahi.hosts.5.xml \
+@BUILD_MANPAGES_TRUE@	avahi-autoipd.8.xml \
+@BUILD_MANPAGES_TRUE@	avahi-autoipd.action.8.xml
 
-@BUILD_MANPAGES_TRUE@CLEANFILES = $(noinst_DATA) $(am__append_3)
+@BUILD_MANPAGES_TRUE@CLEANFILES = $(noinst_DATA) $(am__append_4)
 EXTRA_DIST = \
 	$(man_MANS) \
 	avahi-browse.1.xml.in \
@@ -400,6 +410,8 @@ EXTRA_DIST = \
 	avahi-dnsconfd.action.8.xml.in \
 	avahi.service.5.xml.in \
 	avahi.hosts.5.xml.in \
+	avahi-autoipd.action.8.xml.in \
+	avahi-autoipd.8.xml.in \
 	xmltoman.css \
 	xmltoman.xsl \
 	xmltoman.dtd
@@ -765,6 +777,16 @@ uninstall-man: uninstall-man1 uninstall-man5 uninstall-man8
 @BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
 @BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
 
+@BUILD_MANPAGES_TRUE@avahi-autoipd.action.8.xml: avahi-autoipd.action.8.xml.in Makefile
+@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
+@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
+@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+
+@BUILD_MANPAGES_TRUE@avahi-autoipd.8.xml: avahi-autoipd.8.xml.in Makefile
+@BUILD_MANPAGES_TRUE@	sed	-e 's,@pkgsysconfdir\@,$(pkgsysconfdir),g' \
+@BUILD_MANPAGES_TRUE@		-e 's,@PACKAGE_BUGREPORT\@,$(PACKAGE_BUGREPORT),g' \
+@BUILD_MANPAGES_TRUE@        -e 's,@PACKAGE_URL\@,$(PACKAGE_URL),g' $< > $@
+
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-browse.1: avahi-browse.1.xml Makefile
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
 
@@ -799,6 +821,12 @@ uninstall-man: uninstall-man1 uninstall-man5 uninstall-man8
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
 
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi.hosts.5: avahi.hosts.5.xml Makefile
+@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
+
+@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-autoipd.action.8: avahi-autoipd.action.8.xml Makefile
+@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
+
+@BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@avahi-autoipd.8: avahi-autoipd.8.xml Makefile
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@	xmltoman $< > $@
 
 @BUILD_MANPAGES_TRUE@@USE_XMLTOMAN_TRUE@xmllint: $(noinst_DATA)

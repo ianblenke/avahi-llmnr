@@ -1,4 +1,4 @@
-/* $Id: error.c 1266 2006-08-23 23:35:46Z lennart $ */
+/* $Id: error.c 1298 2006-08-31 17:26:29Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -52,7 +52,7 @@ const char *avahi_strerror(int error) {
 
         "Access denied",
         "Invalid operation",
-        "An unexpected DBUS error occured",
+        "An unexpected D-Bus error occured",
         "Daemon connection failed",
         "Memory exhausted",
         "The object passed in was not valid",

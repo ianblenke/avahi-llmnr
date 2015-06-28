@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1245 2006-08-06 11:54:31Z lennart $
+# $Id: Makefile.am 1293 2006-08-31 15:14:22Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -57,7 +57,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@am__append_1 = service-types.db
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@am__append_2 = service-types.db.*
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@am__append_2 = service-types.db.pag service-types.db.dir
 subdir = service-type-database
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -90,6 +90,8 @@ AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
+AVAHI_AUTOIPD_GROUP = @AVAHI_AUTOIPD_GROUP@
+AVAHI_AUTOIPD_USER = @AVAHI_AUTOIPD_USER@
 AVAHI_GROUP = @AVAHI_GROUP@
 AVAHI_PRIV_ACCESS_GROUP = @AVAHI_PRIV_ACCESS_GROUP@
 AVAHI_USER = @AVAHI_USER@
@@ -163,6 +165,8 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
+ENABLE_AUTOIPD_FALSE = @ENABLE_AUTOIPD_FALSE@
+ENABLE_AUTOIPD_TRUE = @ENABLE_AUTOIPD_TRUE@
 ENABLE_CHROOT_FALSE = @ENABLE_CHROOT_FALSE@
 ENABLE_CHROOT_TRUE = @ENABLE_CHROOT_TRUE@
 ENABLE_COMPAT_HOWL_FALSE = @ENABLE_COMPAT_HOWL_FALSE@
@@ -559,6 +563,8 @@ uninstall-am: uninstall-info-am uninstall-pkgdataDATA
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	    -e 's,@DBM\@,dbm,g' $< > $@
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	chmod +x $@
 
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db.pag: service-types.db
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db.dir: service-types.db
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db: service-types build-db
 @HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	$(PYTHON) build-db $(srcdir)/$< $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

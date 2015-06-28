@@ -1,7 +1,7 @@
 #ifndef foosetproctitlehfoo
 #define foosetproctitlehfoo
 
-/* $Id: setproctitle.h 908 2005-10-30 21:22:05Z lennart $ */
+/* $Id: setproctitle.h 1300 2006-08-31 18:32:27Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -22,7 +22,9 @@
   USA.
 ***/
 
+#include <avahi-common/gccmacro.h>
+
 void avahi_init_proc_title(int argc, char **argv);
-void avahi_set_proc_title(const char *fmt, ...);
+void avahi_set_proc_title(const char *name, const char *fmt, ...) AVAHI_GCC_PRINTF_ATTR23;
 
 #endif

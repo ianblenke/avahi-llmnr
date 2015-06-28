@@ -1,4 +1,4 @@
-/* $Id: setproctitle.c 911 2005-10-31 23:29:24Z sebest $ */
+/* $Id: setproctitle.c 1300 2006-08-31 18:32:27Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -28,6 +28,10 @@
 #include <string.h>
 #include <stdarg.h>
 #include <unistd.h>
+
+#ifdef HAVE_SYS_PRCTL_H
+#include <sys/prctl.h>
+#endif
 
 #include <avahi-common/malloc.h>
 
@@ -73,7 +77,7 @@ void avahi_init_proc_title(int argc, char **argv) {
 #endif
 }	
 
-void avahi_set_proc_title(const char *fmt,...) {
+void avahi_set_proc_title(const char *name, const char *fmt,...) {
 #ifdef HAVE_SETPROCTITLE
     char t[256];
 
@@ -98,5 +102,12 @@ void avahi_set_proc_title(const char *fmt,...) {
     
     memset(argv_buffer[0] + l, 0, argv_size - l);
     argv_buffer[1] = NULL;
+#endif
+
+#if defined(HAVE_SYS_PRCTL_H) && defined(PR_SET_NAME)
+
+    if (name)
+        prctl(PR_SET_NAME, (unsigned long) name, 0, 0, 0);
+    
 #endif
 }
