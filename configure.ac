@@ -19,7 +19,7 @@
 # USA.
 
 AC_PREREQ(2.63)
-AC_INIT([avahi],[0.6.26],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.27],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_MACRO_DIR([common])
 AC_CONFIG_HEADERS([config.h])
@@ -29,7 +29,7 @@ AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
 AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [8:2:5])
 AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [7:0:0])
-AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:6:2])
+AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:7:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:2:0])
 AC_SUBST(LIBAVAHI_GOBJECT_VERSION_INFO, [0:2:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:2:0])
@@ -564,7 +564,7 @@ if test "x$HAVE_GTK3" = "xyes" ; then
 fi
 AM_CONDITIONAL(HAVE_GTK3, test "x$HAVE_GTK3" = "xyes")
 
-AM_CONDITIONAL(HAVE_GTK2OR3, test "x$HAVE_GTK3" = "xyes" -o "x$HAVE_GTK2" = "xyes" )
+AM_CONDITIONAL(HAVE_GTK2OR3, test "x$HAVE_GTK3" = "xyes" -o "x$HAVE_GTK" = "xyes" )
 
 #
 # D-Bus

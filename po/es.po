@@ -1,18 +1,18 @@
-# Spanish translation for avahi
-# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# Fedora Spanish translation for avahi
 # This file is distributed under the same license as the avahi package.
 #
 # Carlos Albornoz <caralbornozc@gmail.com>, 2010
 # Jorge González <jorgegonz@svn.gnome.org>, 2008, 2010.
+# Héctor Daniel Cabrera <logan@fedoraproject.org>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Avahi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-28 22:49+0200\n"
-"PO-Revision-Date: 2010-05-16 10:25+0200\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
-"Language-Team: Español <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2010-07-13 03:02+0200\n"
+"PO-Revision-Date: 2010-06-30 20:33-0300\n"
+"Last-Translator: Héctor Daniel Cabrera <logan@fedoraproject.org>\n"
+"Language-Team: Fedora Spanish <trans-es@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,6 +20,7 @@ msgstr ""
 "X-Generator: Launchpad (build Unknown)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: ARGENTINA\n"
 
 #: ../avahi-common/error.c:30
 msgid "OK"
@@ -260,41 +261,35 @@ msgstr "Navegar en busca de servicios Zeroconf disponibles en su red"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:224
 msgid "TXT"
-msgstr ""
+msgstr "TXT"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:226
-#, fuzzy
 msgid "TXT Data:"
-msgstr "Datos TXT"
+msgstr "Datos TXT:"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:226
-#, fuzzy
 msgid "empty"
-msgstr "Está vacío"
+msgstr "vacío"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:228
-#, fuzzy
 msgid "Service Type:"
-msgstr "Tipo de Servicio"
+msgstr "Tipo de servicio:"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:229
-#, fuzzy
 msgid "Service Name:"
-msgstr "Nombre del servicio"
+msgstr "Nombre del servicio:"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:230
-#, fuzzy
 msgid "Domain Name:"
-msgstr "Dominio"
+msgstr "Nombre del dominio:"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:231
 msgid "Interface:"
-msgstr ""
+msgstr "Interfaz:"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:232
-#, fuzzy
 msgid "Address:"
-msgstr "Dirección"
+msgstr "Dirección:"
 
 #: ../avahi-ui/avahi-ui.c:185
 msgid "Browse Service Types"
@@ -361,16 +356,15 @@ msgid "The TXT data of the resolved service"
 msgstr "Los datos TXT del servicio resuelto"
 
 #: ../avahi-ui/avahi-ui.c:230
-#, fuzzy
 msgid "Resolve Service"
 msgstr "Resolver servicio"
 
 #: ../avahi-ui/avahi-ui.c:230
 msgid "Resolve the selected service automatically before returning"
 msgstr ""
+"Resolver el servicio seleccionado de manera automática antes de la devolución"
 
 #: ../avahi-ui/avahi-ui.c:236
-#, fuzzy
 msgid "Resolve Service Host Name"
 msgstr "Resolver el nombre de equipo del servicio"
 
@@ -378,6 +372,8 @@ msgstr "Resolver el nombre de equipo del servicio"
 msgid ""
 "Resolve the host name of the selected service automatically before returning"
 msgstr ""
+"Resolver el nombre del equipo del servicio seleccionado de manera automática "
+"antes de la devolución"
 
 #: ../avahi-ui/avahi-ui.c:242
 msgid "Address family"
@@ -742,7 +738,7 @@ msgid "Host name conflict\n"
 msgstr "Conflicto de nombres de equipo\n"
 
 #: ../avahi-utils/avahi-publish.c:216
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s [options] %s <name> <type> <port> [<txt ...>]\n"
 "%s [options] %s <host-name> <address>\n"
@@ -766,11 +762,12 @@ msgstr ""
 "    -V --version         Mostrar la versión\n"
 "    -s --service         Publicar el servicio\n"
 "    -a --address         Publicar la dirección\n"
-"    -v --vervose         Activar el modo detallado\n"
+"    -v --verbose         Activar el modo detallado\n"
 "    -d --domain=DOMINIO  Dominio donde publicar el servicio\n"
 "    -H --host=DOMINIO    Equipo donde reside el servicio\n"
-"       --sbtype=SUBTIPO  Un subtipo adicional con el que registrar este "
+"       --subtype=SUBTIPO  Un subtipo adicional con el que registrar este "
 "servicio\n"
+"    -R --no-reverse      No publicar entrada de reverso con esta dirección\n"
 "    -f --no-fail         No fallar en caso que el demonio no esté "
 "disponible\n"
 

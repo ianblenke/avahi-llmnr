@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zh_CN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-28 22:49+0200\n"
-"PO-Revision-Date: 2010-03-07 02:27+0800\n"
-"Last-Translator: Jake Li <gnozil@gmail.com>\n"
+"POT-Creation-Date: 2010-07-13 03:02+0200\n"
+"PO-Revision-Date: 2010-07-01 17:45+0700\n"
+"Last-Translator: 甘露(Gan Lu) <rhythm.gan@gmail.com>\n"
 "Language-Team: 简体中文 <kde-china@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -255,41 +255,35 @@ msgstr "浏览网络内的Zeroconf服务"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:224
 msgid "TXT"
-msgstr ""
+msgstr "TXT"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:226
-#, fuzzy
 msgid "TXT Data:"
-msgstr "TXT数据"
+msgstr "TXT 数据："
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:226
-#, fuzzy
 msgid "empty"
 msgstr "为空"
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:228
-#, fuzzy
 msgid "Service Type:"
-msgstr "服务类型"
+msgstr "服务类型："
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:229
-#, fuzzy
 msgid "Service Name:"
-msgstr "服务名称"
+msgstr "服务名称："
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:230
-#, fuzzy
 msgid "Domain Name:"
-msgstr "域"
+msgstr "域名称："
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:231
 msgid "Interface:"
-msgstr ""
+msgstr "接口："
 
 #: ../avahi-python/avahi-discover/avahi-discover.py:232
-#, fuzzy
 msgid "Address:"
-msgstr "地址"
+msgstr "地址："
 
 #: ../avahi-ui/avahi-ui.c:185
 msgid "Browse Service Types"
@@ -356,23 +350,21 @@ msgid "The TXT data of the resolved service"
 msgstr "已解析服务的TXT数据"
 
 #: ../avahi-ui/avahi-ui.c:230
-#, fuzzy
 msgid "Resolve Service"
-msgstr "解析服务"
+msgstr "解析服务："
 
 #: ../avahi-ui/avahi-ui.c:230
 msgid "Resolve the selected service automatically before returning"
-msgstr ""
+msgstr "回转前自动解析选定的服务"
 
 #: ../avahi-ui/avahi-ui.c:236
-#, fuzzy
 msgid "Resolve Service Host Name"
-msgstr "解析服务主机名"
+msgstr "解析服务主机名："
 
 #: ../avahi-ui/avahi-ui.c:236
 msgid ""
 "Resolve the host name of the selected service automatically before returning"
-msgstr ""
+msgstr "回转前自动解析选定服务的主机名"
 
 #: ../avahi-ui/avahi-ui.c:242
 msgid "Address family"
@@ -735,7 +727,7 @@ msgid "Host name conflict\n"
 msgstr "主机名冲突\n"
 
 #: ../avahi-utils/avahi-publish.c:216
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s [options] %s <name> <type> <port> [<txt ...>]\n"
 "%s [options] %s <host-name> <address>\n"
@@ -763,7 +755,8 @@ msgstr ""
 "    -d --domain=DOMAIN   要发布服务的域\n"
 "    -H --host=DOMAIN     服务宿属的主机\n"
 "       --subtype=SUBTYPE 用于注册此服务的额外子类型\n"
-"    -f --no-fail         如果 daemon 不可用也不中断\n"
+"    -R --no-reverse      不发布带地址的反转条目    -f --no-fail         如果 "
+"daemon 不可用也不中断\n"
 
 #: ../avahi-utils/avahi-publish.c:303 ../avahi-utils/avahi-publish.c:318
 #, c-format

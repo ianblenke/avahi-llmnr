@@ -16,15 +16,16 @@
 # USA.
 
 [Unit]
-Requires=basic.target avahi-daemon.socket
-After=basic.target syslog.target avahi-daemon.socket
-Conflicts=shutdown.target
+Description=Avahi mDNS/DNS-SD Stack
+Requires=avahi-daemon.socket
+After=syslog.target
 
 [Service]
 Type=dbus
 BusName=org.freedesktop.Avahi
 ExecStart=@sbindir@/avahi-daemon -s
 ExecReload=@sbindir@/avahi-daemon -r
+NotifyAccess=main
 
 [Install]
 WantedBy=multi-user.target

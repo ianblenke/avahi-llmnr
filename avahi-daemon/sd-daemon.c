@@ -141,7 +141,7 @@ int sd_is_fifo(int fd, const char *path) {
                 struct stat st_path;
 
                 memset(&st_path, 0, sizeof(st_path));
-                if (fstat(fd, &st_path) < 0) {
+                if (stat(path, &st_path) < 0) {
 
                         if (errno == ENOENT || errno == ENOTDIR)
                                 return 0;
@@ -381,7 +381,11 @@ int sd_notify(int unset_environment, const char *state) {
 
         memset(&msghdr, 0, sizeof(msghdr));
         msghdr.msg_name = &sockaddr;
-        msghdr.msg_namelen = sizeof(struct sockaddr_un);
+        msghdr.msg_namelen = sizeof(sa_family_t) + strlen(e);
+
+        if (msghdr.msg_namelen > sizeof(struct sockaddr_un))
+                msghdr.msg_namelen = sizeof(struct sockaddr_un);
+
         msghdr.msg_iov = &iovec;
         msghdr.msg_iovlen = 1;
         msghdr.msg_control = &control;
