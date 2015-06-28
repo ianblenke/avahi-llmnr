@@ -1,4 +1,4 @@
-/* $Id: client-publish-service.c 1337 2006-12-11 22:35:04Z lathiat $ */
+/* $Id: client-publish-service.c 1483 2007-06-02 10:08:17Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -218,7 +218,7 @@ int main(AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char*argv[]) {
         goto fail;
     }
 
-    /* After 20s do some weird modification to the service */
+    /* After 10s do some weird modification to the service */
     avahi_simple_poll_get(simple_poll)->timeout_new(
         avahi_simple_poll_get(simple_poll),
         avahi_elapse_time(&tv, 1000*10, 0),

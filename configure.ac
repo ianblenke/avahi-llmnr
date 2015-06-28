@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1474 2007-05-09 14:39:14Z lennart $
+# $Id: configure.ac 1490 2007-06-22 16:31:14Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,7 +21,7 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.19],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.20],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
@@ -337,6 +337,11 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_HEADER_SYS_WAIT
+
+ # Solaris stuff 
+ AC_SEARCH_LIBS([inet_ntop],[nsl]) 
+ AC_SEARCH_LIBS([recv],[socket]) 
+ AC_CHECK_DECL([CMSG_SPACE],,CFLAGS="$CFLAGS -D_XOPEN_SOURCE=600 -D__EXTENSIONS__") 
 
 # Checks for library functions.
 AC_FUNC_MEMCMP
@@ -654,7 +659,7 @@ AC_ARG_ENABLE(libdaemon,
         [HAVE_LIBDAEMON=yes]) 
 
 if test "x$HAVE_LIBDAEMON" = "xyes" ; then
-    PKG_CHECK_MODULES(LIBDAEMON, [ libdaemon >= 0.5 ])
+    PKG_CHECK_MODULES(LIBDAEMON, [ libdaemon >= 0.11 ])
     AC_SUBST(LIBDAEMON_CFLAGS)
     AC_SUBST(LIBDAEMON_LIBS)
 fi

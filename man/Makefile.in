@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1471 2007-05-09 14:30:19Z lennart $
+# $Id: Makefile.am 1485 2007-06-11 15:57:18Z lennart $
 
 # This file is part of avahi.
 #
@@ -855,7 +855,7 @@ uninstall-man: uninstall-man1 uninstall-man5 uninstall-man8
 @HAVE_DBUS_TRUE@install-exec-local:
 @HAVE_DBUS_TRUE@	mkdir -p $(DESTDIR)/$(mandir)/man1 && \
 @HAVE_DBUS_TRUE@		cd $(DESTDIR)/$(mandir)/man1 && \
-@HAVE_DBUS_TRUE@		rm -f avahi-resolve-host-name.1 avahi-resolve-address.1 avahi-browse-domains.1 avahi-publish-address.1 avahi-publish-service.1 && \
+@HAVE_DBUS_TRUE@		rm -f avahi-resolve-host-name.1 avahi-resolve-address.1 avahi-browse-domains.1 avahi-publish-address.1 avahi-publish-service.1 bvnc.1 && \
 @HAVE_DBUS_TRUE@		$(LN_S) avahi-resolve.1 avahi-resolve-host-name.1 && \
 @HAVE_DBUS_TRUE@		$(LN_S) avahi-resolve.1 avahi-resolve-address.1 && \
 @HAVE_DBUS_TRUE@		$(LN_S) avahi-browse.1 avahi-browse-domains.1 && \

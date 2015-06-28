@@ -1,4 +1,4 @@
-/* $Id: strlst.c 1050 2006-01-01 14:17:54Z lennart $ */
+/* $Id: strlst.c 1482 2007-05-21 17:13:05Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -51,7 +51,7 @@ AvahiStringList*avahi_string_list_add_anonymous(AvahiStringList *l, size_t size)
 AvahiStringList *avahi_string_list_add_arbitrary(AvahiStringList *l, const uint8_t*text, size_t size) {
     AvahiStringList *n;
 
-    assert(text);
+    assert(size == 0 || text);
 
     if (!(n = avahi_string_list_add_anonymous(l, size)))
         return NULL;

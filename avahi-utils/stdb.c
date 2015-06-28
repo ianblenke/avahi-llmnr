@@ -1,4 +1,4 @@
-/* $Id: stdb.c 1414 2007-04-12 22:14:40Z lennart $ */
+/* $Id: stdb.c 1484 2007-06-11 15:55:07Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -190,7 +190,7 @@ char *stdb_getent(void) {
             key = gdbm_nextkey(gdbm_file, key);
 #endif
 #ifdef HAVE_DBM
-            key = dbm_nextkey(dbm_file, key);
+            key = dbm_nextkey(dbm_file);
 #endif
         }
 

@@ -363,7 +363,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 ASSEMBLY = avahi-ui-sharp.dll
-CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb $(ASSEMBLY).config zssh.exe
+CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb $(ASSEMBLY).config bssh.exe
 AVAHISOURCES = \
 	$(srcdir)/ServiceDialog.cs
 
@@ -374,7 +374,7 @@ EXTRA_DIST = \
 	$(srcdir)/en/*/*.xml			\
 	$(srcdir)/gencfg.sh                     \
 	$(srcdir)/$(ASSEMBLY).config.in         \
-	$(srcdir)/zssh.cs
+	$(srcdir)/bssh.cs
 
 @HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@monodocdir = $(MONODOC_DIR)
 @HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@monodoc_DATA = avahi-ui-sharp-docs.zip avahi-ui-sharp-docs.tree avahi-ui-sharp-docs.source
@@ -576,10 +576,10 @@ $(ASSEMBLY): $(AVAHISOURCES)
 $(ASSEMBLY).config: $(ASSEMBLY).config.in
 	$(srcdir)/gencfg.sh $(top_builddir)/avahi-common/libavahi-common.la < $< > $@
 
-zssh.exe: $(srcdir)/zssh.cs
-	mcs -out:$@ $^ -r:./avahi-ui-sharp.dll -pkg:gtk-sharp-2.0 -r:Mono.Posix
+bssh.exe: $(srcdir)/bssh.cs $(ASSEMBLY)
+	mcs -out:$@ $(srcdir)/bssh.cs -r:./avahi-ui-sharp.dll -r:../avahi-sharp/avahi-sharp.dll -pkg:gtk-sharp-2.0 -r:Mono.Posix
 
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@all: $(ASSEMBLY) $(ASSEMBLY).config zssh.exe
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@all: $(ASSEMBLY) $(ASSEMBLY).config bssh.exe
 
 @HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@update-docs: $(ASSEMBLY)
 @HAVE_DBUS_TRUE@@HAVE_MONODOC_TRUE@@HAVE_MONO_TRUE@	$(MONODOCER) -assembly:$(ASSEMBLY) -path:en

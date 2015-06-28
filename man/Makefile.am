@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1471 2007-05-09 14:30:19Z lennart $
+# $Id: Makefile.am 1485 2007-06-11 15:57:18Z lennart $
 
 # This file is part of avahi.
 #
@@ -236,7 +236,7 @@ if HAVE_DBUS
 install-exec-local:
 	mkdir -p $(DESTDIR)/$(mandir)/man1 && \
 		cd $(DESTDIR)/$(mandir)/man1 && \
-		rm -f avahi-resolve-host-name.1 avahi-resolve-address.1 avahi-browse-domains.1 avahi-publish-address.1 avahi-publish-service.1 && \
+		rm -f avahi-resolve-host-name.1 avahi-resolve-address.1 avahi-browse-domains.1 avahi-publish-address.1 avahi-publish-service.1 bvnc.1 && \
 		$(LN_S) avahi-resolve.1 avahi-resolve-host-name.1 && \
 		$(LN_S) avahi-resolve.1 avahi-resolve-address.1 && \
 		$(LN_S) avahi-browse.1 avahi-browse-domains.1 && \

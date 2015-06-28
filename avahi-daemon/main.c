@@ -1,4 +1,4 @@
-/* $Id: main.c 1470 2007-05-09 13:09:09Z lennart $ */
+/* $Id: main.c 1487 2007-06-11 16:43:47Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -1249,6 +1249,11 @@ int main(int argc, char *argv[]) {
         if (config.use_syslog || config.daemonize)
             daemon_log_use = DAEMON_LOG_SYSLOG;
 
+        if (daemon_close_all(-1) < 0) {
+            avahi_log_error("Failed to close remaining file descriptors: %s", strerror(errno));
+            goto finish;
+        }
+        
         if (make_runtime_dir() < 0)
             goto finish;
 
