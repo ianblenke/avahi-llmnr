@@ -1,17 +1,17 @@
-# British English translation
-# This file is distributed under the same license as the Avahi package.
-# Ted Percival <ted@midg3t.net>, 2008.
-#
-#, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: Fedora 10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-04-14 03:30+0200\n"
-"PO-Revision-Date: 2008-03-31 15:24+1000\n"
-"Last-Translator: Ted Percival <ted@midg3t.net>\n"
+"PO-Revision-Date: 2009-02-18 20:59+0200\n"
+"Last-Translator: alexxed <alexxed@gmail.com>\n"
+"Language-Team: Romanian <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2;\n"
+"X-Generator: Narro 0.9.4 on http://tradu.softwareliber.ro\n"
 
 #: ../avahi-common/error.c:32
 msgid "OK"
@@ -403,7 +403,7 @@ msgstr ""
 
 #: ../avahi-ui/avahi-ui.c:1119
 msgid "Initializing..."
-msgstr "Initialising..."
+msgstr ""
 
 #: ../avahi-ui/avahi-ui.c:1143
 msgid "Location"
@@ -471,7 +471,7 @@ msgstr ""
 #: ../avahi-ui/bssh.c:253
 #, c-format
 msgid "Canceled.\n"
-msgstr "Cancelled.\n"
+msgstr ""
 
 #: ../avahi-ui/bssh.desktop.in.in.h:1
 msgid "Avahi SSH Server Browser"

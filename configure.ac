@@ -21,7 +21,7 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.24],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.25],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
@@ -29,7 +29,7 @@ AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
 AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [8:1:5])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [6:0:0])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [6:1:0])
 AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:5:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_GOBJECT_VERSION_INFO, [0:1:0])
@@ -244,11 +244,12 @@ AC_TRY_COMPILE([#include <netinet/in.h>], [
 #
 # Detecting the linux distribution for specific things like init scripts.
 #
-AC_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the distribution to target: One of debian, gentoo, archlinux, fedora, mandriva, darwin, netbsd, freebsd, slackware or none]))
+AC_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the distribution to target: One of lfs, debian, gentoo, archlinux, fedora, mandriva, darwin, netbsd, freebsd, slackware or none]))
 if test "z$with_distro" = "z"; then
     if test "$cross_compiling" = yes; then
         AC_MSG_WARN([Target distribution cannot be reliably detected when cross-compiling. You should specify it with --with-distro (see $0 --help for recognized distros)])
     else
+        AC_CHECK_FILE(/etc/lfs-release,with_distro="lfs")
         AC_CHECK_FILE(/etc/SuSE-release,with_distro="suse")
         AC_CHECK_FILE(/etc/gentoo-release,with_distro="gentoo")
         AC_CHECK_FILE(/etc/arch-release,with_distro="archlinux")
@@ -264,7 +265,7 @@ fi
 with_distro=`echo ${with_distro} | tr '[[:upper:]]' '[[:lower:]]' `
 
 case $with_distro in
-    debian|gentoo|archlinux|suse|fedora|mandriva|darwin|freebsd|slackware|none)
+    lfs|debian|gentoo|archlinux|suse|fedora|mandriva|darwin|freebsd|slackware|none)
      ;;
     netbsd)
      AC_MSG_WARN([Your distribution (${with_distro}) is supported but no init script exist yet! (patches welcome)])
@@ -277,6 +278,7 @@ case $with_distro in
      ;;
 esac
 
+AM_CONDITIONAL(TARGET_LFS, test x"$with_distro" = xlfs)
 AM_CONDITIONAL(TARGET_SUSE, test x"$with_distro" = xsuse)
 AM_CONDITIONAL(TARGET_GENTOO, test x"$with_distro" = xgentoo)
 AM_CONDITIONAL(TARGET_DEBIAN, test x"$with_distro" = xdebian)
@@ -299,7 +301,7 @@ test_gcc_flag() {
 # If using GCC specify some additional parameters
 if test "x$GCC" = "xyes" ; then
 
-    DESIRED_FLAGS="-Wall -W -Wextra -pedantic -pipe -Wformat -Wold-style-definition -Wdeclaration-after-statement -Wfloat-equal -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wredundant-decls -Wmissing-noreturn -Wshadow -Wendif-labels -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wcast-align -Wwrite-strings -Winline -fPIC"
+    DESIRED_FLAGS="-Wall -W -Wextra -pedantic -pipe -Wformat -Wold-style-definition -Wdeclaration-after-statement -Wfloat-equal -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wredundant-decls -Wmissing-noreturn -Wshadow -Wendif-labels -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wcast-align -Wwrite-strings -Winline"
 
     if test "x$HAVE_NETLINK" = "xyes" ; then
         # Test whether rtnetlink.h can be included when compiled with -std=c99
@@ -403,8 +405,6 @@ AM_CONDITIONAL(HAVE_KQUEUE, test "x$have_kqueue" = "xyes")
 if test "x$have_kqueue" = "xyes" ; then
     AC_DEFINE([HAVE_KQUEUE], 1, [Enable BSD kqueue() usage])
 fi
-
-AM_GNU_GETTEXT([external])
 
 IT_PROG_INTLTOOL([0.35.0])
 GETTEXT_PACKAGE=avahi
@@ -1065,6 +1065,7 @@ initscript/gentoo/Makefile
 initscript/archlinux/Makefile
 initscript/suse/Makefile
 initscript/fedora/Makefile
+initscript/lfs/Makefile
 initscript/mandriva/Makefile
 initscript/darwin/Makefile
 initscript/freebsd/Makefile

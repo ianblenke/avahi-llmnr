@@ -51,10 +51,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@am__append_1 = __init__.py
-subdir = avahi-python/avahi
-DIST_COMMON = $(am__avahi_PYTHON_DIST) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+subdir = initscript/lfs
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
 	$(top_srcdir)/common/gcc_stack_protect.m4 \
@@ -72,20 +70,11 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-am__installdirs = "$(DESTDIR)$(avahidir)" "$(DESTDIR)$(avahidir)"
-nodist_avahiSCRIPT_INSTALL = $(INSTALL_SCRIPT)
-SCRIPTS = $(nodist_avahi_SCRIPTS)
+am__installdirs = "$(DESTDIR)$(initddir)"
+initdSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+SCRIPTS = $(initd_SCRIPTS)
 SOURCES =
 DIST_SOURCES =
-am__avahi_PYTHON_DIST = __init__.py
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-avahiPYTHON_INSTALL = $(INSTALL_DATA)
-py_compile = $(top_srcdir)/py-compile
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALL_LINGUAS = @ALL_LINGUAS@
@@ -316,12 +305,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = __init__.py ServiceTypeDatabase.py.in
-@HAVE_PYTHON_TRUE@avahidir = $(pythondir)/avahi
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@nodist_avahi_SCRIPTS = ServiceTypeDatabase.py
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@nodist_avahi_SCRIPTS = ServiceTypeDatabase.py
-@HAVE_PYTHON_TRUE@avahi_PYTHON = $(avahi_SCRIPTS) $(am__append_1)
-CLEANFILES = *.pyc *.pyo ServiceTypeDatabase.py
+initddir = $(sysconfdir)/rc.d/init.d
+EXTRA_DIST = avahi.in
+initd_SCRIPTS = avahi
+CLEANFILES = avahi
 all: all-am
 
 .SUFFIXES:
@@ -334,9 +321,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  avahi-python/avahi/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  initscript/lfs/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  avahi-python/avahi/Makefile
+	  $(AUTOMAKE) --foreign  initscript/lfs/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -354,24 +341,24 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
-install-nodist_avahiSCRIPTS: $(nodist_avahi_SCRIPTS)
+install-initdSCRIPTS: $(initd_SCRIPTS)
 	@$(NORMAL_INSTALL)
-	test -z "$(avahidir)" || $(MKDIR_P) "$(DESTDIR)$(avahidir)"
-	@list='$(nodist_avahi_SCRIPTS)'; for p in $$list; do \
+	test -z "$(initddir)" || $(MKDIR_P) "$(DESTDIR)$(initddir)"
+	@list='$(initd_SCRIPTS)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  if test -f $$d$$p; then \
 	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
-	    echo " $(nodist_avahiSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(avahidir)/$$f'"; \
-	    $(nodist_avahiSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(avahidir)/$$f"; \
+	    echo " $(initdSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(initddir)/$$f'"; \
+	    $(initdSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(initddir)/$$f"; \
 	  else :; fi; \
 	done
 
-uninstall-nodist_avahiSCRIPTS:
+uninstall-initdSCRIPTS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nodist_avahi_SCRIPTS)'; for p in $$list; do \
+	@list='$(initd_SCRIPTS)'; for p in $$list; do \
 	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
-	  echo " rm -f '$(DESTDIR)$(avahidir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(avahidir)/$$f"; \
+	  echo " rm -f '$(DESTDIR)$(initddir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(initddir)/$$f"; \
 	done
 
 mostlyclean-libtool:
@@ -379,34 +366,6 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-avahiPYTHON: $(avahi_PYTHON)
-	@$(NORMAL_INSTALL)
-	test -z "$(avahidir)" || $(MKDIR_P) "$(DESTDIR)$(avahidir)"
-	@list='$(avahi_PYTHON)'; dlist=''; for p in $$list; do\
-	  if test -f "$$p"; then b=; else b="$(srcdir)/"; fi; \
-	  if test -f $$b$$p; then \
-	    f=$(am__strip_dir) \
-	    dlist="$$dlist $$f"; \
-	    echo " $(avahiPYTHON_INSTALL) '$$b$$p' '$(DESTDIR)$(avahidir)/$$f'"; \
-	    $(avahiPYTHON_INSTALL) "$$b$$p" "$(DESTDIR)$(avahidir)/$$f"; \
-	  else :; fi; \
-	done; \
-	if test -n "$$dlist"; then \
-	  if test -z "$(DESTDIR)"; then \
-	    PYTHON=$(PYTHON) $(py_compile) --basedir "$(avahidir)" $$dlist; \
-	  else \
-	    PYTHON=$(PYTHON) $(py_compile) --destdir "$(DESTDIR)" --basedir "$(avahidir)" $$dlist; \
-	  fi; \
-	else :; fi
-
-uninstall-avahiPYTHON:
-	@$(NORMAL_UNINSTALL)
-	@list='$(avahi_PYTHON)'; dlist=''; for p in $$list; do\
-	  f=$(am__strip_dir) \
-	  rm -f "$(DESTDIR)$(avahidir)/$$f"; \
-	  rm -f "$(DESTDIR)$(avahidir)/$${f}c"; \
-	  rm -f "$(DESTDIR)$(avahidir)/$${f}o"; \
-	done
 tags: TAGS
 TAGS:
 
@@ -444,7 +403,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(SCRIPTS)
 installdirs:
-	for dir in "$(DESTDIR)$(avahidir)" "$(DESTDIR)$(avahidir)"; do \
+	for dir in "$(DESTDIR)$(initddir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -490,7 +449,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-avahiPYTHON install-nodist_avahiSCRIPTS
+install-data-am: install-initdSCRIPTS
 
 install-dvi: install-dvi-am
 
@@ -524,41 +483,25 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-avahiPYTHON uninstall-nodist_avahiSCRIPTS
+uninstall-am: uninstall-initdSCRIPTS
 
 .MAKE: install-am install-strip
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-avahiPYTHON install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-nodist_avahiSCRIPTS install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
-	uninstall-avahiPYTHON uninstall-nodist_avahiSCRIPTS
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-initdSCRIPTS install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	uninstall uninstall-am uninstall-initdSCRIPTS
 
 
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' \
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@DBM\@,gdbm,g' \
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@FIRST_KEY\@,key = self.db.firstkey(),g' \
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@CHECK_KEY\@,while key is not None:,g' \
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@NEXT_KEY\@,key = self.db.nextkey(key),g' \
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@pkglibdir\@,$(pkglibdir),g' $< > $@
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	chmod +x $@
-
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' \
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@DBM\@,dbm,g' \
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@FIRST_KEY\@,keys = self.db.keys(),g' \
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@CHECK_KEY\@,for key in keys:,g' \
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@NEXT_KEY\@,,g' \
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@pkglibdir\@,$(pkglibdir),g' $< > $@
-@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	chmod +x $@
+avahi: avahi.in
+	chmod +x $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
