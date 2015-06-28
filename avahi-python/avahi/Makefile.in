@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 969 2005-11-15 00:39:45Z lennart $
+# $Id: Makefile.am 1278 2006-08-25 19:17:08Z lennart $
 
 # This file is part of avahi.
 #
@@ -91,6 +91,7 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AVAHI_GROUP = @AVAHI_GROUP@
+AVAHI_PRIV_ACCESS_GROUP = @AVAHI_PRIV_ACCESS_GROUP@
 AVAHI_USER = @AVAHI_USER@
 AWK = @AWK@
 BUILD_MANPAGES_FALSE = @BUILD_MANPAGES_FALSE@
@@ -168,6 +169,8 @@ ENABLE_COMPAT_HOWL_FALSE = @ENABLE_COMPAT_HOWL_FALSE@
 ENABLE_COMPAT_HOWL_TRUE = @ENABLE_COMPAT_HOWL_TRUE@
 ENABLE_COMPAT_LIBDNS_SD_FALSE = @ENABLE_COMPAT_LIBDNS_SD_FALSE@
 ENABLE_COMPAT_LIBDNS_SD_TRUE = @ENABLE_COMPAT_LIBDNS_SD_TRUE@
+ENABLE_CORE_DOCS_FALSE = @ENABLE_CORE_DOCS_FALSE@
+ENABLE_CORE_DOCS_TRUE = @ENABLE_CORE_DOCS_TRUE@
 ENABLE_TESTS_FALSE = @ENABLE_TESTS_FALSE@
 ENABLE_TESTS_TRUE = @ENABLE_TESTS_TRUE@
 EXEEXT = @EXEEXT@
@@ -181,6 +184,8 @@ GLIB20_LIBS = @GLIB20_LIBS@
 GREP = @GREP@
 GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
+HAVE_DBM_FALSE = @HAVE_DBM_FALSE@
+HAVE_DBM_TRUE = @HAVE_DBM_TRUE@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
 HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
@@ -355,7 +360,8 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 EXTRA_DIST = __init__.py SimpleGladeApp.py ServiceTypeDatabase.py.in
 @HAVE_PYTHON_TRUE@avahidir = $(pythondir)/avahi
-@HAVE_PYTHON_TRUE@avahi_SCRIPTS = ServiceTypeDatabase.py
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@avahi_SCRIPTS = ServiceTypeDatabase.py
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@avahi_SCRIPTS = ServiceTypeDatabase.py
 @HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@avahi_PYTHON = __init__.py SimpleGladeApp.py 
 CLEANFILES = *.pyc *.pyo ServiceTypeDatabase.py
 all: all-am
@@ -572,10 +578,23 @@ uninstall-am: uninstall-avahiPYTHON uninstall-avahiSCRIPTS \
 	uninstall-avahiPYTHON uninstall-avahiSCRIPTS uninstall-info-am
 
 
-@HAVE_PYTHON_TRUE@ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
-@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' \
-@HAVE_PYTHON_TRUE@		-e 's,@pkgdatadir\@,$(pkgdatadir),g' $< > $@
-@HAVE_PYTHON_TRUE@	chmod +x $@
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' \
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@DBM\@,gdbm,g' \
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@FIRST_KEY\@,key = self.db.firstkey(),g' \
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@CHECK_KEY\@,while key is not None:,g' \
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@NEXT_KEY\@,key = self.db.nextkey(key),g' \
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@pkgdatadir\@,$(pkgdatadir),g' $< > $@
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	chmod +x $@
+
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' \
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@DBM\@,dbm,g' \
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@FIRST_KEY\@,keys = self.db.keys(),g' \
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@CHECK_KEY\@,for key in keys:,g' \
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@NEXT_KEY\@,,g' \
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@pkgdatadir\@,$(pkgdatadir),g' $< > $@
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	chmod +x $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

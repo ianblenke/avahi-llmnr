@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1240 2006-07-22 12:39:40Z lennart $
+# $Id: configure.ac 1273 2006-08-24 23:27:05Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,16 +21,16 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.12],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.13],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
-AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:1:4])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [4:3:0])
-AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [4:3:1])
+AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:2:4])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [4:4:0])
+AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:0:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:1:0])
@@ -481,24 +481,49 @@ AM_CONDITIONAL(HAVE_EXPAT, test "x$HAVE_EXPAT" = "xyes")
 #
 # GDBM
 #
+#
+# Check for dbm
+#
+AC_ARG_ENABLE(dbm,
+        AS_HELP_STRING([--enable-dbm],[Enable use of DBM]),
+        [case "${enableval}" in
+                yes) HAVE_DBM=yes ;;
+                no)  HAVE_DBM=no ;;
+                *) AC_MSG_ERROR(bad value ${enableval} for --enable-dbm) ;;
+        esac],
+        [HAVE_DBM=no]) 
+
 AC_ARG_ENABLE(gdbm,
         AS_HELP_STRING([--disable-gdbm],[Disable use of GDBM]),
         [case "${enableval}" in
                 yes) HAVE_GDBM=yes ;;
                 no)  HAVE_GDBM=no ;;
-                *) AC_MSG_ERROR(bad value ${enableval} for --enable-gdbm) ;;
+                *) AC_MSG_ERROR(bad value ${enableval} for --disable-gdbm) ;;
         esac],
         [HAVE_GDBM=yes]) 
 
 if test "x$HAVE_GDBM" = "xyes" ; then
+    if test "x$HAVE_DBM" = "xyes" ; then
+        AC_MSG_ERROR([*** --enable-gdbm and --enable-dbm both specified ***])
+    fi
     AC_CHECK_LIB(gdbm, gdbm_open, [ AC_CHECK_HEADERS(gdbm.h, have_gdbm=true, have_gdbm=false) ], have_gdbm=false)
 
     if ! $have_gdbm ; then
         AC_MSG_ERROR([*** libgdbm not found ***])
     fi
     AC_DEFINE([HAVE_GDBM],[],[Support for GDBM])
+else
+    if test "x$HAVE_DBM" = "xyes" ; then
+        AC_CHECK_HEADERS(ndbm.h, have_dbm=true, have_dbm=false)
+
+        if ! $have_dbm ; then
+            AC_MSG_ERROR([*** dbm not found ***])
+        fi
+        AC_DEFINE([HAVE_DBM],[],[Support for DBM])
+    fi
 fi
 AM_CONDITIONAL(HAVE_GDBM, test "x$HAVE_GDBM" = "xyes")
+AM_CONDITIONAL(HAVE_DBM, test "x$HAVE_DBM" = "xyes")
 
 #
 # libdaemon
@@ -567,6 +592,9 @@ if test "x$HAVE_PYTHON" = "xyes" ; then
         AM_CHECK_PYMOD(socket,,,[AC_MSG_ERROR(Could not find Python module socket)])
         if test "x$HAVE_GDBM" = "xyes"; then
             AM_CHECK_PYMOD(gdbm,,,[AC_MSG_ERROR(Could not find Python module gdbm)])
+        fi
+        if test "x$HAVE_DBM" = "xyes"; then
+            AM_CHECK_PYMOD(dbm,,,[AC_MSG_ERROR(Could not find Python module dbm)])
         fi
     fi
 fi
@@ -652,6 +680,15 @@ fi
 AC_SUBST(AVAHI_GROUP)
 AC_DEFINE_UNQUOTED(AVAHI_GROUP,"$AVAHI_GROUP", [Group for Avahi])
 
+AC_ARG_WITH(avahi_priv_access_group,AS_HELP_STRING([--with-avahi-priv-access-group=<group>],[Priviliged access group for Avahi clients (netdev)]))
+if test -z "$with_priv_access_group" ; then
+    AVAHI_PRIV_ACCESS_GROUP=netdev
+else
+    AVAHI_PRIV_ACCESS_GROUP=$with_priv_access_group
+fi
+AC_SUBST(AVAHI_PRIV_ACCESS_GROUP)
+AC_DEFINE_UNQUOTED(AVAHI_PRIV_ACCESS_GROUP,"$AVAHI_PRIV_ACCESS_GROUP", [Privileged access group for Avahi clients])
+
 #
 # Avahi runtime dir
 #
@@ -680,6 +717,16 @@ DX_XML_FEATURE(OFF)
 DX_PDF_FEATURE(OFF)
 DX_PS_FEATURE(OFF)
 DX_INIT_DOXYGEN(avahi, doxygen.cfg, doxygen)
+
+AC_ARG_ENABLE(core-docs,
+        AS_HELP_STRING([--enable-core-docs],[Enable building of documentation for avahi-core]),
+[case "${enableval}" in
+  yes) ENABLE_CORE_DOCS=yes ;;
+  no)  ENABLE_CORE_DOCS=no ;;
+  *) AC_MSG_ERROR([bad value ${enableval} for --enable-core-docs]) ;;
+esac],[ENABLE_CORE_DOCS=no])
+
+AM_CONDITIONAL([ENABLE_CORE_DOCS], [test "x$ENABLE_CORE_DOCS" = xyes])
 
 #
 # Build and Install man pages
@@ -804,32 +851,34 @@ AC_OUTPUT
 echo "
  ---{ $PACKAGE_NAME $VERSION }---
 
-    prefix:                 ${prefix}
-    sysconfdir:             ${sysconfdir}
-    localstatedir:          ${localstatedir}
-    avahi socket:           ${avahi_socket}
-    dbus-1 system.d dir:    ${DBUS_SYS_DIR}
-    dbus-1 version:         ${DBUS_VERSION}
-    dbus-1 system socket    ${DBUS_SYSTEM_BUS_DEFAULT_ADDRESS}
-    compiler:               ${CC}
-    cflags:                 ${CFLAGS}
-    Enable GLIB:            ${HAVE_GLIB}
-    Enable GTK:             ${HAVE_GTK}
-    Enable D-BUS:           ${HAVE_DBUS}
-    Enable Expat:           ${HAVE_EXPAT}
-    Enable GDBM:            ${HAVE_GDBM}
-    Enable libdaemon:       ${HAVE_LIBDAEMON}
-    Enable Python:          ${HAVE_PYTHON}
-    Enable pygtk:           ${HAVE_PYGTK}
-    Enable python-dbus:     ${HAVE_PYTHON_DBUS}
-    Enable QT3:             ${HAVE_QT3}
-    Enable QT4:             ${HAVE_QT4}
-    Enable Mono:            ${HAVE_MONO}
-    Enable Monodoc:         ${HAVE_MONODOC}
-    Distribution/OS:        ${with_distro}
-    User for Avahi:         ${AVAHI_USER}
-    Group for Avahi:        ${AVAHI_GROUP}
-    Enable chroot():        ${enable_chroot}
+    prefix:                                    ${prefix}
+    sysconfdir:                                ${sysconfdir}
+    localstatedir:                             ${localstatedir}
+    avahi socket:                              ${avahi_socket}
+    dbus-1 system.d dir:                       ${DBUS_SYS_DIR}
+    dbus-1 version:                            ${DBUS_VERSION}
+    dbus-1 system socket:                      ${DBUS_SYSTEM_BUS_DEFAULT_ADDRESS}
+    C Compiler:                                ${CC}
+    CFLAGS:                                    ${CFLAGS}
+    Enable GLIB:                               ${HAVE_GLIB}
+    Enable GTK:                                ${HAVE_GTK}
+    Enable D-BUS:                              ${HAVE_DBUS}
+    Enable Expat:                              ${HAVE_EXPAT}
+    Enable GDBM:                               ${HAVE_GDBM}
+    Enable DBM:                                ${HAVE_DBM}
+    Enable libdaemon:                          ${HAVE_LIBDAEMON}
+    Enable Python:                             ${HAVE_PYTHON}
+    Enable pygtk:                              ${HAVE_PYGTK}
+    Enable python-dbus:                        ${HAVE_PYTHON_DBUS}
+    Enable QT3:                                ${HAVE_QT3}
+    Enable QT4:                                ${HAVE_QT4}
+    Enable Mono:                               ${HAVE_MONO}
+    Enable Monodoc:                            ${HAVE_MONODOC}
+    Distribution/OS:                           ${with_distro}
+    User for Avahi daemon:                     ${AVAHI_USER}
+    Group for Avahi daemon:                    ${AVAHI_GROUP}
+    Priviliged Access Group for Avahi Clients: ${AVAHI_PRIV_ACCESS_GROUP}
+    Enable chroot():                           ${enable_chroot}
 "
 
 BUILD_DAEMON="no   (You need libdaemon and expat!)"
@@ -873,4 +922,5 @@ echo "\
     Building avahi-compat-libdns_sd:    ${ENABLE_COMPAT_LIBDNS_SD}
     Building avahi-compat-howl:         ${ENABLE_COMPAT_HOWL}
     Building tests:                     ${ENABLE_TESTS}
+    Building avahi-core documentation:  ${ENABLE_CORE_DOCS}
 "

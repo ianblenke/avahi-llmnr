@@ -1,7 +1,7 @@
 #ifndef foointernalhfoo
 #define foointernalhfoo
 
-/* $Id: internal.h 984 2005-11-16 19:30:11Z lennart $ */
+/* $Id: internal.h 1271 2006-08-24 21:37:18Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -56,6 +56,7 @@ struct AvahiClient {
 struct AvahiEntryGroup {
     char *path;
     AvahiEntryGroupState state;
+    int state_valid;
     AvahiClient *client;
     AvahiEntryGroupCallback callback;
     void *userdata;

@@ -1,4 +1,4 @@
-/* $Id: error.c 1124 2006-01-30 20:57:58Z lennart $ */
+/* $Id: error.c 1266 2006-08-23 23:35:46Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -85,7 +85,8 @@ const char *avahi_strerror(int error) {
 
         "Not permitted",
         "Invalid argument",
-	"Is empty"
+	"Is empty",
+        "The requested operation is invalid because redundant"
     };
 
     if (-error < 0 || -error >= -AVAHI_ERR_MAX)

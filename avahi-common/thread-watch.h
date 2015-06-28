@@ -1,7 +1,7 @@
 #ifndef foothreadedwatchhfoo
 #define foothreadedwatchhfoo
 
-/* $Id: thread-watch.h 1151 2006-02-20 16:21:29Z lennart $ */
+/* $Id: thread-watch.h 1244 2006-08-06 11:53:01Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -46,7 +46,7 @@ void avahi_threaded_poll_free(AvahiThreadedPoll *p);
  * called. \since 0.6.4 */
 const AvahiPoll* avahi_threaded_poll_get(AvahiThreadedPoll *p);
 
-/** Start the event loop helper thread. After the thread has startet
+/** Start the event loop helper thread. After the thread has started
  * you must make sure to access the event loop object
  * (AvahiThreadedPoll, AvahiPoll and all its associated objects)
  * synchronized, i.e. with proper locking. You may want to use

@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1082 2006-01-15 15:04:54Z sebest $
+# $Id: Makefile.am 1251 2006-08-21 23:31:59Z lennart $
 
 # This file is part of avahi.
 #
@@ -69,8 +69,8 @@ avahi-sharp-docs.zip: avahi-sharp-docs.tree
 avahi-sharp-docs.tree: $(srcdir)/en/*/*
 	$(MDASSEMBLER) --out avahi-sharp-docs --ecma $(srcdir)/en
 
-docdir = $(MONODOC_DIR)
-doc_DATA = avahi-sharp-docs.zip avahi-sharp-docs.tree avahi-sharp-docs.source
+monodocdir = $(MONODOC_DIR)
+monodoc_DATA = avahi-sharp-docs.zip avahi-sharp-docs.tree avahi-sharp-docs.source
 
 endif
 

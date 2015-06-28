@@ -1,4 +1,4 @@
-/* $Id: txt-test.c 879 2005-10-26 21:27:40Z lennart $ */
+/* $Id: txt-test.c 1248 2006-08-21 16:43:44Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -28,7 +28,7 @@
 #include <stdio.h>
 
 #include <avahi-common/gccmacro.h>
-#include "dns_sd.h"
+#include <dns_sd.h>
 
 static void hexdump(const void* p, size_t size) {
     const uint8_t *c = p;

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1091 2006-01-20 21:53:25Z sebest $
+# $Id: Makefile.am 1282 2006-08-25 19:38:38Z lennart $
 
 # This file is part of avahi.
 #
@@ -90,20 +90,42 @@ DIST_COMMON = $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/config.h.in $(top_srcdir)/configure compile \
 	config.guess config.sub depcomp install-sh ltmain.sh missing \
 	py-compile
-@HAVE_DBUS_TRUE@am__append_1 = avahi-client.pc
-@HAVE_DBUS_TRUE@am__append_2 = avahi-client.pc
-@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_3 = avahi-compat-howl.pc
-@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_4 = avahi-compat-howl.pc
-@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_5 = avahi-compat-libdns_sd.pc
-@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_6 = avahi-compat-libdns_sd.pc
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_7 = avahi-sharp.pc
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_8 = avahi-sharp.pc
-@HAVE_GLIB_TRUE@am__append_9 = avahi-glib.pc
-@HAVE_GLIB_TRUE@am__append_10 = avahi-glib.pc
-@HAVE_QT3_TRUE@am__append_11 = avahi-qt3.pc
-@HAVE_QT3_TRUE@am__append_12 = avahi-qt3.pc
-@HAVE_QT4_TRUE@am__append_13 = avahi-qt4.pc
-@HAVE_QT4_TRUE@am__append_14 = avahi-qt4.pc
+@HAVE_QT3_TRUE@am__append_1 = \
+@HAVE_QT3_TRUE@	$(srcdir)/avahi-qt/qt-watch.h
+
+@HAVE_QT3_FALSE@@HAVE_QT4_TRUE@am__append_2 = \
+@HAVE_QT3_FALSE@@HAVE_QT4_TRUE@	$(srcdir)/avahi-qt/qt-watch.h
+
+@HAVE_GLIB_TRUE@am__append_3 = \
+@HAVE_GLIB_TRUE@	$(srcdir)/avahi-glib/glib-watch.h \
+@HAVE_GLIB_TRUE@	$(srcdir)/avahi-glib/glib-malloc.h
+
+@HAVE_DBUS_TRUE@am__append_4 = \
+@HAVE_DBUS_TRUE@	$(srcdir)/avahi-client/client.h \
+@HAVE_DBUS_TRUE@	$(srcdir)/avahi-client/lookup.h \
+@HAVE_DBUS_TRUE@	$(srcdir)/avahi-client/publish.h
+
+@ENABLE_CORE_DOCS_TRUE@am__append_5 = \
+@ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/core.h \
+@ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/lookup.h \
+@ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/publish.h \
+@ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/rr.h \
+@ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/log.h
+
+@HAVE_DBUS_TRUE@am__append_6 = avahi-client.pc
+@HAVE_DBUS_TRUE@am__append_7 = avahi-client.pc
+@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_8 = avahi-compat-howl.pc
+@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_9 = avahi-compat-howl.pc
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_10 = avahi-compat-libdns_sd.pc
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_11 = avahi-compat-libdns_sd.pc
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_12 = avahi-sharp.pc
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_13 = avahi-sharp.pc
+@HAVE_GLIB_TRUE@am__append_14 = avahi-glib.pc
+@HAVE_GLIB_TRUE@am__append_15 = avahi-glib.pc
+@HAVE_QT3_TRUE@am__append_16 = avahi-qt3.pc
+@HAVE_QT3_TRUE@am__append_17 = avahi-qt3.pc
+@HAVE_QT4_TRUE@am__append_18 = avahi-qt4.pc
+@HAVE_QT4_TRUE@am__append_19 = avahi-qt4.pc
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
@@ -156,6 +178,7 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AVAHI_GROUP = @AVAHI_GROUP@
+AVAHI_PRIV_ACCESS_GROUP = @AVAHI_PRIV_ACCESS_GROUP@
 AVAHI_USER = @AVAHI_USER@
 AWK = @AWK@
 BUILD_MANPAGES_FALSE = @BUILD_MANPAGES_FALSE@
@@ -233,6 +256,8 @@ ENABLE_COMPAT_HOWL_FALSE = @ENABLE_COMPAT_HOWL_FALSE@
 ENABLE_COMPAT_HOWL_TRUE = @ENABLE_COMPAT_HOWL_TRUE@
 ENABLE_COMPAT_LIBDNS_SD_FALSE = @ENABLE_COMPAT_LIBDNS_SD_FALSE@
 ENABLE_COMPAT_LIBDNS_SD_TRUE = @ENABLE_COMPAT_LIBDNS_SD_TRUE@
+ENABLE_CORE_DOCS_FALSE = @ENABLE_CORE_DOCS_FALSE@
+ENABLE_CORE_DOCS_TRUE = @ENABLE_CORE_DOCS_TRUE@
 ENABLE_TESTS_FALSE = @ENABLE_TESTS_FALSE@
 ENABLE_TESTS_TRUE = @ENABLE_TESTS_TRUE@
 EXEEXT = @EXEEXT@
@@ -246,6 +271,8 @@ GLIB20_LIBS = @GLIB20_LIBS@
 GREP = @GREP@
 GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
+HAVE_DBM_FALSE = @HAVE_DBM_FALSE@
+HAVE_DBM_TRUE = @HAVE_DBM_TRUE@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
 HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
@@ -491,39 +518,26 @@ SUBDIRS = \
 	avahi-compat-libdns_sd \
 	avahi-compat-howl 
 
-DX_INPUT = \
-	$(srcdir)/avahi-core/core.h \
-	$(srcdir)/avahi-core/lookup.h \
-	$(srcdir)/avahi-core/publish.h \
-	$(srcdir)/avahi-common/address.h \
-	$(srcdir)/avahi-core/rr.h \
+DX_INPUT = $(srcdir)/avahi-common/address.h \
 	$(srcdir)/avahi-common/strlst.h \
 	$(srcdir)/avahi-common/alternative.h \
-	$(srcdir)/avahi-core/log.h \
-	$(srcdir)/avahi-common/defs.h \
-	$(srcdir)/avahi-client/client.h \
-	$(srcdir)/avahi-client/lookup.h \
-	$(srcdir)/avahi-client/publish.h \
-	$(srcdir)/avahi-common/error.h \
+	$(srcdir)/avahi-common/defs.h $(srcdir)/avahi-common/error.h \
 	$(srcdir)/avahi-common/malloc.h \
-	$(srcdir)/avahi-common/domain.h \
-	$(srcdir)/avahi-common/watch.h \
+	$(srcdir)/avahi-common/domain.h $(srcdir)/avahi-common/watch.h \
 	$(srcdir)/avahi-common/simple-watch.h \
 	$(srcdir)/avahi-common/thread-watch.h \
-	$(srcdir)/avahi-glib/glib-watch.h \
-	$(srcdir)/avahi-glib/glib-malloc.h \
-	$(srcdir)/avahi-common/timeval.h \
-	$(srcdir)/avahi-qt/qt-watch.h
-
+	$(srcdir)/avahi-common/timeval.h $(am__append_1) \
+	$(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5)
 DX_EXAMPLE_PATH = $(srcdir)/examples
 DX_EXAMPLE_PATTERNS = *.c
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = avahi-core.pc $(am__append_1) $(am__append_3) \
-	$(am__append_5) $(am__append_7) $(am__append_9) \
-	$(am__append_11) $(am__append_13)
-CLEANFILES = avahi-core.pc $(am__append_2) $(am__append_4) \
-	$(am__append_6) $(am__append_8) $(am__append_10) \
-	$(am__append_12) $(am__append_14)
+pkgconfig_DATA = avahi-core.pc $(am__append_6) $(am__append_8) \
+	$(am__append_10) $(am__append_12) $(am__append_14) \
+	$(am__append_16) $(am__append_18)
+CLEANFILES = avahi-core.pc $(am__append_7) $(am__append_9) \
+	$(am__append_11) $(am__append_13) $(am__append_15) \
+	$(am__append_17) $(am__append_19)
 MOSTLYCLEANFILES = $(DX_CLEANFILES)
 DISTCHECK_CONFIGURE_FLAGS = \
 	--disable-monodoc
@@ -1080,6 +1094,7 @@ homepage:
 	scp avahi-daemon/*.introspect avahi-daemon/introspect.dtd avahi-daemon/introspect.xsl\
 	    man/*.xml man/xmltoman.dtd man/xmltoman.xsl \
 	    tango:www/avahi.org/tree/download/
+	scp avahi-$(PACKAGE_VERSION).tar.gz tango:www/avahi.org/tree/download/
 	rm -rf doxygen
 	$(MAKE) doxygen-run
 	ssh tango rm -rf www/avahi.org/tree/download/doxygen

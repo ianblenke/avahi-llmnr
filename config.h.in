@@ -3,6 +3,9 @@
 /* Group for Avahi */
 #undef AVAHI_GROUP
 
+/* Privileged access group for Avahi clients */
+#undef AVAHI_PRIV_ACCESS_GROUP
+
 /* User for running the Avahi daemon */
 #undef AVAHI_USER
 
@@ -17,6 +20,9 @@
 
 /* Define to 1 if you have the `chroot' function. */
 #undef HAVE_CHROOT
+
+/* Support for DBM */
+#undef HAVE_DBM
 
 /* Whether we have D-BUS or not */
 #undef HAVE_DBUS
@@ -79,6 +85,9 @@
 
 /* Define to 1 if you have the `mkdir' function. */
 #undef HAVE_MKDIR
+
+/* Define to 1 if you have the <ndbm.h> header file. */
+#undef HAVE_NDBM_H
 
 /* Define to 1 if you have the <netdb.h> header file. */
 #undef HAVE_NETDB_H

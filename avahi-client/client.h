@@ -1,7 +1,7 @@
 #ifndef fooclienthfoo
 #define fooclienthfoo
 
-/* $Id: client.h 1151 2006-02-20 16:21:29Z lennart $ */
+/* $Id: client.h 1261 2006-08-22 02:15:27Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -32,9 +32,6 @@
 #include <avahi-common/gccmacro.h>
 
 /** \file client.h Definitions and functions for the client API over D-Bus */
-
-/** \example glib-integration.c Example of how to integrate
- * avahi use with GLIB/GTK applications */
 
 AVAHI_C_DECL_BEGIN
 
@@ -79,6 +76,9 @@ const char* avahi_client_get_version_string (AvahiClient*);
 
 /** Get host name */
 const char* avahi_client_get_host_name (AvahiClient*);
+
+/** Set host name. \since 0.6.13 */
+int avahi_client_set_host_name(AvahiClient*, const char *name);
 
 /** Get domain name */
 const char* avahi_client_get_domain_name (AvahiClient*);

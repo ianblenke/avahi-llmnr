@@ -1,7 +1,7 @@
 #ifndef footimevalhfoo
 #define footimevalhfoo
 
-/* $Id: timeval.h 872 2005-10-26 01:21:30Z lennart $ */
+/* $Id: timeval.h 1244 2006-08-06 11:53:01Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -34,10 +34,10 @@ AVAHI_C_DECL_BEGIN
 /** A numeric data type for storing microsecond values. (signed 64bit integer) */
 typedef int64_t AvahiUsec;
 
-/** Compare two timeval structures and return a ngeative value when a < b, 0 when a == b and a positive value otherwise */
+/** Compare two timeval structures and return a negative value when a < b, 0 when a == b and a positive value otherwise */
 int avahi_timeval_compare(const struct timeval *a, const struct timeval *b);
 
-/** Calculate the difference between to timeval structures as microsecond value */
+/** Calculate the difference between two timeval structures as microsecond value */
 AvahiUsec avahi_timeval_diff(const struct timeval *a, const struct timeval *b);
 
 /** Add a number of microseconds to the specified timeval structure and return it. *a is modified. */

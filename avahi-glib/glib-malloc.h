@@ -1,7 +1,7 @@
 #ifndef fooglibmallochfoo
 #define fooglibmallochfoo
 
-/* $Id: glib-malloc.h 872 2005-10-26 01:21:30Z lennart $ */
+/* $Id: glib-malloc.h 1244 2006-08-06 11:53:01Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -32,7 +32,7 @@
 AVAHI_C_DECL_BEGIN
 
 /** Return a pointer to a memory allocator that uses GLib's g_malloc()
- and frinds. Th returned structure is statically allocated, and needs
+ and friends. The returned structure is statically allocated, and needs
  not to be copied or freed. Pass this directly to avahi_set_allocator(). */
 const AvahiAllocator * avahi_glib_allocator(void);
 

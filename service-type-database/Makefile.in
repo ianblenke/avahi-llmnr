@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1206 2006-05-02 15:10:31Z sebest $
+# $Id: Makefile.am 1245 2006-08-06 11:54:31Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -57,6 +57,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@am__append_1 = service-types.db
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@am__append_2 = service-types.db.*
 subdir = service-type-database
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -90,6 +91,7 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AVAHI_GROUP = @AVAHI_GROUP@
+AVAHI_PRIV_ACCESS_GROUP = @AVAHI_PRIV_ACCESS_GROUP@
 AVAHI_USER = @AVAHI_USER@
 AWK = @AWK@
 BUILD_MANPAGES_FALSE = @BUILD_MANPAGES_FALSE@
@@ -167,6 +169,8 @@ ENABLE_COMPAT_HOWL_FALSE = @ENABLE_COMPAT_HOWL_FALSE@
 ENABLE_COMPAT_HOWL_TRUE = @ENABLE_COMPAT_HOWL_TRUE@
 ENABLE_COMPAT_LIBDNS_SD_FALSE = @ENABLE_COMPAT_LIBDNS_SD_FALSE@
 ENABLE_COMPAT_LIBDNS_SD_TRUE = @ENABLE_COMPAT_LIBDNS_SD_TRUE@
+ENABLE_CORE_DOCS_FALSE = @ENABLE_CORE_DOCS_FALSE@
+ENABLE_CORE_DOCS_TRUE = @ENABLE_CORE_DOCS_TRUE@
 ENABLE_TESTS_FALSE = @ENABLE_TESTS_FALSE@
 ENABLE_TESTS_TRUE = @ENABLE_TESTS_TRUE@
 EXEEXT = @EXEEXT@
@@ -180,6 +184,8 @@ GLIB20_LIBS = @GLIB20_LIBS@
 GREP = @GREP@
 GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
+HAVE_DBM_FALSE = @HAVE_DBM_FALSE@
+HAVE_DBM_TRUE = @HAVE_DBM_TRUE@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
 HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
@@ -353,8 +359,10 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 EXTRA_DIST = build-db.in service-types
-pkgdata_DATA = service-types $(am__append_1)
+pkgdata_DATA = service-types $(am__append_1) $(am__append_2)
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@noinst_SCRIPTS = build-db
 @HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@noinst_SCRIPTS = build-db
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@CLEANFILES = service-types.db* build-db
 @HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@CLEANFILES = service-types.db build-db
 all: all-am
 
@@ -539,11 +547,20 @@ uninstall-am: uninstall-info-am uninstall-pkgdataDATA
 
 
 @HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@build-db: build-db.in
-@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' $< > $@
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' \
+@HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	    -e 's,@DBM\@,gdbm,g' $< > $@
 @HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	chmod +x $@
 
 @HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db: service-types build-db
 @HAVE_GDBM_TRUE@@HAVE_PYTHON_TRUE@	$(PYTHON) build-db $(srcdir)/$< $@
+
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@build-db: build-db.in
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' \
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	    -e 's,@DBM\@,dbm,g' $< > $@
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	chmod +x $@
+
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@service-types.db: service-types build-db
+@HAVE_DBM_TRUE@@HAVE_PYTHON_TRUE@	$(PYTHON) build-db $(srcdir)/$< $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

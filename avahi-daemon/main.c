@@ -1,4 +1,4 @@
-/* $Id: main.c 1222 2006-06-21 21:29:37Z lennart $ */
+/* $Id: main.c 1259 2006-08-22 01:48:48Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -286,18 +286,17 @@ static void server_callback(AvahiServer *s, AvahiServerState state, void *userda
         case AVAHI_SERVER_COLLISION: {
             char *n;
             
+            avahi_set_proc_title("%s: collision", argv0);
+            
             static_service_remove_from_server();
             static_hosts_remove_from_server();
-            
             remove_dns_server_entry_groups();
-            
+
             n = avahi_alternative_host_name(avahi_server_get_host_name(s));
             avahi_log_warn("Host name conflict, retrying with <%s>", n);
             avahi_server_set_host_name(s, n);
             avahi_free(n);
 
-            avahi_set_proc_title("%s: collision", argv0);
-            
             break;
         }
 
@@ -308,8 +307,14 @@ static void server_callback(AvahiServer *s, AvahiServerState state, void *userda
             break;
 
         case AVAHI_SERVER_REGISTERING:
-            avahi_set_proc_title("%s: registering [%s]", argv0, avahi_server_get_host_name_fqdn(s));
 
+            avahi_set_proc_title("%s: registering [%s]", argv0, avahi_server_get_host_name_fqdn(s));
+            
+            static_service_remove_from_server();
+            static_hosts_remove_from_server();
+            remove_dns_server_entry_groups();
+            
+            break;
 
         case AVAHI_SERVER_INVALID:
             break;
@@ -683,7 +688,7 @@ static void signal_callback(AvahiWatch *watch, AVAHI_GCC_UNUSED int fd, AVAHI_GC
             static_hosts_load(0);
 #endif            
             static_service_add_to_server();
-            static_service_remove_from_server();
+            static_hosts_add_to_server();
 
             if (resolv_conf_entry_group)
                 avahi_s_entry_group_reset(resolv_conf_entry_group);

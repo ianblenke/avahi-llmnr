@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1034 2005-11-25 01:19:31Z lennart $
+# $Id: Makefile.am 1248 2006-08-21 16:43:44Z lennart $
 
 # This file is part of avahi.
 #
@@ -57,7 +57,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@ENABLE_COMPAT_LIBDNS_SD_TRUE@@ENABLE_TESTS_TRUE@@HAVE_DBUS_TRUE@noinst_PROGRAMS = txt-test$(EXEEXT)
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@ENABLE_TESTS_TRUE@@HAVE_DBUS_TRUE@noinst_PROGRAMS = txt-test$(EXEEXT) \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@ENABLE_TESTS_TRUE@@HAVE_DBUS_TRUE@	null-test$(EXEEXT)
 subdir = avahi-compat-libdns_sd
 DIST_COMMON = $(am__avahi_compat_libdns_sd_HEADERS_DIST) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -91,12 +92,22 @@ libdns_sd_la_OBJECTS = $(am_libdns_sd_la_OBJECTS)
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am_libdns_sd_la_rpath =  \
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	-rpath $(libdir)
 PROGRAMS = $(noinst_PROGRAMS)
+am__null_test_SOURCES_DIST = dns_sd.h compat.c null-test.c warn.c \
+	warn.h
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am_null_test_OBJECTS = null_test-compat.$(OBJEXT) \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	null_test-null-test.$(OBJEXT) \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	null_test-warn.$(OBJEXT)
+null_test_OBJECTS = $(am_null_test_OBJECTS)
+am__DEPENDENCIES_1 =
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@null_test_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	$(am__DEPENDENCIES_1) \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	../avahi-common/libavahi-common.la \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	../avahi-client/libavahi-client.la
 am__txt_test_SOURCES_DIST = dns_sd.h txt.c txt-test.c warn.c warn.h
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am_txt_test_OBJECTS = txt_test-txt.$(OBJEXT) \
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	txt_test-txt-test.$(OBJEXT) \
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	txt_test-warn.$(OBJEXT)
 txt_test_OBJECTS = $(am_txt_test_OBJECTS)
-am__DEPENDENCIES_1 =
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@txt_test_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	$(am__DEPENDENCIES_1) \
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	../avahi-common/libavahi-common.la
@@ -111,9 +122,10 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libdns_sd_la_SOURCES) $(txt_test_SOURCES)
+SOURCES = $(libdns_sd_la_SOURCES) $(null_test_SOURCES) \
+	$(txt_test_SOURCES)
 DIST_SOURCES = $(am__libdns_sd_la_SOURCES_DIST) \
-	$(am__txt_test_SOURCES_DIST)
+	$(am__null_test_SOURCES_DIST) $(am__txt_test_SOURCES_DIST)
 am__avahi_compat_libdns_sd_HEADERS_DIST = dns_sd.h
 avahi_compat_libdns_sdHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(avahi_compat_libdns_sd_HEADERS)
@@ -129,6 +141,7 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AVAHI_GROUP = @AVAHI_GROUP@
+AVAHI_PRIV_ACCESS_GROUP = @AVAHI_PRIV_ACCESS_GROUP@
 AVAHI_USER = @AVAHI_USER@
 AWK = @AWK@
 BUILD_MANPAGES_FALSE = @BUILD_MANPAGES_FALSE@
@@ -206,6 +219,8 @@ ENABLE_COMPAT_HOWL_FALSE = @ENABLE_COMPAT_HOWL_FALSE@
 ENABLE_COMPAT_HOWL_TRUE = @ENABLE_COMPAT_HOWL_TRUE@
 ENABLE_COMPAT_LIBDNS_SD_FALSE = @ENABLE_COMPAT_LIBDNS_SD_FALSE@
 ENABLE_COMPAT_LIBDNS_SD_TRUE = @ENABLE_COMPAT_LIBDNS_SD_TRUE@
+ENABLE_CORE_DOCS_FALSE = @ENABLE_CORE_DOCS_FALSE@
+ENABLE_CORE_DOCS_TRUE = @ENABLE_CORE_DOCS_TRUE@
 ENABLE_TESTS_FALSE = @ENABLE_TESTS_FALSE@
 ENABLE_TESTS_TRUE = @ENABLE_TESTS_TRUE@
 EXEEXT = @EXEEXT@
@@ -219,6 +234,8 @@ GLIB20_LIBS = @GLIB20_LIBS@
 GREP = @GREP@
 GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
+HAVE_DBM_FALSE = @HAVE_DBM_FALSE@
+HAVE_DBM_TRUE = @HAVE_DBM_TRUE@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
 HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
@@ -414,6 +431,14 @@ AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")'
 
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@txt_test_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS)
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@txt_test_LDADD = $(AM_LDADD) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS) ../avahi-common/libavahi-common.la
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@null_test_SOURCES = \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	dns_sd.h \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	compat.c \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	null-test.c \
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@	warn.c warn.h
+
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@null_test_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS)
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@null_test_LDADD = $(AM_LDADD) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@CLEANFILES = libdns_sd-test.o libdns_sd-test
 all: all-am
 
@@ -484,6 +509,9 @@ clean-noinstPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+null-test$(EXEEXT): $(null_test_OBJECTS) $(null_test_DEPENDENCIES) 
+	@rm -f null-test$(EXEEXT)
+	$(LINK) $(null_test_LDFLAGS) $(null_test_OBJECTS) $(null_test_LDADD) $(LIBS)
 txt-test$(EXEEXT): $(txt_test_OBJECTS) $(txt_test_DEPENDENCIES) 
 	@rm -f txt-test$(EXEEXT)
 	$(LINK) $(txt_test_LDFLAGS) $(txt_test_OBJECTS) $(txt_test_LDADD) $(LIBS)
@@ -498,6 +526,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdns_sd_la-txt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdns_sd_la-unsupported.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdns_sd_la-warn.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/null_test-compat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/null_test-null-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/null_test-warn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/txt_test-txt-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/txt_test-txt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/txt_test-warn.Po@am__quote@
@@ -550,6 +581,48 @@ libdns_sd_la-warn.lo: warn.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='warn.c' object='libdns_sd_la-warn.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdns_sd_la_CFLAGS) $(CFLAGS) -c -o libdns_sd_la-warn.lo `test -f 'warn.c' || echo '$(srcdir)/'`warn.c
+
+null_test-compat.o: compat.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -MT null_test-compat.o -MD -MP -MF "$(DEPDIR)/null_test-compat.Tpo" -c -o null_test-compat.o `test -f 'compat.c' || echo '$(srcdir)/'`compat.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/null_test-compat.Tpo" "$(DEPDIR)/null_test-compat.Po"; else rm -f "$(DEPDIR)/null_test-compat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='compat.c' object='null_test-compat.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -c -o null_test-compat.o `test -f 'compat.c' || echo '$(srcdir)/'`compat.c
+
+null_test-compat.obj: compat.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -MT null_test-compat.obj -MD -MP -MF "$(DEPDIR)/null_test-compat.Tpo" -c -o null_test-compat.obj `if test -f 'compat.c'; then $(CYGPATH_W) 'compat.c'; else $(CYGPATH_W) '$(srcdir)/compat.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/null_test-compat.Tpo" "$(DEPDIR)/null_test-compat.Po"; else rm -f "$(DEPDIR)/null_test-compat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='compat.c' object='null_test-compat.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -c -o null_test-compat.obj `if test -f 'compat.c'; then $(CYGPATH_W) 'compat.c'; else $(CYGPATH_W) '$(srcdir)/compat.c'; fi`
+
+null_test-null-test.o: null-test.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -MT null_test-null-test.o -MD -MP -MF "$(DEPDIR)/null_test-null-test.Tpo" -c -o null_test-null-test.o `test -f 'null-test.c' || echo '$(srcdir)/'`null-test.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/null_test-null-test.Tpo" "$(DEPDIR)/null_test-null-test.Po"; else rm -f "$(DEPDIR)/null_test-null-test.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='null-test.c' object='null_test-null-test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -c -o null_test-null-test.o `test -f 'null-test.c' || echo '$(srcdir)/'`null-test.c
+
+null_test-null-test.obj: null-test.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -MT null_test-null-test.obj -MD -MP -MF "$(DEPDIR)/null_test-null-test.Tpo" -c -o null_test-null-test.obj `if test -f 'null-test.c'; then $(CYGPATH_W) 'null-test.c'; else $(CYGPATH_W) '$(srcdir)/null-test.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/null_test-null-test.Tpo" "$(DEPDIR)/null_test-null-test.Po"; else rm -f "$(DEPDIR)/null_test-null-test.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='null-test.c' object='null_test-null-test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -c -o null_test-null-test.obj `if test -f 'null-test.c'; then $(CYGPATH_W) 'null-test.c'; else $(CYGPATH_W) '$(srcdir)/null-test.c'; fi`
+
+null_test-warn.o: warn.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -MT null_test-warn.o -MD -MP -MF "$(DEPDIR)/null_test-warn.Tpo" -c -o null_test-warn.o `test -f 'warn.c' || echo '$(srcdir)/'`warn.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/null_test-warn.Tpo" "$(DEPDIR)/null_test-warn.Po"; else rm -f "$(DEPDIR)/null_test-warn.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='warn.c' object='null_test-warn.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -c -o null_test-warn.o `test -f 'warn.c' || echo '$(srcdir)/'`warn.c
+
+null_test-warn.obj: warn.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -MT null_test-warn.obj -MD -MP -MF "$(DEPDIR)/null_test-warn.Tpo" -c -o null_test-warn.obj `if test -f 'warn.c'; then $(CYGPATH_W) 'warn.c'; else $(CYGPATH_W) '$(srcdir)/warn.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/null_test-warn.Tpo" "$(DEPDIR)/null_test-warn.Po"; else rm -f "$(DEPDIR)/null_test-warn.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='warn.c' object='null_test-warn.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(null_test_CFLAGS) $(CFLAGS) -c -o null_test-warn.obj `if test -f 'warn.c'; then $(CYGPATH_W) 'warn.c'; else $(CYGPATH_W) '$(srcdir)/warn.c'; fi`
 
 txt_test-txt.o: txt.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(txt_test_CFLAGS) $(CFLAGS) -MT txt_test-txt.o -MD -MP -MF "$(DEPDIR)/txt_test-txt.Tpo" -c -o txt_test-txt.o `test -f 'txt.c' || echo '$(srcdir)/'`txt.c; \

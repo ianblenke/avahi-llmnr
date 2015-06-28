@@ -1,7 +1,7 @@
 #ifndef fooerrorhfoo
 #define fooerrorhfoo
 
-/* $Id: error.h 1124 2006-01-30 20:57:58Z lennart $ */
+/* $Id: error.h 1266 2006-08-23 23:35:46Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -88,6 +88,7 @@ enum {
     AVAHI_ERR_NOT_PERMITTED = -50,           /**< Operation not permitted */
     AVAHI_ERR_INVALID_ARGUMENT = -51,        /**< Invalid argument */
     AVAHI_ERR_IS_EMPTY = -52,                /**< Is empty */
+    AVAHI_ERR_NO_CHANGE = -53,               /**< The requested operation is invalid because redundant */
     
     /****
      ****    IF YOU ADD A NEW ERROR CODE HERE, PLEASE DON'T FORGET TO ADD
@@ -97,7 +98,7 @@ enum {
      ****    Also remember to update the MAX value below.
      ****/
     
-    AVAHI_ERR_MAX = -53
+    AVAHI_ERR_MAX = -54
 };
 
 /** Return a human readable error string for the specified error code */

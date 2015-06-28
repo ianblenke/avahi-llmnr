@@ -1,4 +1,4 @@
-# $Id: Makefile.am 534 2005-09-08 20:20:03Z lathiat $
+# $Id: Makefile.am 1247 2006-08-21 14:43:05Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -48,12 +48,10 @@ interfaces_DATA = $(interfaces)
 
 else 
 
-if HAVE_PYTHON 
-if HAVE_DBUS
+if HAVE_PYTHON_DBUS
 
 interfaces_DATA = $(interfaces)
 
-endif
 endif
 endif
 

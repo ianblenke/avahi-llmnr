@@ -1,4 +1,4 @@
-/* $Id: avahi-resolve.c 988 2005-11-16 22:34:12Z lennart $ */
+/* $Id: avahi-resolve.c 1262 2006-08-22 02:26:11Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -42,10 +42,6 @@
 #include <avahi-client/lookup.h>
 
 #include "sigint.h"
-
-#ifdef HAVE_GDBM
-#include "stdb.h"
-#endif
 
 typedef enum {
     COMMAND_UNSPEC, 

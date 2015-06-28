@@ -1,4 +1,4 @@
-/* $Id: avahi-publish.c 1071 2006-01-11 13:33:59Z lathiat $ */
+/* $Id: avahi-publish.c 1258 2006-08-22 01:48:13Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -189,7 +189,11 @@ static void client_callback(AvahiClient *c, AvahiClientState state, AVAHI_GCC_UN
 
             if (config->verbose)
                 fprintf(stderr, "Host name conflict\n");
+
+            /* Fall through */
             
+        case AVAHI_CLIENT_S_REGISTERING:
+
             if (entry_group) {
                 avahi_entry_group_free(entry_group);
                 entry_group = NULL;
@@ -200,9 +204,9 @@ static void client_callback(AvahiClient *c, AvahiClientState state, AVAHI_GCC_UN
             
             if (config->verbose)
                 fprintf(stderr, "Waiting for daemon ...\n");
+            
             break;
             
-        case AVAHI_CLIENT_S_REGISTERING:
             ;
     }
 }

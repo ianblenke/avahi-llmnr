@@ -1,4 +1,4 @@
-/* $Id: cache.c 980 2005-11-16 01:15:46Z lennart $ */
+/* $Id: cache.c 1275 2006-08-25 18:45:36Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -480,7 +480,7 @@ void avahi_cache_start_poof(AvahiCache *c, AvahiKey *key, const AvahiAddress *a)
     assert(c);
     assert(key);
 
-    avahi_cache_walk(c, key, start_poof_callback, a);
+    avahi_cache_walk(c, key, start_poof_callback, (void*) a);
 }
 
 void avahi_cache_stop_poof(AvahiCache *c, AvahiRecord *record, const AvahiAddress *a) {

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 989 2005-11-16 22:36:16Z lennart $
+# $Id: Makefile.am 1263 2006-08-22 02:27:14Z lennart $
 
 # This file is part of avahi.
 #
@@ -56,10 +56,13 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @HAVE_DBUS_TRUE@bin_PROGRAMS = avahi-browse$(EXEEXT) \
-@HAVE_DBUS_TRUE@	avahi-resolve$(EXEEXT) avahi-publish$(EXEEXT)
+@HAVE_DBUS_TRUE@	avahi-resolve$(EXEEXT) avahi-publish$(EXEEXT) \
+@HAVE_DBUS_TRUE@	avahi-set-host-name$(EXEEXT)
 @HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@am__append_1 = stdb.h stdb.c
 @HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@am__append_2 = -DDATABASE_FILE=\"$(pkgdatadir)/service-types.db\"
 @HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@am__append_3 = -lgdbm
+@HAVE_DBM_TRUE@@HAVE_DBUS_TRUE@am__append_4 = stdb.h stdb.c
+@HAVE_DBM_TRUE@@HAVE_DBUS_TRUE@am__append_5 = -DDATABASE_FILE=\"$(pkgdatadir)/service-types.db\"
 subdir = avahi-utils
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -78,9 +81,12 @@ am__avahi_browse_SOURCES_DIST = avahi-browse.c sigint.c sigint.h \
 	stdb.h stdb.c
 @HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@am__objects_1 =  \
 @HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@	avahi_browse-stdb.$(OBJEXT)
+@HAVE_DBM_TRUE@@HAVE_DBUS_TRUE@am__objects_2 =  \
+@HAVE_DBM_TRUE@@HAVE_DBUS_TRUE@	avahi_browse-stdb.$(OBJEXT)
 @HAVE_DBUS_TRUE@am_avahi_browse_OBJECTS =  \
 @HAVE_DBUS_TRUE@	avahi_browse-avahi-browse.$(OBJEXT) \
-@HAVE_DBUS_TRUE@	avahi_browse-sigint.$(OBJEXT) $(am__objects_1)
+@HAVE_DBUS_TRUE@	avahi_browse-sigint.$(OBJEXT) $(am__objects_1) \
+@HAVE_DBUS_TRUE@	$(am__objects_2)
 avahi_browse_OBJECTS = $(am_avahi_browse_OBJECTS)
 am__DEPENDENCIES_1 =
 @HAVE_DBUS_TRUE@avahi_browse_DEPENDENCIES =  \
@@ -103,6 +109,14 @@ avahi_resolve_OBJECTS = $(am_avahi_resolve_OBJECTS)
 @HAVE_DBUS_TRUE@avahi_resolve_DEPENDENCIES =  \
 @HAVE_DBUS_TRUE@	../avahi-client/libavahi-client.la \
 @HAVE_DBUS_TRUE@	../avahi-common/libavahi-common.la
+am__avahi_set_host_name_SOURCES_DIST = avahi-set-host-name.c sigint.c \
+	sigint.h
+@HAVE_DBUS_TRUE@am_avahi_set_host_name_OBJECTS = avahi_set_host_name-avahi-set-host-name.$(OBJEXT) \
+@HAVE_DBUS_TRUE@	avahi_set_host_name-sigint.$(OBJEXT)
+avahi_set_host_name_OBJECTS = $(am_avahi_set_host_name_OBJECTS)
+@HAVE_DBUS_TRUE@avahi_set_host_name_DEPENDENCIES =  \
+@HAVE_DBUS_TRUE@	../avahi-client/libavahi-client.la \
+@HAVE_DBUS_TRUE@	../avahi-common/libavahi-common.la
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -115,10 +129,11 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(avahi_browse_SOURCES) $(avahi_publish_SOURCES) \
-	$(avahi_resolve_SOURCES)
+	$(avahi_resolve_SOURCES) $(avahi_set_host_name_SOURCES)
 DIST_SOURCES = $(am__avahi_browse_SOURCES_DIST) \
 	$(am__avahi_publish_SOURCES_DIST) \
-	$(am__avahi_resolve_SOURCES_DIST)
+	$(am__avahi_resolve_SOURCES_DIST) \
+	$(am__avahi_set_host_name_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -131,6 +146,7 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AVAHI_GROUP = @AVAHI_GROUP@
+AVAHI_PRIV_ACCESS_GROUP = @AVAHI_PRIV_ACCESS_GROUP@
 AVAHI_USER = @AVAHI_USER@
 AWK = @AWK@
 BUILD_MANPAGES_FALSE = @BUILD_MANPAGES_FALSE@
@@ -208,6 +224,8 @@ ENABLE_COMPAT_HOWL_FALSE = @ENABLE_COMPAT_HOWL_FALSE@
 ENABLE_COMPAT_HOWL_TRUE = @ENABLE_COMPAT_HOWL_TRUE@
 ENABLE_COMPAT_LIBDNS_SD_FALSE = @ENABLE_COMPAT_LIBDNS_SD_FALSE@
 ENABLE_COMPAT_LIBDNS_SD_TRUE = @ENABLE_COMPAT_LIBDNS_SD_TRUE@
+ENABLE_CORE_DOCS_FALSE = @ENABLE_CORE_DOCS_FALSE@
+ENABLE_CORE_DOCS_TRUE = @ENABLE_CORE_DOCS_TRUE@
 ENABLE_TESTS_FALSE = @ENABLE_TESTS_FALSE@
 ENABLE_TESTS_TRUE = @ENABLE_TESTS_TRUE@
 EXEEXT = @EXEEXT@
@@ -221,6 +239,8 @@ GLIB20_LIBS = @GLIB20_LIBS@
 GREP = @GREP@
 GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
+HAVE_DBM_FALSE = @HAVE_DBM_FALSE@
+HAVE_DBM_TRUE = @HAVE_DBM_TRUE@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
 HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
@@ -397,8 +417,9 @@ target_alias = @target_alias@
 # This cool debug trap works on i386/gcc only
 AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")'
 @HAVE_DBUS_TRUE@avahi_browse_SOURCES = avahi-browse.c sigint.c \
-@HAVE_DBUS_TRUE@	sigint.h $(am__append_1)
-@HAVE_DBUS_TRUE@avahi_browse_CFLAGS = $(AM_CFLAGS) $(am__append_2)
+@HAVE_DBUS_TRUE@	sigint.h $(am__append_1) $(am__append_4)
+@HAVE_DBUS_TRUE@avahi_browse_CFLAGS = $(AM_CFLAGS) $(am__append_2) \
+@HAVE_DBUS_TRUE@	$(am__append_5)
 @HAVE_DBUS_TRUE@avahi_browse_LDADD = $(AM_LDADD) \
 @HAVE_DBUS_TRUE@	../avahi-client/libavahi-client.la \
 @HAVE_DBUS_TRUE@	../avahi-common/libavahi-common.la \
@@ -409,6 +430,9 @@ AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")'
 @HAVE_DBUS_TRUE@avahi_publish_SOURCES = avahi-publish.c sigint.c sigint.h
 @HAVE_DBUS_TRUE@avahi_publish_CFLAGS = $(AM_CFLAGS)
 @HAVE_DBUS_TRUE@avahi_publish_LDADD = $(AM_LDADD) ../avahi-client/libavahi-client.la ../avahi-common/libavahi-common.la
+@HAVE_DBUS_TRUE@avahi_set_host_name_SOURCES = avahi-set-host-name.c sigint.c sigint.h
+@HAVE_DBUS_TRUE@avahi_set_host_name_CFLAGS = $(AM_CFLAGS)
+@HAVE_DBUS_TRUE@avahi_set_host_name_LDADD = $(AM_LDADD) ../avahi-client/libavahi-client.la ../avahi-common/libavahi-common.la
 all: all-am
 
 .SUFFIXES:
@@ -479,6 +503,9 @@ avahi-publish$(EXEEXT): $(avahi_publish_OBJECTS) $(avahi_publish_DEPENDENCIES)
 avahi-resolve$(EXEEXT): $(avahi_resolve_OBJECTS) $(avahi_resolve_DEPENDENCIES) 
 	@rm -f avahi-resolve$(EXEEXT)
 	$(LINK) $(avahi_resolve_LDFLAGS) $(avahi_resolve_OBJECTS) $(avahi_resolve_LDADD) $(LIBS)
+avahi-set-host-name$(EXEEXT): $(avahi_set_host_name_OBJECTS) $(avahi_set_host_name_DEPENDENCIES) 
+	@rm -f avahi-set-host-name$(EXEEXT)
+	$(LINK) $(avahi_set_host_name_LDFLAGS) $(avahi_set_host_name_OBJECTS) $(avahi_set_host_name_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -493,6 +520,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_publish-sigint.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_resolve-avahi-resolve.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_resolve-sigint.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_set_host_name-avahi-set-host-name.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avahi_set_host_name-sigint.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -612,6 +641,34 @@ avahi_resolve-sigint.obj: sigint.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sigint.c' object='avahi_resolve-sigint.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_resolve_CFLAGS) $(CFLAGS) -c -o avahi_resolve-sigint.obj `if test -f 'sigint.c'; then $(CYGPATH_W) 'sigint.c'; else $(CYGPATH_W) '$(srcdir)/sigint.c'; fi`
+
+avahi_set_host_name-avahi-set-host-name.o: avahi-set-host-name.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_set_host_name_CFLAGS) $(CFLAGS) -MT avahi_set_host_name-avahi-set-host-name.o -MD -MP -MF "$(DEPDIR)/avahi_set_host_name-avahi-set-host-name.Tpo" -c -o avahi_set_host_name-avahi-set-host-name.o `test -f 'avahi-set-host-name.c' || echo '$(srcdir)/'`avahi-set-host-name.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_set_host_name-avahi-set-host-name.Tpo" "$(DEPDIR)/avahi_set_host_name-avahi-set-host-name.Po"; else rm -f "$(DEPDIR)/avahi_set_host_name-avahi-set-host-name.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='avahi-set-host-name.c' object='avahi_set_host_name-avahi-set-host-name.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_set_host_name_CFLAGS) $(CFLAGS) -c -o avahi_set_host_name-avahi-set-host-name.o `test -f 'avahi-set-host-name.c' || echo '$(srcdir)/'`avahi-set-host-name.c
+
+avahi_set_host_name-avahi-set-host-name.obj: avahi-set-host-name.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_set_host_name_CFLAGS) $(CFLAGS) -MT avahi_set_host_name-avahi-set-host-name.obj -MD -MP -MF "$(DEPDIR)/avahi_set_host_name-avahi-set-host-name.Tpo" -c -o avahi_set_host_name-avahi-set-host-name.obj `if test -f 'avahi-set-host-name.c'; then $(CYGPATH_W) 'avahi-set-host-name.c'; else $(CYGPATH_W) '$(srcdir)/avahi-set-host-name.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_set_host_name-avahi-set-host-name.Tpo" "$(DEPDIR)/avahi_set_host_name-avahi-set-host-name.Po"; else rm -f "$(DEPDIR)/avahi_set_host_name-avahi-set-host-name.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='avahi-set-host-name.c' object='avahi_set_host_name-avahi-set-host-name.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_set_host_name_CFLAGS) $(CFLAGS) -c -o avahi_set_host_name-avahi-set-host-name.obj `if test -f 'avahi-set-host-name.c'; then $(CYGPATH_W) 'avahi-set-host-name.c'; else $(CYGPATH_W) '$(srcdir)/avahi-set-host-name.c'; fi`
+
+avahi_set_host_name-sigint.o: sigint.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_set_host_name_CFLAGS) $(CFLAGS) -MT avahi_set_host_name-sigint.o -MD -MP -MF "$(DEPDIR)/avahi_set_host_name-sigint.Tpo" -c -o avahi_set_host_name-sigint.o `test -f 'sigint.c' || echo '$(srcdir)/'`sigint.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_set_host_name-sigint.Tpo" "$(DEPDIR)/avahi_set_host_name-sigint.Po"; else rm -f "$(DEPDIR)/avahi_set_host_name-sigint.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sigint.c' object='avahi_set_host_name-sigint.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_set_host_name_CFLAGS) $(CFLAGS) -c -o avahi_set_host_name-sigint.o `test -f 'sigint.c' || echo '$(srcdir)/'`sigint.c
+
+avahi_set_host_name-sigint.obj: sigint.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_set_host_name_CFLAGS) $(CFLAGS) -MT avahi_set_host_name-sigint.obj -MD -MP -MF "$(DEPDIR)/avahi_set_host_name-sigint.Tpo" -c -o avahi_set_host_name-sigint.obj `if test -f 'sigint.c'; then $(CYGPATH_W) 'sigint.c'; else $(CYGPATH_W) '$(srcdir)/sigint.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/avahi_set_host_name-sigint.Tpo" "$(DEPDIR)/avahi_set_host_name-sigint.Po"; else rm -f "$(DEPDIR)/avahi_set_host_name-sigint.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sigint.c' object='avahi_set_host_name-sigint.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(avahi_set_host_name_CFLAGS) $(CFLAGS) -c -o avahi_set_host_name-sigint.obj `if test -f 'sigint.c'; then $(CYGPATH_W) 'sigint.c'; else $(CYGPATH_W) '$(srcdir)/sigint.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1206 2006-05-02 15:10:31Z sebest $
+# $Id: Makefile.am 1245 2006-08-06 11:54:31Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -28,13 +28,30 @@ noinst_SCRIPTS=build-db
 pkgdata_DATA+=service-types.db
 
 build-db: build-db.in
-	sed -e 's,@PYTHON\@,$(PYTHON),g' $< > $@
+	sed -e 's,@PYTHON\@,$(PYTHON),g' \
+	    -e 's,@DBM\@,gdbm,g' $< > $@
 	chmod +x $@
 
 service-types.db: service-types build-db
 	$(PYTHON) build-db $(srcdir)/$< $@
 
 CLEANFILES = service-types.db build-db
+
+endif
+if HAVE_DBM
+
+noinst_SCRIPTS=build-db
+pkgdata_DATA+=service-types.db.*
+
+build-db: build-db.in
+	sed -e 's,@PYTHON\@,$(PYTHON),g' \
+	    -e 's,@DBM\@,dbm,g' $< > $@
+	chmod +x $@
+
+service-types.db: service-types build-db
+	$(PYTHON) build-db $(srcdir)/$< $@
+
+CLEANFILES = service-types.db* build-db
 
 endif
 endif

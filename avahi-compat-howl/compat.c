@@ -1,4 +1,4 @@
-/* $Id: compat.c 937 2005-11-08 21:56:28Z lennart $ */
+/* $Id: compat.c 1258 2006-08-22 01:48:13Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -711,13 +711,13 @@ static void reg_client_callback(oid_data *data, AvahiClientState state) {
         }
             
         case AVAHI_CLIENT_S_COLLISION:
+        case AVAHI_CLIENT_S_REGISTERING:
 
             /* Remove our entry */
             avahi_entry_group_reset(data->object);
             break;
 
         case AVAHI_CLIENT_CONNECTING:
-        case AVAHI_CLIENT_S_REGISTERING:
             /* Ignore */
             break;
     }
