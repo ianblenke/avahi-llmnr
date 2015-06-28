@@ -1,4 +1,4 @@
-# $Id: service-types 1075 2006-01-14 11:54:45Z lennart $
+# $Id: service-types 1111 2006-01-27 20:32:01Z lennart $
 
 # This file is part of avahi.
 #
@@ -28,13 +28,13 @@
 
 ### This list is NOT intended to be used as developer
 ### documentation. If you're looking for the correct service type to
-### use for you application please refer to the URL mentioned above.
+### use for your application please refer to the URL mentioned above.
 
 _http._tcp:Web Site
 _http._tcp[de]:Web-Angebot
 
 _https._tcp:Secure Web Site
-_https._tcpi[de]:Sicheres Web-Angebot
+_https._tcp[de]:Sicheres Web-Angebot
 
 _ftp._tcp:FTP File Transfer
 _ftp._tcp[de]:FTP Dateifreigabe
@@ -84,9 +84,7 @@ _pdl-datastream._tcp:PDL Printer
 
 _ipp._tcp:Internet Printer
 
-#_http-rss091._tcp:Web Syndication RSS 0.91
-
-#_http-rss20._tcp:Web Syndication RSS 2.0
+_rss._tcp:Web Syndication RSS
 
 _dacp._tcp:iTunes Remote Control
 
@@ -104,4 +102,8 @@ _omni-bookmark._tcp:OmniWeb Bookmark Sharing
 
 _MacOSXDupSuppress._tcp:MacOS X Duplicate Machine Suppression
 
+_lobby._tcp:Gobby Collaborative Editor Session
 
+_dpap._tcp:Digital Photo Sharing
+
+_skype._tcp:Skype VoIP

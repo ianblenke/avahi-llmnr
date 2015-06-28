@@ -1,4 +1,4 @@
-/* $Id: qt-watch.cpp 801 2005-10-17 20:20:53Z lennart $ */
+/* $Id: qt-watch.cpp 1116 2006-01-30 14:55:36Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -177,19 +177,19 @@ static void q_timeout_free(AvahiTimeout *t)
     delete t;
 }
 
-static AvahiPoll qt_poll;
-
 const AvahiPoll* avahi_qt_poll_get(void) 
 {
-    qt_poll.userdata=0;
-    qt_poll.watch_new = q_watch_new;
-    qt_poll.watch_free = q_watch_free;
-    qt_poll.watch_update = q_watch_update;
-    qt_poll.watch_get_events = q_watch_get_events;
-    
-    qt_poll.timeout_new = q_timeout_new;
-    qt_poll.timeout_free = q_timeout_free;
-    qt_poll.timeout_update = q_timeout_update;
+    static const AvahiPoll qt_poll = {
+        NULL,
+        q_watch_new,
+        q_watch_update,
+        q_watch_get_events,
+        q_watch_free,
+        q_timeout_new,
+        q_timeout_update,
+        q_timeout_free
+    };
+
     return &qt_poll;
 }
 

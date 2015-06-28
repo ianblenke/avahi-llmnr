@@ -1,3 +1,22 @@
+Avahi 0.6.6
+===========
+
+This release fixes some bugs and includes some documentation updates
+
+ * Add a bunch of new types to the service type database
+ * Return errors of avahi_entry_group_commit() properly
+ * Many doxygen documentation improvements
+ * Fix destruction of AvahiEntryGroup objects using 
+   avahi_entry_group_free().
+ * Don't allow commiting of empty entry groups
+ * Use a little less memory in avahi-qt
+ * Don't accept empty TXT strings
+ * Update example "client-publish-service.c" to show how to modify an
+   existing service
+
+This release is backwards compatible with Avahi 0.6, 0.6.1, 0.6.2,
+0.6.3, 0.6.4 and 0.6.5
+
 Avahi 0.6.5
 ===========
 
@@ -306,4 +325,4 @@ contribution to Avahi 0.1.
 Cheers,
 The Avahi Team
 
-$Id: NEWS 1105 2006-01-23 00:49:11Z lennart $
+$Id: NEWS 1123 2006-01-30 20:57:08Z lennart $

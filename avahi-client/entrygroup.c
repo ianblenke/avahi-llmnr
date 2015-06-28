@@ -1,4 +1,4 @@
-/* $Id: entrygroup.c 984 2005-11-16 19:30:11Z lennart $ */
+/* $Id: entrygroup.c 1110 2006-01-27 16:33:48Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -237,7 +237,7 @@ int avahi_entry_group_free(AvahiEntryGroup *group) {
         
     assert(group);
     
-    if (group->path && !avahi_client_is_connected(client))
+    if (group->path && avahi_client_is_connected(client))
         r = entry_group_simple_method_call(group, "Free");
     
     AVAHI_LLIST_REMOVE(AvahiEntryGroup, groups, client->groups, group);

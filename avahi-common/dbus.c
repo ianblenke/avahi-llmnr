@@ -1,4 +1,4 @@
-/* $Id: dbus.c 1026 2005-11-24 00:07:12Z lennart $ */
+/* $Id: dbus.c 1124 2006-01-30 20:57:58Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -87,7 +87,8 @@ static const char * const table[- AVAHI_ERR_MAX] = {
     AVAHI_DBUS_ERR_NOT_SUPPORTED,
 
     AVAHI_DBUS_ERR_NOT_PERMITTED,
-    AVAHI_DBUS_ERR_INVALID_ARGUMENT
+    AVAHI_DBUS_ERR_INVALID_ARGUMENT,
+    AVAHI_DBUS_ERR_IS_EMPTY
 };
 
 struct error_map {

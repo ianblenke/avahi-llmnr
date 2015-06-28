@@ -1,7 +1,7 @@
 #ifndef foowatchhfoo
 #define foowatchhfoo
 
-/* $Id: watch.h 872 2005-10-26 01:21:30Z lennart $ */
+/* $Id: watch.h 1108 2006-01-27 00:42:18Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -57,8 +57,8 @@ typedef void (*AvahiTimeoutCallback)(AvahiTimeout *t, void *userdata);
 /** Defines an abstracted event polling API. This may be used to
  connect Avahi to other main loops. This is losely based on Unix
  poll(2). A consumer will call watch_new() for all file descriptors it
- wants to listen for events on. In addition he can call set_wakeup()
- to define a single wakeup time.*/
+ wants to listen for events on. In addition he can call timeout_new()
+ to define time based events .*/
 struct AvahiPoll {
 
     /** Some abstract user data usable by the provider of the API */

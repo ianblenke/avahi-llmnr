@@ -1,4 +1,4 @@
-/* $Id: dbus-entry-group.c 901 2005-10-27 20:44:59Z lennart $ */
+/* $Id: dbus-entry-group.c 1118 2006-01-30 15:41:54Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -120,7 +120,9 @@ DBusHandlerResult avahi_dbus_msg_entry_group_impl(DBusConnection *c, DBusMessage
             goto fail;
         }
 
-        avahi_s_entry_group_commit(i->entry_group);
+        if (avahi_s_entry_group_commit(i->entry_group) < 0)
+            return avahi_dbus_respond_error(c, m, avahi_server_errno(avahi_server), NULL);
+        
         return avahi_dbus_respond_ok(c, m);
         
         

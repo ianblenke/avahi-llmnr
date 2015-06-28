@@ -1,4 +1,4 @@
-/* $Id: error.c 1026 2005-11-24 00:07:12Z lennart $ */
+/* $Id: error.c 1124 2006-01-30 20:57:58Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -84,7 +84,8 @@ const char *avahi_strerror(int error) {
         "Not supported",
 
         "Not permitted",
-        "Invalid argument"
+        "Invalid argument",
+	"Is empty"
     };
 
     if (-error < 0 || -error >= -AVAHI_ERR_MAX)

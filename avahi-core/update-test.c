@@ -1,4 +1,4 @@
-/* $Id: update-test.c 879 2005-10-26 21:27:40Z lennart $ */
+/* $Id: update-test.c 1112 2006-01-27 20:32:46Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -61,6 +61,8 @@ static void modify_txt_callback(AVAHI_GCC_UNUSED AvahiTimeout *e, void *userdata
     int ret;
     AvahiServer *s = userdata;
 
+    avahi_log_debug("modifying");
+    
     ret = avahi_server_update_service_txt(s, group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 0, "foo", "_http._tcp", NULL, "test2", NULL);
     assert(ret == AVAHI_OK);
 }
@@ -84,7 +86,7 @@ int main(AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
     assert(server);
     avahi_server_config_free(&config);
 
-    poll_api->timeout_new(poll_api, avahi_elapse_time(&tv, 1000*20, 0), modify_txt_callback, server);
+    poll_api->timeout_new(poll_api, avahi_elapse_time(&tv, 1000*10, 0), modify_txt_callback, server);
 
     avahi_simple_poll_loop(simple_poll);
 }
