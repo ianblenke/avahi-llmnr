@@ -1,0 +1,28 @@
+#!/sbin/runscript
+# $Id: avahi-daemon.in 416 2005-08-23 11:59:02Z lathiat $
+# Copyright 1999-2005 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+opts="${opts} reload"
+
+depend() {
+	use net dbus
+}
+
+start() {
+	ebegin "Starting avahi-daemon"
+	@sbindir@/avahi-daemon -D
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping avahi-daemon"
+	@sbindir@/avahi-daemon -k
+	eend $?
+}
+
+reload() {
+	ebegin "Reloading avahi-daemon"
+	@sbindir@/avahi-daemon -r
+	eend $?
+}
