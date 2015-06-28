@@ -1,5 +1,3 @@
-# $Id: Makefile.am 1251 2006-08-21 23:31:59Z lennart $
-
 # This file is part of avahi.
 #
 # avahi is free software; you can redistribute it and/or modify it
@@ -34,13 +32,13 @@ EXTRA_DIST =					\
 	$(srcdir)/bssh.cs
 
 $(ASSEMBLY): $(AVAHISOURCES)
-	mcs -keyfile:$(top_srcdir)/avahi-sharp/avahi.snk -target:library -out:$@ -debug $(AVAHISOURCES) -pkg:gtk-sharp-2.0 -r:$(top_builddir)/avahi-sharp/avahi-sharp.dll -r:Mono.Posix
+	$(AM_V_GEN)mcs -keyfile:$(top_srcdir)/avahi-sharp/avahi.snk -target:library -out:$@ -debug $(AVAHISOURCES) -pkg:gtk-sharp-2.0 -r:$(top_builddir)/avahi-sharp/avahi-sharp.dll -r:Mono.Posix
 
 $(ASSEMBLY).config: $(ASSEMBLY).config.in
-	$(srcdir)/gencfg.sh $(top_builddir)/avahi-common/libavahi-common.la < $< > $@
+	$(AM_V_GEN)$(srcdir)/gencfg.sh $(top_builddir)/avahi-common/libavahi-common.la < $< > $@
 
 bssh.exe: $(srcdir)/bssh.cs $(ASSEMBLY)
-	mcs -out:$@ $(srcdir)/bssh.cs -r:./avahi-ui-sharp.dll -r:../avahi-sharp/avahi-sharp.dll -pkg:gtk-sharp-2.0 -r:Mono.Posix
+	$(AM_V_GEN)mcs -out:$@ $(srcdir)/bssh.cs -r:./avahi-ui-sharp.dll -r:../avahi-sharp/avahi-sharp.dll -pkg:gtk-sharp-2.0 -r:Mono.Posix
 
 if HAVE_MONO
 if HAVE_DBUS
@@ -49,12 +47,12 @@ all: $(ASSEMBLY) $(ASSEMBLY).config bssh.exe
 
 if HAVE_MONODOC
 update-docs: $(ASSEMBLY)
-	$(MONODOCER) -assembly:$(ASSEMBLY) -path:en
+	$(AM_V_GEN)$(MONODOCER) -assembly:$(ASSEMBLY) -path:en
 
 avahi-ui-sharp-docs.zip: avahi-ui-sharp-docs.tree
 
 avahi-ui-sharp-docs.tree: $(srcdir)/en/*/*
-	$(MDASSEMBLER) --out avahi-ui-sharp-docs --ecma $(srcdir)/en
+	$(AM_V_GEN)$(MDASSEMBLER) --out avahi-ui-sharp-docs --ecma $(srcdir)/en
 
 monodocdir = $(MONODOC_DIR)
 monodoc_DATA = avahi-ui-sharp-docs.zip avahi-ui-sharp-docs.tree avahi-ui-sharp-docs.source

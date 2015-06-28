@@ -1,5 +1,3 @@
-/* $Id */
-
 /* This file is based on the GLIB utf8 validation functions. The
  * original license text follows. */
 
@@ -37,8 +35,8 @@
      (((Char) & 0xFFFFF800) != 0xD800) &&     \
      ((Char) < 0xFDD0 || (Char) > 0xFDEF) &&  \
      ((Char) & 0xFFFE) != 0xFFFE)
-   
-     
+
+
 #define CONTINUATION_CHAR                           \
  do {                                     \
   if ((*(const unsigned char *)p & 0xc0) != 0x80) /* 10xxxxxx */ \
@@ -60,10 +58,10 @@ avahi_utf8_valid (const char *str)
     {
       if (*(const unsigned char *)p < 128)
 	/* done */;
-      else 
+      else
 	{
 	  const char *last;
-	  
+
 	  last = p;
 	  if ((*(const unsigned char *)p & 0xe0) == 0xc0) /* 110xxxxx */
 	    {
@@ -88,7 +86,7 @@ avahi_utf8_valid (const char *str)
 		}
 	      else
 		goto error;
-	      
+
 	      p++;
 	      CONTINUATION_CHAR;
 	    TWO_REMAINING:
@@ -96,16 +94,16 @@ avahi_utf8_valid (const char *str)
 	      CONTINUATION_CHAR;
 	      p++;
 	      CONTINUATION_CHAR;
-	      
+
 	      if ( (val < min))
 		goto error;
 
 	      if ( (!UNICODE_VALID(val)))
 		goto error;
-	    } 
-	  
+	    }
+
 	  continue;
-	  
+
 	error:
 	  return NULL;
 	}

@@ -1,21 +1,19 @@
 #ifndef foodbusinternalhfoo
 #define foodbusinternalhfoo
 
-/* $Id$ */
-
 /***
   This file is part of avahi.
- 
+
   avahi is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation; either version 2.1 of the
   License, or (at your option) any later version.
- 
+
   avahi is distributed in the hope that it will be useful, but WITHOUT
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
   Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with avahi; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
@@ -45,9 +43,9 @@ typedef struct SyncServiceResolverInfo SyncServiceResolverInfo;
 typedef struct AsyncServiceResolverInfo AsyncServiceResolverInfo;
 typedef struct RecordBrowserInfo RecordBrowserInfo;
 
-#define CLIENTS_MAX 256
-#define OBJECTS_PER_CLIENT_MAX 250
-#define ENTRIES_PER_ENTRY_GROUP_MAX 20
+#define DEFAULT_CLIENTS_MAX 4096
+#define DEFAULT_OBJECTS_PER_CLIENT_MAX 1024
+#define DEFAULT_ENTRIES_PER_ENTRY_GROUP_MAX 32
 
 struct EntryGroupInfo {
     unsigned id;
@@ -55,8 +53,8 @@ struct EntryGroupInfo {
     AvahiSEntryGroup *entry_group;
     char *path;
 
-    int n_entries;
-    
+    unsigned n_entries;
+
     AVAHI_LLIST_FIELDS(EntryGroupInfo, entry_groups);
 };
 
@@ -151,8 +149,8 @@ struct Client {
     unsigned id;
     char *name;
     unsigned current_id;
-    int n_objects;
-    
+    unsigned n_objects;
+
     AVAHI_LLIST_FIELDS(Client, clients);
     AVAHI_LLIST_HEAD(EntryGroupInfo, entry_groups);
     AVAHI_LLIST_HEAD(SyncHostNameResolverInfo, sync_host_name_resolvers);
@@ -171,11 +169,17 @@ struct Server {
     const AvahiPoll *poll_api;
     DBusConnection *bus;
     AVAHI_LLIST_HEAD(Client, clients);
-    int n_clients;
+    unsigned n_clients;
     unsigned current_id;
 
     AvahiTimeout *reconnect_timeout;
     int reconnect;
+
+    unsigned n_clients_max;
+    unsigned n_objects_per_client_max;
+    unsigned n_entries_per_entry_group_max;
+
+    int disable_user_service_publishing;
 };
 
 extern Server *server;
@@ -224,7 +228,7 @@ void avahi_dbus_sync_service_resolver_callback(
     const AvahiAddress *a,
     uint16_t port,
     AvahiStringList *txt,
-    AvahiLookupResultFlags flags, 
+    AvahiLookupResultFlags flags,
     void* userdata);
 
 void avahi_dbus_async_service_resolver_free(AsyncServiceResolverInfo *i);
@@ -240,7 +244,7 @@ void avahi_dbus_async_service_resolver_callback(
     const AvahiAddress *a,
     uint16_t port,
     AvahiStringList *txt,
-    AvahiLookupResultFlags flags, 
+    AvahiLookupResultFlags flags,
     void* userdata);
 
 DBusHandlerResult avahi_dbus_msg_async_service_resolver_impl(DBusConnection *c, DBusMessage *m, void *userdata);

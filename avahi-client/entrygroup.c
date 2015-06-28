@@ -1,18 +1,16 @@
-/* $Id$ */
-
 /***
   This file is part of avahi.
- 
+
   avahi is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation; either version 2.1 of the
   License, or (at your option) any later version.
- 
+
   avahi is distributed in the hope that it will be useful, but WITHOUT
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
   Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with avahi; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
@@ -57,23 +55,23 @@ static int retrieve_state(AvahiEntryGroup *group) {
     int r = AVAHI_OK;
     int32_t state;
     AvahiClient *client;
-    
+
     dbus_error_init(&error);
 
     assert(group);
     client = group->client;
-    
+
     if (!(message = dbus_message_new_method_call(AVAHI_DBUS_NAME, group->path, AVAHI_DBUS_INTERFACE_ENTRY_GROUP, "GetState"))) {
         r = avahi_client_set_errno(client, AVAHI_ERR_NO_MEMORY);
         goto fail;
     }
-        
+
     if (!(reply = dbus_connection_send_with_reply_and_block(client->bus, message, -1, &error)) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
         goto fail;
     }
-    
+
     if (!dbus_message_get_args(reply, &error, DBUS_TYPE_INT32, &state, DBUS_TYPE_INVALID) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
@@ -84,7 +82,7 @@ static int retrieve_state(AvahiEntryGroup *group) {
     dbus_message_unref(reply);
 
     return state;
-    
+
 fail:
     if (dbus_error_is_set(&error)) {
         r = avahi_client_set_dbus_error(client, &error);
@@ -120,14 +118,14 @@ AvahiEntryGroup* avahi_entry_group_new (AvahiClient *client, AvahiEntryGroupCall
         avahi_client_set_errno(client, AVAHI_ERR_NO_MEMORY);
         goto fail;
     }
-    
+
     group->client = client;
     group->callback = callback;
     group->userdata = userdata;
     group->state_valid = 0;
     group->path = NULL;
     AVAHI_LLIST_PREPEND(AvahiEntryGroup, groups, client->groups, group);
-    
+
     if (!(message = dbus_message_new_method_call(
               AVAHI_DBUS_NAME,
               AVAHI_DBUS_PATH_SERVER,
@@ -148,7 +146,7 @@ AvahiEntryGroup* avahi_entry_group_new (AvahiClient *client, AvahiEntryGroupCall
         avahi_client_set_errno (client, AVAHI_ERR_DBUS_ERROR);
         goto fail;
     }
-    
+
     if (!(group->path = avahi_strdup (path))) {
 
         /* FIXME: We don't remove the object on the server side */
@@ -161,7 +159,7 @@ AvahiEntryGroup* avahi_entry_group_new (AvahiClient *client, AvahiEntryGroupCall
         avahi_client_set_errno(client, state);
         goto fail;
     }
-    
+
     avahi_entry_group_set_state(group, (AvahiEntryGroupState) state);
 
     dbus_message_unref(message);
@@ -177,13 +175,13 @@ fail:
 
     if (group)
         avahi_entry_group_free(group);
-    
+
     if (message)
         dbus_message_unref(message);
 
     if (reply)
         dbus_message_unref(reply);
-    
+
     return NULL;
 }
 
@@ -192,23 +190,23 @@ static int entry_group_simple_method_call(AvahiEntryGroup *group, const char *me
     DBusError error;
     int r = AVAHI_OK;
     AvahiClient *client;
-    
+
     dbus_error_init(&error);
 
     assert(group);
     client = group->client;
-    
+
     if (!(message = dbus_message_new_method_call(AVAHI_DBUS_NAME, group->path, AVAHI_DBUS_INTERFACE_ENTRY_GROUP, method))) {
         r = avahi_client_set_errno(client, AVAHI_ERR_NO_MEMORY);
         goto fail;
     }
-        
+
     if (!(reply = dbus_connection_send_with_reply_and_block(client->bus, message, -1, &error)) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
         goto fail;
     }
-    
+
     if (!dbus_message_get_args(reply, &error, DBUS_TYPE_INVALID) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
@@ -219,7 +217,7 @@ static int entry_group_simple_method_call(AvahiEntryGroup *group, const char *me
     dbus_message_unref(reply);
 
     return AVAHI_OK;
-    
+
 fail:
     if (dbus_error_is_set(&error)) {
         r = avahi_client_set_dbus_error(client, &error);
@@ -238,12 +236,12 @@ fail:
 int avahi_entry_group_free(AvahiEntryGroup *group) {
     AvahiClient *client = group->client;
     int r = AVAHI_OK;
-        
+
     assert(group);
-    
+
     if (group->path && avahi_client_is_connected(client))
         r = entry_group_simple_method_call(group, "Free");
-    
+
     AVAHI_LLIST_REMOVE(AvahiEntryGroup, groups, client->groups, group);
 
     avahi_free(group->path);
@@ -255,7 +253,7 @@ int avahi_entry_group_free(AvahiEntryGroup *group) {
 int avahi_entry_group_commit(AvahiEntryGroup *group) {
     int ret;
     assert(group);
-    
+
     if (!group->path || !avahi_client_is_connected(group->client))
         return avahi_client_set_errno(group->client, AVAHI_ERR_BAD_STATE);
 
@@ -269,13 +267,13 @@ int avahi_entry_group_commit(AvahiEntryGroup *group) {
 int avahi_entry_group_reset(AvahiEntryGroup *group) {
     int ret;
     assert(group);
-    
+
     if (!group->path || !avahi_client_is_connected(group->client))
         return avahi_client_set_errno(group->client, AVAHI_ERR_BAD_STATE);
 
     if ((ret = entry_group_simple_method_call(group, "Reset")) < 0)
         return ret;
-    
+
     group->state_valid = 0;
     return ret;
 }
@@ -285,13 +283,13 @@ int avahi_entry_group_get_state (AvahiEntryGroup *group) {
 
     if (group->state_valid)
         return group->state;
-    
+
     return retrieve_state(group);
 }
 
 AvahiClient* avahi_entry_group_get_client (AvahiEntryGroup *group) {
     assert(group);
-    
+
     return group->client;
 }
 
@@ -301,7 +299,7 @@ int avahi_entry_group_is_empty (AvahiEntryGroup *group) {
     int r = AVAHI_OK;
     int b;
     AvahiClient *client;
-    
+
     assert(group);
     client = group->client;
 
@@ -309,18 +307,18 @@ int avahi_entry_group_is_empty (AvahiEntryGroup *group) {
         return avahi_client_set_errno(group->client, AVAHI_ERR_BAD_STATE);
 
     dbus_error_init(&error);
-    
+
     if (!(message = dbus_message_new_method_call(AVAHI_DBUS_NAME, group->path, AVAHI_DBUS_INTERFACE_ENTRY_GROUP, "IsEmpty"))) {
         r = avahi_client_set_errno(client, AVAHI_ERR_NO_MEMORY);
         goto fail;
     }
-        
+
     if (!(reply = dbus_connection_send_with_reply_and_block(client->bus, message, -1, &error)) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
         goto fail;
     }
-    
+
     if (!dbus_message_get_args(reply, &error, DBUS_TYPE_BOOLEAN, &b, DBUS_TYPE_INVALID) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
@@ -331,7 +329,7 @@ int avahi_entry_group_is_empty (AvahiEntryGroup *group) {
     dbus_message_unref(reply);
 
     return !!b;
-    
+
 fail:
     if (dbus_error_is_set(&error)) {
         r = avahi_client_set_dbus_error(client, &error);
@@ -349,16 +347,16 @@ fail:
 
 static int append_rdata(DBusMessage *message, const void *rdata, size_t size) {
     DBusMessageIter iter, sub;
- 
+
     assert(message);
- 
+
     dbus_message_iter_init_append(message, &iter);
- 
+
     if (!(dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_BYTE_AS_STRING, &sub)) ||
         !(dbus_message_iter_append_fixed_array(&sub, DBUS_TYPE_BYTE, &rdata, size)) ||
         !(dbus_message_iter_close_container(&iter, &sub)))
         return -1;
-    
+
     return 0;
 }
 
@@ -373,7 +371,7 @@ static int append_string_list(DBusMessage *message, AvahiStringList *txt) {
 
     /* Reverse the string list, so that we can pass it in-order to the server */
     txt = avahi_string_list_reverse(txt);
-    
+
     if (!dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, "ay", &sub))
         goto fail;
 
@@ -381,7 +379,7 @@ static int append_string_list(DBusMessage *message, AvahiStringList *txt) {
     for (p = txt; p != NULL; p = p->next) {
         DBusMessageIter sub2;
         const uint8_t *data = p->text;
-        
+
         if (!(dbus_message_iter_open_container(&sub, DBUS_TYPE_ARRAY, "y", &sub2)) ||
             !(dbus_message_iter_append_fixed_array(&sub2, DBUS_TYPE_BYTE, &data, p->size)) ||
             !(dbus_message_iter_close_container(&sub, &sub2)))
@@ -412,7 +410,7 @@ int avahi_entry_group_add_service_strlst(
     const char *host,
     uint16_t port,
     AvahiStringList *txt) {
-    
+
     DBusMessage *message = NULL, *reply = NULL;
     int r = AVAHI_OK;
     DBusError error;
@@ -434,9 +432,9 @@ int avahi_entry_group_add_service_strlst(
 
     if (!host)
         host = "";
-    
+
     dbus_error_init(&error);
-    
+
     if (!(message = dbus_message_new_method_call (AVAHI_DBUS_NAME, group->path, AVAHI_DBUS_INTERFACE_ENTRY_GROUP, "AddService"))) {
         r = avahi_client_set_errno(client, AVAHI_ERR_NO_MEMORY);
         goto fail;
@@ -461,13 +459,13 @@ int avahi_entry_group_add_service_strlst(
         r = avahi_client_set_errno(group->client, AVAHI_ERR_NO_MEMORY);
         goto fail;
     }
-    
+
     if (!(reply = dbus_connection_send_with_reply_and_block(client->bus, message, -1, &error)) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
         goto fail;
     }
-    
+
     if (!dbus_message_get_args(reply, &error, DBUS_TYPE_INVALID) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
@@ -480,7 +478,7 @@ int avahi_entry_group_add_service_strlst(
     return AVAHI_OK;
 
 fail:
-    
+
     if (dbus_error_is_set(&error)) {
         r = avahi_client_set_dbus_error(client, &error);
         dbus_error_free(&error);
@@ -506,7 +504,7 @@ int avahi_entry_group_add_service(
     const char *host,
     uint16_t port,
     ...) {
-    
+
     va_list va;
     int r;
     AvahiStringList *txt;
@@ -552,7 +550,7 @@ int avahi_entry_group_add_service_subtype(
         domain = "";
 
     dbus_error_init(&error);
-    
+
     if (!(message = dbus_message_new_method_call (AVAHI_DBUS_NAME, group->path, AVAHI_DBUS_INTERFACE_ENTRY_GROUP, "AddServiceSubtype"))) {
         r = avahi_client_set_errno(client, AVAHI_ERR_NO_MEMORY);
         goto fail;
@@ -575,13 +573,13 @@ int avahi_entry_group_add_service_subtype(
         r = avahi_client_set_errno(group->client, AVAHI_ERR_NO_MEMORY);
         goto fail;
     }
-    
+
     if (!(reply = dbus_connection_send_with_reply_and_block(client->bus, message, -1, &error)) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
         goto fail;
     }
-    
+
     if (!dbus_message_get_args(reply, &error, DBUS_TYPE_INVALID) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
@@ -594,7 +592,7 @@ int avahi_entry_group_add_service_subtype(
     return AVAHI_OK;
 
 fail:
-    
+
     if (dbus_error_is_set(&error)) {
         r = avahi_client_set_dbus_error(client, &error);
         dbus_error_free(&error);
@@ -615,9 +613,9 @@ int avahi_entry_group_update_service_txt(
     AvahiIfIndex interface,
     AvahiProtocol protocol,
     AvahiPublishFlags flags,
-    const char *name,     
-    const char *type,     
-    const char *domain,   
+    const char *name,
+    const char *type,
+    const char *domain,
     ...) {
 
     va_list va;
@@ -637,9 +635,9 @@ int avahi_entry_group_update_service_txt_strlst(
     AvahiIfIndex interface,
     AvahiProtocol protocol,
     AvahiPublishFlags flags,
-    const char *name,     
-    const char *type,     
-    const char *domain,   
+    const char *name,
+    const char *type,
+    const char *domain,
     AvahiStringList *txt) {
 
     DBusMessage *message = NULL, *reply = NULL;
@@ -660,9 +658,9 @@ int avahi_entry_group_update_service_txt_strlst(
 
     if (!domain)
         domain = "";
-    
+
     dbus_error_init(&error);
-    
+
     if (!(message = dbus_message_new_method_call (AVAHI_DBUS_NAME, group->path, AVAHI_DBUS_INTERFACE_ENTRY_GROUP, "UpdateServiceTxt"))) {
         r = avahi_client_set_errno(client, AVAHI_ERR_NO_MEMORY);
         goto fail;
@@ -691,7 +689,7 @@ int avahi_entry_group_update_service_txt_strlst(
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
         goto fail;
     }
-    
+
     if (!dbus_message_get_args(reply, &error, DBUS_TYPE_INVALID) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
@@ -704,7 +702,7 @@ int avahi_entry_group_update_service_txt_strlst(
     return AVAHI_OK;
 
 fail:
-    
+
     if (dbus_error_is_set(&error)) {
         r = avahi_client_set_dbus_error(client, &error);
         dbus_error_free(&error);
@@ -745,7 +743,7 @@ int avahi_entry_group_add_address(
         return avahi_client_set_errno(group->client, AVAHI_ERR_BAD_STATE);
 
     dbus_error_init(&error);
-    
+
     if (!(message = dbus_message_new_method_call (AVAHI_DBUS_NAME, group->path, AVAHI_DBUS_INTERFACE_ENTRY_GROUP, "AddAddress"))) {
         r = avahi_client_set_errno(client, AVAHI_ERR_NO_MEMORY);
         goto fail;
@@ -754,7 +752,7 @@ int avahi_entry_group_add_address(
     i_interface = (int32_t) interface;
     i_protocol = (int32_t) protocol;
     u_flags = (uint32_t) flags;
-        
+
     if (!avahi_address_snprint (s_address, sizeof (s_address), a))
     {
         r = avahi_client_set_errno(client, AVAHI_ERR_INVALID_ADDRESS);
@@ -772,13 +770,13 @@ int avahi_entry_group_add_address(
         r = avahi_client_set_errno(group->client, AVAHI_ERR_NO_MEMORY);
         goto fail;
     }
-    
+
     if (!(reply = dbus_connection_send_with_reply_and_block(client->bus, message, -1, &error)) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
         goto fail;
     }
-    
+
     if (!dbus_message_get_args(reply, &error, DBUS_TYPE_INVALID) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
@@ -791,7 +789,7 @@ int avahi_entry_group_add_address(
     return AVAHI_OK;
 
 fail:
-    
+
     if (dbus_error_is_set(&error)) {
         r = avahi_client_set_dbus_error(client, &error);
         dbus_error_free(&error);
@@ -834,7 +832,7 @@ int avahi_entry_group_add_record(
         return avahi_client_set_errno(group->client, AVAHI_ERR_BAD_STATE);
 
     dbus_error_init(&error);
-    
+
     if (!(message = dbus_message_new_method_call (AVAHI_DBUS_NAME, group->path, AVAHI_DBUS_INTERFACE_ENTRY_GROUP, "AddRecord"))) {
         r = avahi_client_set_errno(client, AVAHI_ERR_NO_MEMORY);
         goto fail;
@@ -843,7 +841,7 @@ int avahi_entry_group_add_record(
     i_interface = (int32_t) interface;
     i_protocol = (int32_t) protocol;
     u_flags = (uint32_t) flags;
-        
+
     if (!dbus_message_append_args(
             message,
             DBUS_TYPE_INT32, &i_interface,
@@ -857,13 +855,13 @@ int avahi_entry_group_add_record(
         r = avahi_client_set_errno(group->client, AVAHI_ERR_NO_MEMORY);
         goto fail;
     }
-    
+
     if (!(reply = dbus_connection_send_with_reply_and_block(client->bus, message, -1, &error)) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
         goto fail;
     }
-    
+
     if (!dbus_message_get_args(reply, &error, DBUS_TYPE_INVALID) ||
         dbus_error_is_set (&error)) {
         r = avahi_client_set_errno(client, AVAHI_ERR_DBUS_ERROR);
@@ -876,7 +874,7 @@ int avahi_entry_group_add_record(
     return AVAHI_OK;
 
 fail:
-    
+
     if (dbus_error_is_set(&error)) {
         r = avahi_client_set_dbus_error(client, &error);
         dbus_error_free(&error);

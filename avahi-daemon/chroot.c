@@ -1,18 +1,16 @@
-/* $Id$ */
-
 /***
   This file is part of avahi.
- 
+
   avahi is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation; either version 2.1 of the
   License, or (at your option) any later version.
- 
+
   avahi is distributed in the hope that it will be useful, but WITHOUT
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
   Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with avahi; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
@@ -66,15 +64,15 @@ static const char* const get_file_name_table[AVAHI_CHROOT_MAX] = {
     NULL,
     "/etc/resolv.conf",
 #ifdef HAVE_DBUS
-    AVAHI_DBUS_INTROSPECTION_DIR"/Server.introspect",
-    AVAHI_DBUS_INTROSPECTION_DIR"/EntryGroup.introspect",
-    AVAHI_DBUS_INTROSPECTION_DIR"/AddressResolver.introspect",
-    AVAHI_DBUS_INTROSPECTION_DIR"/DomainBrowser.introspect",
-    AVAHI_DBUS_INTROSPECTION_DIR"/HostNameResolver.introspect",
-    AVAHI_DBUS_INTROSPECTION_DIR"/ServiceBrowser.introspect",
-    AVAHI_DBUS_INTROSPECTION_DIR"/ServiceResolver.introspect",
-    AVAHI_DBUS_INTROSPECTION_DIR"/ServiceTypeBrowser.introspect",
-    AVAHI_DBUS_INTROSPECTION_DIR"/RecordBrowser.introspect",
+    AVAHI_DBUS_INTROSPECTION_DIR"/org.freedesktop.Avahi.Server.xml",
+    AVAHI_DBUS_INTROSPECTION_DIR"/org.freedesktop.Avahi.EntryGroup.xml",
+    AVAHI_DBUS_INTROSPECTION_DIR"/org.freedesktop.Avahi.AddressResolver.xml",
+    AVAHI_DBUS_INTROSPECTION_DIR"/org.freedesktop.Avahi.DomainBrowser.xml",
+    AVAHI_DBUS_INTROSPECTION_DIR"/org.freedesktop.Avahi.HostNameResolver.xml",
+    AVAHI_DBUS_INTROSPECTION_DIR"/org.freedesktop.Avahi.ServiceBrowser.xml",
+    AVAHI_DBUS_INTROSPECTION_DIR"/org.freedesktop.Avahi.ServiceResolver.xml",
+    AVAHI_DBUS_INTROSPECTION_DIR"/org.freedesktop.Avahi.ServiceTypeBrowser.xml",
+    AVAHI_DBUS_INTROSPECTION_DIR"/org.freedesktop.Avahi.RecordBrowser.xml",
 #endif
     NULL,
     NULL
@@ -106,19 +104,19 @@ static int send_fd(int fd, int payload_fd) {
     struct iovec iov;
     struct msghdr msg;
     union {
-	struct cmsghdr hdr;
-	char buf[CMSG_SPACE(sizeof(int))];
+        struct cmsghdr hdr;
+        char buf[CMSG_SPACE(sizeof(int))];
     } cmsg;
 
     /* Send a file descriptor over the socket */
-    
+
     memset(&iov, 0, sizeof(iov));
     memset(&msg, 0, sizeof(msg));
     memset(&cmsg, 0, sizeof(cmsg));
-	
-    iov.iov_base = &dummy;  
+
+    iov.iov_base = &dummy;
     iov.iov_len = sizeof(dummy);
-	
+
     msg.msg_iov = &iov;
     msg.msg_iovlen = 1;
     msg.msg_name = NULL;
@@ -127,7 +125,7 @@ static int send_fd(int fd, int payload_fd) {
     msg.msg_control = &cmsg;
     msg.msg_controllen = sizeof(cmsg);
     msg.msg_flags = 0;
-		
+
     cmsg.hdr.cmsg_len = CMSG_LEN(sizeof(int));
     cmsg.hdr.cmsg_level = SOL_SOCKET;
     cmsg.hdr.cmsg_type = SCM_RIGHTS;
@@ -146,8 +144,8 @@ static int recv_fd(int fd) {
     struct iovec iov;
     struct msghdr msg;
     union {
-	struct cmsghdr hdr;
-	char buf[CMSG_SPACE(sizeof(int))];
+        struct cmsghdr hdr;
+        char buf[CMSG_SPACE(sizeof(int))];
     } cmsg;
 
     /* Receive a file descriptor from a socket */
@@ -155,10 +153,10 @@ static int recv_fd(int fd) {
     memset(&iov, 0, sizeof(iov));
     memset(&msg, 0, sizeof(msg));
     memset(&cmsg, 0, sizeof(cmsg));
-    
+
     iov.iov_base = &dummy;
     iov.iov_len = sizeof(dummy);
-    
+
     msg.msg_iov = &iov;
     msg.msg_iovlen = 1;
     msg.msg_name = NULL;
@@ -167,12 +165,12 @@ static int recv_fd(int fd) {
     msg.msg_control = cmsg.buf;
     msg.msg_controllen = sizeof(cmsg);
     msg.msg_flags = 0;
-		
+
     cmsg.hdr.cmsg_len = CMSG_LEN(sizeof(int));
     cmsg.hdr.cmsg_level = SOL_SOCKET;
     cmsg.hdr.cmsg_type = SCM_RIGHTS;
     *((int*) CMSG_DATA(&cmsg.hdr)) = -1;
-		
+
     if (recvmsg(fd, &msg, 0) <= 0) {
         avahi_log_error("recvmsg() failed: %s", strerror(errno));
         return -1;
@@ -183,7 +181,7 @@ static int recv_fd(int fd) {
             errno = EINVAL;
             return -1;
         }
-        
+
         if (!(h = CMSG_FIRSTHDR(&msg))) {
             avahi_log_error("recvmsg() sent no fd.");
             errno = EINVAL;
@@ -197,7 +195,7 @@ static int recv_fd(int fd) {
         return *((int*)CMSG_DATA(h));
     }
 }
-                
+
 static int helper_main(int fd) {
     int ret = 1;
     assert(fd >= 0);
@@ -207,7 +205,7 @@ static int helper_main(int fd) {
      * mind that this code is security sensitive! */
 
     avahi_log_debug(__FILE__": chroot() helper started");
-    
+
     for (;;) {
         uint8_t command;
         ssize_t r;
@@ -217,7 +215,7 @@ static int helper_main(int fd) {
             /* EOF? */
             if (r == 0)
                 break;
-            
+
             avahi_log_error(__FILE__": read() failed: %s", strerror(errno));
             goto fail;
         }
@@ -250,7 +248,7 @@ static int helper_main(int fd) {
                         avahi_log_error(__FILE__": write() failed: %s\n", strerror(errno));
                         goto fail;
                     }
-                    
+
                     break;
                 }
 
@@ -258,24 +256,24 @@ static int helper_main(int fd) {
                     goto fail;
 
                 close(payload);
-                
+
                 break;
             }
 
             case AVAHI_CHROOT_UNLINK_SOCKET:
             case AVAHI_CHROOT_UNLINK_PID: {
                 uint8_t c = AVAHI_CHROOT_SUCCESS;
-                
+
                 unlink(unlink_file_name_table[(int) command]);
 
                 if (write(fd, &c, sizeof(c)) != sizeof(c)) {
                     avahi_log_error(__FILE__": write() failed: %s\n", strerror(errno));
                     goto fail;
                 }
-                
+
                 break;
             }
-                
+
             default:
                 avahi_log_error(__FILE__": Unknown command %02x.", command);
                 break;
@@ -283,11 +281,11 @@ static int helper_main(int fd) {
     }
 
     ret = 0;
-    
+
 fail:
 
     avahi_log_debug(__FILE__": chroot() helper exiting with return value %i", ret);
-    
+
     return ret;
 }
 
@@ -296,12 +294,12 @@ int avahi_chroot_helper_start(const char *argv0) {
     pid_t pid;
 
     assert(helper_fd < 0);
-    
+
     if (socketpair(AF_UNIX, SOCK_STREAM, 0, sock) < 0) {
         avahi_log_error("socketpair() failed: %s", strerror(errno));
         return -1;
     }
-    
+
     if ((pid = fork()) < 0) {
         close(sock[0]);
         close(sock[1]);
@@ -309,15 +307,13 @@ int avahi_chroot_helper_start(const char *argv0) {
         return -1;
     } else if (pid == 0) {
 
-        setsid();
-        
         /* Drop all remaining capabilities */
         avahi_caps_drop_all();
 
         avahi_set_proc_title(argv0, "%s: chroot helper", argv0);
 
         daemon_retval_done();
-        
+
         close(sock[0]);
         helper_main(sock[1]);
         _exit(0);
@@ -342,7 +338,7 @@ int avahi_chroot_helper_get_fd(const char *fname) {
 
     if (helper_fd >= 0) {
         uint8_t command;
-        
+
         for (command = 2; command < AVAHI_CHROOT_MAX; command++)
             if (get_file_name_table[(int) command] &&
                 strcmp(fname, get_file_name_table[(int) command]) == 0)
@@ -355,7 +351,7 @@ int avahi_chroot_helper_get_fd(const char *fname) {
         }
 
         assert(get_file_name_table[(int) command]);
-        
+
         if (write(helper_fd, &command, sizeof(command)) < 0) {
             avahi_log_error("write() failed: %s\n", strerror(errno));
             return -1;
@@ -386,7 +382,7 @@ int avahi_chroot_helper_unlink(const char *fname) {
     if (helper_fd >= 0) {
         uint8_t c, command;
         ssize_t r;
-        
+
         for (command = 2; command < AVAHI_CHROOT_MAX; command++)
             if (unlink_file_name_table[(int) command] &&
                 strcmp(fname, unlink_file_name_table[(int) command]) == 0)
@@ -407,11 +403,11 @@ int avahi_chroot_helper_unlink(const char *fname) {
             avahi_log_error("read() failed: %s\n", r < 0 ? strerror(errno) : "EOF");
             return -1;
         }
-        
+
         return 0;
-        
+
     } else
-        
+
         return unlink(fname);
-    
+
 }

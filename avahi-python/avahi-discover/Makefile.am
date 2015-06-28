@@ -1,5 +1,3 @@
-# $Id$
-
 # This file is part of avahi.
 #
 # avahi is free software; you can redistribute it and/or modify it
@@ -21,8 +19,7 @@ AM_CFLAGS=-I$(top_srcdir)
 
 EXTRA_DIST = \
 	__init__.py \
-	SimpleGladeApp.py \
-	avahi-discover.in \
+	avahi-discover.py \
 	avahi-discover.desktop.in.in
 
 if HAVE_PYTHON
@@ -32,7 +29,7 @@ if HAVE_PYGTK
 pythonscripts =
 
 desktopdir = $(datadir)/applications
-desktop_DATA = 
+desktop_DATA =
 
 avahi_discoverdir = $(pythondir)/avahi_discover
 avahi_discover_PYTHON =
@@ -42,7 +39,7 @@ pythonscripts += \
 	avahi-discover
 desktop_DATA += avahi-discover.desktop
 @INTLTOOL_DESKTOP_RULE@
-avahi_discover_PYTHON += __init__.py SimpleGladeApp.py
+avahi_discover_PYTHON += __init__.py
 endif
 
 if HAVE_DBM
@@ -50,17 +47,17 @@ pythonscripts += \
 	avahi-discover
 desktop_DATA += avahi-discover.desktop
 @INTLTOOL_DESKTOP_RULE@
-avahi_discover_PYTHON += __init__.py SimpleGladeApp.py
+avahi_discover_PYTHON += __init__.py
 endif
 
 avahi-discover.desktop.in: avahi-discover.desktop.in.in
-	sed -e 's,@bindir\@,$(bindir),g' $< > $@
+	$(AM_V_GEN)sed -e 's,@bindir\@,$(bindir),g' $< > $@
 
-avahi-discover: avahi-discover.in
-	sed -e 's,@PYTHON\@,$(PYTHON),g' \
+avahi-discover: avahi-discover.py
+	$(AM_V_GEN)sed -e 's,@PYTHON\@,$(PYTHON),g' \
 		-e 's,@GETTEXT_PACKAGE\@,"$(GETTEXT_PACKAGE)",g' \
-		-e 's,@LOCALEDIR\@,"$(datadir)/locale",g' \
-		-e 's,@interfacesdir\@,$(interfacesdir),g' $< > $@
+		-e 's,@LOCALEDIR\@,"$(avahilocaledir)",g' \
+		-e 's,@interfacesdir\@,$(interfacesdir),g' $< > $@ && \
 	chmod +x $@
 
 bin_SCRIPTS = $(pythonscripts)

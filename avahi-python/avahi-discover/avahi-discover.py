@@ -1,7 +1,5 @@
 #!@PYTHON@
 # -*-python-*-
-# $Id$
-
 # This file is part of avahi.
 #
 # avahi is free software; you can redistribute it and/or modify it
@@ -23,12 +21,14 @@ import os, sys
 
 try:
     import avahi, gettext, gtk, gobject, dbus, avahi.ServiceTypeDatabase
-    from avahi_discover.SimpleGladeApp import SimpleGladeApp
-    gtk.glade.bindtextdomain(@GETTEXT_PACKAGE@, @LOCALEDIR@)
-    gtk.glade.textdomain(@GETTEXT_PACKAGE@)
+    gettext.bindtextdomain(@GETTEXT_PACKAGE@, @LOCALEDIR@)
+    gettext.textdomain(@GETTEXT_PACKAGE@)
     _ = gettext.gettext
 except ImportError, e:
     print "Sorry, to use this tool you need to install Avahi, pygtk and python-dbus.\n Error: %s" % e
+    sys.exit(1)
+except Exception, e:
+    print "Failed to initialize: %s" % e
     sys.exit(1)
 
 
@@ -52,15 +52,20 @@ def error_msg(msg):
     d.run()
     d.destroy()
 
-glade_dir = "@interfacesdir@"
+ui_dir = "@interfacesdir@"
 
 service_type_db = avahi.ServiceTypeDatabase.ServiceTypeDatabase()
 
-class Main_window(SimpleGladeApp):
-    def __init__(self, path="avahi-discover.glade", root="main_window", domain=None, **kwargs):
-        path = os.path.join(glade_dir, path)
+class Main_window:
+    def __init__(self, path="avahi-discover.ui", root="main_window", domain=None, **kwargs):
+        path = os.path.join(ui_dir, path)
         gtk.window_set_default_icon_name("network-wired")
-        SimpleGladeApp.__init__(self, path, root, domain, **kwargs)
+        self.ui = gtk.Builder()
+        self.ui.add_from_file(path)
+        self.ui.connect_signals(self)
+        self.tree_view = self.ui.get_object("tree_view")
+        self.info_label = self.ui.get_object("info_label")
+        self.new()
 
     def on_tree_view_cursor_changed(self, widget, *args):
         (model, iter) = widget.get_selection().get_selected()
@@ -68,7 +73,7 @@ class Main_window(SimpleGladeApp):
         if iter is not None:
             (name,interface,protocol,stype,domain) = self.treemodel.get(iter,1,2,3,4,5)
         if stype == None:
-            self.info_label.set_markup("<i>No service currently selected.</i>")
+            self.info_label.set_markup(_("<i>No service currently selected.</i>"))
             return
         #Asynchronous resolving
         self.server.ResolveService( int(interface), int(protocol), name, stype, domain, avahi.PROTO_UNSPEC, dbus.UInt32(0), reply_handler=self.service_resolved, error_handler=self.print_error)
@@ -79,7 +84,7 @@ class Main_window(SimpleGladeApp):
         if protocol == avahi.PROTO_INET6:
             return "IPv6"
         return "n/a"
-            
+
     def siocgifname(self, interface):
         if interface <= 0:
             return "n/a"
@@ -91,14 +96,14 @@ class Main_window(SimpleGladeApp):
             return "Wide Area"
         else:
             return str(self.siocgifname(interface)) + " " + str(self.protoname(protocol))
-                        
+
     def service_resolved(self, interface, protocol, name, stype, domain, host, aprotocol, address, port, txt, flags):
         print "Service data for service '%s' of type '%s' in domain '%s' on %i.%i:" % (name, stype, domain, interface, protocol)
 
         print "\tHost %s (%s), port %i, TXT data: %s" % (host, address, port, str(avahi.txt_array_to_string_array(txt)))
 
         self.update_label(interface, protocol, name, stype, domain, host, aprotocol, address, port, avahi.txt_array_to_string_array(txt))
-        
+
     def print_error(self, err):
         error_label = "<b>Error:</b> %s" % (err)
         self.info_label.set_markup(error_label)
@@ -111,13 +116,13 @@ class Main_window(SimpleGladeApp):
             return service_type_db[stype]
         except KeyError:
             return stype
-            
+
     def new_service(self, interface, protocol, name, stype, domain, flags):
         print "Found service '%s' of type '%s' in domain '%s' on %i.%i." % (name, stype, domain, interface, protocol)
         if self.zc_ifaces.has_key((interface,protocol)) == False:
 
             ifn = self.get_interface_name(interface, protocol)
-            
+
             self.zc_ifaces[(interface,protocol)] = self.insert_row(self.treemodel, None, ifn, None,interface,protocol,None,domain)
         if self.zc_domains.has_key((interface,protocol,domain)) == False:
             self.zc_domains[(interface,protocol,domain)] = self.insert_row(self.treemodel, self.zc_ifaces[(interface,protocol)], domain,None,interface,protocol,None,domain)
@@ -151,16 +156,16 @@ class Main_window(SimpleGladeApp):
                     parent = self.treemodel.iter_parent(treeiter)
                     self.treemodel.remove(treeiter)
                     del self.zc_ifaces[(interface,protocol)]
- 
+
     def new_service_type(self, interface, protocol, stype, domain, flags):
         global service_browsers
 
-        # Are we already browsing this domain for this type? 
+        # Are we already browsing this domain for this type?
         if service_browsers.has_key((interface, protocol, stype, domain)):
             return
-        
+
         print "Browsing for services of type '%s' in domain '%s' on %i.%i ..." % (stype, domain, interface, protocol)
-        
+
         b = dbus.Interface(self.bus.get_object(avahi.DBUS_NAME, self.server.ServiceBrowserNew(interface, protocol, stype, domain, dbus.UInt32(0))),  avahi.DBUS_INTERFACE_SERVICE_BROWSER)
         b.connect_to_signal('ItemNew', self.new_service)
         b.connect_to_signal('ItemRemove', self.remove_service)
@@ -183,7 +188,7 @@ class Main_window(SimpleGladeApp):
                 print e
                 error_msg("You should check that the avahi daemon is running.\n\nError : %s" % e)
                 sys.exit(0)
-                
+
             b.connect_to_signal('ItemNew', self.new_service_type)
 
             service_type_browsers[(interface, protocol, domain)] = b
@@ -209,18 +214,23 @@ class Main_window(SimpleGladeApp):
                 if len(tmp[0]) > 0:
                     res[tmp[0]] = tmp[1]
         return res
-                                                                            
+
 
     def update_label(self,interface, protocol, name, stype, domain, host, aprotocol, address, port, txt):
         if len(txt) != 0:
             txts = ""
             txtd = self.pair_to_dict(txt)
             for k,v in txtd.items():
-                txts+="<b>TXT <i>%s</i></b> = %s\n" % (k,v)
+                txts+="<b>" + _("TXT") + " <i>%s</i></b> = %s\n" % (k,v)
         else:
-            txts = "<b>TXT Data:</b> <i>empty</i>"
+            txts = "<b>" + _("TXT Data:") + "</b> <i>" + _("empty") + "</i>"
 
-        infos = "<b>Service Type:</b> %s\n<b>Service Name:</b> %s\n<b>Domain Name:</b> %s\n<b>Interface:</b> %s %s\n<b>Address:</b> %s/%s:%i\n%s" % (stype, name, domain, self.siocgifname(interface), self.protoname(protocol), host, address, port, txts.strip())
+        infos = "<b>" + _("Service Type:") + "</b> %s\n"
+        infos += "<b>" + _("Service Name:") + "</b> %s\n"
+        infos += "<b>" + _("Domain Name:") + "</b> %s\n"
+        infos += "<b>" + _("Interface:") + "</b> %s %s\n"
+        infos += "<b>" + _("Address:") + "</b> %s/%s:%i\n%s"
+        infos = infos % (stype, name, domain, self.siocgifname(interface), self.protoname(protocol), host, address, port, txts.strip())
         self.info_label.set_markup(infos)
 
     def insert_row(self, model,parent,
@@ -230,7 +240,6 @@ class Main_window(SimpleGladeApp):
         return myiter
 
     def new(self):
-        print "A new main_window has been created"
         self.treemodel=gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING)
         self.tree_view.set_model(self.treemodel)
 
@@ -249,14 +258,18 @@ class Main_window(SimpleGladeApp):
         self.zc_domains = {}
         self.zc_types = {}
         self.services_browsed = {}
-        
-        self.bus = dbus.SystemBus()
-        self.server = dbus.Interface(self.bus.get_object(avahi.DBUS_NAME, avahi.DBUS_PATH_SERVER), avahi.DBUS_INTERFACE_SERVER)
+
+        try:
+            self.bus = dbus.SystemBus()
+            self.server = dbus.Interface(self.bus.get_object(avahi.DBUS_NAME, avahi.DBUS_PATH_SERVER), avahi.DBUS_INTERFACE_SERVER)
+        except Exception, e:
+            print "Failed to connect to Avahi Server (Is it running?): %s" % e
+            sys.exit(1)
 
         if self.domain is None:
             # Explicitly browse .local
             self.browse_domain(avahi.IF_UNSPEC, avahi.PROTO_UNSPEC, "local")
-                        
+
             # Browse for other browsable domains
             db = dbus.Interface(self.bus.get_object(avahi.DBUS_NAME, self.server.DomainBrowserNew(avahi.IF_UNSPEC, avahi.PROTO_UNSPEC, "", avahi.DOMAIN_BROWSER_BROWSE, dbus.UInt32(0))), avahi.DBUS_INTERFACE_DOMAIN_BROWSER)
             db.connect_to_signal('ItemNew', self.new_domain)
@@ -264,13 +277,12 @@ class Main_window(SimpleGladeApp):
             # Just browse the domain the user wants us to browse
             self.browse_domain(avahi.IF_UNSPEC, avahi.PROTO_UNSPEC, domain)
 
-        
+    def gtk_main_quit(self, *args):
+        gtk.main_quit()
+
 def main():
     main_window = Main_window()
+    gtk.main()
 
-    main_window.run()
-    
 if __name__ == "__main__":
     main()
-
-                                            

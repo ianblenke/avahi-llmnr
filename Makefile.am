@@ -1,5 +1,3 @@
-# $Id$
-
 # This file is part of avahi.
 #
 # avahi is free software; you can redistribute it and/or modify it
@@ -50,7 +48,9 @@ EXTRA_DIST = \
 	avahi-compat-libdns_sd.pc.in \
 	avahi-compat-howl.pc.in \
 	avahi-ui.pc.in \
-	doxygen_to_devhelp.xsl
+	avahi-ui-gtk3.pc.in \
+	doxygen_to_devhelp.xsl \
+        common/introspection.m4
 
 SUBDIRS = \
 	common \
@@ -151,136 +151,68 @@ DX_INPUT += \
 endif
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = avahi-core.pc
 
-avahi-core.pc: avahi-core.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
+%.pc: %.pc.in
+	$(AM_V_GEN)sed -e 's,@prefix\@,$(prefix),g' \
 	    -e 's,@libdir\@,$(libdir),g' \
 	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
 
+pkgconfig_DATA = avahi-core.pc
 CLEANFILES = avahi-core.pc
 
 if HAVE_DBUS
-
 pkgconfig_DATA += avahi-client.pc
-
-avahi-client.pc: avahi-client.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
-	    -e 's,@libdir\@,$(libdir),g' \
-	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
-
 CLEANFILES += avahi-client.pc
 
 if ENABLE_COMPAT_HOWL
-
 pkgconfig_DATA += avahi-compat-howl.pc
-
-avahi-compat-howl.pc: avahi-compat-howl.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
-	    -e 's,@libdir\@,$(libdir),g' \
-	    -e 's,@HOWL_COMPAT_VERSION\@,$(HOWL_COMPAT_VERSION),g' $< > $@
-
 CLEANFILES += avahi-compat-howl.pc
-
 endif
 
 if ENABLE_COMPAT_LIBDNS_SD
-
 pkgconfig_DATA += avahi-compat-libdns_sd.pc
-
-avahi-compat-libdns_sd.pc: avahi-compat-libdns_sd.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
-	    -e 's,@libdir\@,$(libdir),g' \
-	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
-
 CLEANFILES += avahi-compat-libdns_sd.pc
-
 endif
 
 if HAVE_MONO
-
 pkgconfig_DATA += avahi-sharp.pc avahi-ui-sharp.pc
-
-avahi-sharp.pc: avahi-sharp.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
-	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' \
-	    -e 's,@libdir\@,$(libdir),g' $< > $@
-
-avahi-ui-sharp.pc: avahi-ui-sharp.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
-	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' \
-	    -e 's,@libdir\@,$(libdir),g' $< > $@
-
 CLEANFILES += avahi-sharp.pc avahi-ui-sharp.pc
-
 endif
 
 endif
 
 if HAVE_GLIB
-
 pkgconfig_DATA += avahi-glib.pc
-
-avahi-glib.pc: avahi-glib.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
-	    -e 's,@libdir\@,$(libdir),g' \
-	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
-
 CLEANFILES += avahi-glib.pc
 
 if HAVE_GOBJECT
-
 pkgconfig_DATA += avahi-gobject.pc
-
-avahi-gobject.pc: avahi-gobject.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
-	    -e 's,@libdir\@,$(libdir),g' \
-	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
-
 CLEANFILES += avahi-gobject.pc
-
 endif
 endif
 
 if HAVE_GTK
 if HAVE_DBUS
-
 pkgconfig_DATA += avahi-ui.pc
-
-avahi-ui.pc: avahi-ui.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
-	    -e 's,@libdir\@,$(libdir),g' \
-	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
-
 CLEANFILES += avahi-ui.pc
+endif
+endif
 
+if HAVE_GTK3
+if HAVE_DBUS
+pkgconfig_DATA += avahi-ui-gtk3.pc
+CLEANFILES += avahi-ui-gtk3.pc
 endif
 endif
 
 if HAVE_QT3
-
 pkgconfig_DATA += avahi-qt3.pc
-
-avahi-qt3.pc: avahi-qt3.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
-	    -e 's,@libdir\@,$(libdir),g' \
-	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
-
 CLEANFILES += avahi-qt3.pc
-
 endif
 
 if HAVE_QT4
-
 pkgconfig_DATA += avahi-qt4.pc
-
-avahi-qt4.pc: avahi-qt4.pc.in
-	sed -e 's,@prefix\@,$(prefix),g' \
-	    -e 's,@libdir\@,$(libdir),g' \
-	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
-
 CLEANFILES += avahi-qt4.pc
-
 endif
 
 CLEANFILES += avahi.devhelp
@@ -291,11 +223,13 @@ avahi.devhelp: doxygen-run
 MOSTLYCLEANFILES = $(DX_CLEANFILES)
 
 DISTCHECK_CONFIGURE_FLAGS = \
-	--disable-monodoc
+	--disable-monodoc \
+	--enable-introspection \
+	--with-systemdsystemunitdir=$$dc_install_base/$(systemdsystemunitdir)
 
 homepage:
 	$(MAKE) -C man
-	scp avahi-daemon/*.introspect avahi-daemon/introspect.dtd avahi-daemon/introspect.xsl\
+	scp avahi-daemon/*.xml avahi-daemon/introspect.dtd avahi-daemon/introspect.xsl\
 	    man/*.xml man/xmltoman.dtd man/xmltoman.xsl \
 	    tango:www/avahi.org/tree/download/
 	scp avahi-$(PACKAGE_VERSION).tar.gz tango:www/avahi.org/tree/download/
@@ -303,13 +237,6 @@ homepage:
 	$(MAKE) doxygen-run
 	ssh tango rm -rf www/avahi.org/tree/download/doxygen
 	scp -r doxygen/html tango:www/avahi.org/tree/download/doxygen
-
-dist-hook:
-	if test -d .svn ; then \
-		svn update ; \
-		chmod u+w ${distdir}/ChangeLog || true ; \
-		svn2cl -o ${distdir}/ChangeLog ; \
-	fi
 
 DISTCLEANFILES = \
 	po/.intltool-merge-cache

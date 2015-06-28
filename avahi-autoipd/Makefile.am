@@ -1,7 +1,5 @@
-# $Id$
-#
 # This file is part of avahi.
-# 
+#
 # avahi is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2 of the
@@ -54,10 +52,10 @@ nodist_pkgsysconf_SCRIPTS = avahi-autoipd.action
 
 if TARGET_FREEBSD
 avahi-autoipd.action: avahi-autoipd.action.bsd
-	cp $< $@
+	$(AM_V_GEN)cp $< $@
 else
 avahi-autoipd.action: avahi-autoipd.action.linux
-	cp $< $@
+	$(AM_V_GEN)cp $< $@
 endif
 
 if TARGET_DEBIAN
@@ -65,17 +63,17 @@ if TARGET_DEBIAN
 noinst_SCRIPTS = dhclient-enter-hook dhclient-exit-hook
 
 dhclient-enter-hook: dhclient-enter-hook.in
-	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+	$(AM_V_GEN)sed -e 's,@sbindir\@,$(sbindir),g' $< > $@ && \
 	chmod +x $@
 
 dhclient-exit-hook: dhclient-exit-hook.in
-	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+	$(AM_V_GEN)sed -e 's,@sbindir\@,$(sbindir),g' $< > $@ && \
 	chmod +x $@
 
 BUILD = dhclient-exit-hook dhclient-enter-hook
 
-dhcliententerdir = $(sysconfdir)/dhcp3/dhclient-enter-hooks.d
-dhclientexitdir = $(sysconfdir)/dhcp3/dhclient-exit-hooks.d
+dhcliententerdir = $(sysconfdir)/dhcp/dhclient-enter-hooks.d
+dhclientexitdir = $(sysconfdir)/dhcp/dhclient-exit-hooks.d
 
 install-exec-hook: dhclient-exit-hook dhclient-enter-hook
 	$(mkdir_p) $(DESTDIR)$(dhcliententerdir) $(DESTDIR)$(dhclientexitdir)

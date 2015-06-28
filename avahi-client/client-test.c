@@ -1,18 +1,16 @@
-/* $Id$ */
-
 /***
   This file is part of avahi.
- 
+
   avahi is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation; either version 2.1 of the
   License, or (at your option) any later version.
- 
+
   avahi is distributed in the hope that it will be useful, but WITHOUT
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
   Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with avahi; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
@@ -58,7 +56,7 @@ static void avahi_domain_browser_callback(
     const char *domain,
     AVAHI_GCC_UNUSED AvahiLookupResultFlags flags,
     void *userdata) {
-    
+
     printf ("DOMAIN-BROWSER: Callback on %p, interface (%d), protocol (%d), event (%d), domain (%s), data (%s)\n", (void*) b, interface, protocol, event, domain ? domain : "NULL", (char*)userdata);
 }
 
@@ -76,7 +74,7 @@ static void avahi_service_resolver_callback(
     AvahiStringList *txt,
     AVAHI_GCC_UNUSED AvahiLookupResultFlags flags,
     void *userdata) {
-    
+
     char addr[64];
     char *txtr;
     if (event == AVAHI_RESOLVER_FAILURE) {
@@ -99,14 +97,14 @@ static void avahi_service_browser_callback (
     const char *domain,
     AVAHI_GCC_UNUSED AvahiLookupResultFlags flags,
     void *userdata) {
-    
+
     AvahiServiceResolver *sr;
 
     printf ("SERVICE-BROWSER: Callback on %p, interface (%d), protocol (%d), event (%d), name (%s), type (%s), domain (%s), data (%s)\n", (void*) b, interface, protocol, event, name ? name : "NULL", type, domain ? domain : "NULL", (char*)userdata);
 
     if (b && name)
     {
-        sr = avahi_service_resolver_new (avahi_service_browser_get_client (b), interface, protocol, name, type, domain, AVAHI_PROTO_UNSPEC, 0, avahi_service_resolver_callback, "xxXXxx");
+        sr = avahi_service_resolver_new (avahi_service_browser_get_client (b), interface, protocol, name, type, domain, AVAHI_PROTO_UNSPEC, 0, avahi_service_resolver_callback, (char*) "xxXXxx");
         printf("New service resolver %p\n", (void*) sr);
     }
 }
@@ -120,7 +118,7 @@ static void avahi_service_type_browser_callback (
     const char *domain,
     AVAHI_GCC_UNUSED AvahiLookupResultFlags flags,
     void *userdata) {
-    
+
     printf ("SERVICE-TYPE-BROWSER: Callback on %p, interface (%d), protocol (%d), event (%d), type (%s), domain (%s), data (%s)\n", (void*) b, interface, protocol, event, type ? type : "NULL", domain ? domain : "NULL", (char*)userdata);
 }
 
@@ -133,7 +131,7 @@ static void avahi_address_resolver_callback (
     const char *name,
     AVAHI_GCC_UNUSED AvahiLookupResultFlags flags,
     void *userdata) {
-    
+
     char addr[64];
     if (event == AVAHI_RESOLVER_FAILURE) {
         printf ("ADDRESS-RESOLVER: Callback on AddressResolver, timed out.\n");
@@ -152,17 +150,17 @@ static void avahi_host_name_resolver_callback (
     const AvahiAddress *a,
     AVAHI_GCC_UNUSED AvahiLookupResultFlags flags,
     void *userdata) {
-    
+
     AvahiClient *client;
     AvahiAddressResolver *ar;
     char addr[64];
-    
+
     if (event == AVAHI_RESOLVER_FAILURE) {
         printf ("HOST-NAME-RESOLVER: Callback on HostNameResolver, timed out.\n");
         return;
     }
     client = avahi_host_name_resolver_get_client (r);
-    ar = avahi_address_resolver_new(client, interface, protocol, a, 0, avahi_address_resolver_callback, "omghai6u");
+ar = avahi_address_resolver_new(client, interface, protocol, a, 0, avahi_address_resolver_callback, (char*) "omghai6u");
     if (ar)
     {
         printf ("Succesfully created address resolver object\n");
@@ -227,8 +225,8 @@ int main (AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
 
     simple_poll = avahi_simple_poll_new();
     poll_api = avahi_simple_poll_get(simple_poll);
-    
-    if (!(avahi = avahi_client_new(poll_api, 0, avahi_client_callback, "omghai2u", &error))) {
+
+    if (!(avahi = avahi_client_new(poll_api, 0, avahi_client_callback, (char*) "omghai2u", &error))) {
         fprintf(stderr, "Client failed: %s\n", avahi_strerror(error));
         goto fail;
     }
@@ -246,15 +244,15 @@ int main (AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
 
     ret = avahi_client_get_host_name_fqdn (avahi);
     printf("FQDN: %s (Error Return: %s)\n", ret, ret ? "OK" : avahi_strerror(avahi_client_errno(avahi)));
-    
+
     cookie = avahi_client_get_local_service_cookie(avahi);
     printf("Local service cookie: %u (Error Return: %s)\n", cookie, cookie != AVAHI_SERVICE_COOKIE_INVALID ? "OK" : avahi_strerror(avahi_client_errno(avahi)));
 
-    group = avahi_entry_group_new(avahi, avahi_entry_group_callback, "omghai");
+    group = avahi_entry_group_new(avahi, avahi_entry_group_callback, (char*) "omghai");
     printf("Creating entry group: %s\n", group ? "OK" : avahi_strerror(avahi_client_errno (avahi)));
 
     assert(group);
-    
+
     printf("Sucessfully created entry group %p\n", (void*) group);
 
     printf("%s\n", avahi_strerror(avahi_entry_group_add_service (group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 0, "Lathiat's Site", "_http._tcp", NULL, NULL, 80, "foo=bar", NULL)));
@@ -262,26 +260,26 @@ int main (AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
 
     avahi_entry_group_commit (group);
 
-    domain = avahi_domain_browser_new (avahi, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, NULL, AVAHI_DOMAIN_BROWSER_BROWSE, 0, avahi_domain_browser_callback, "omghai3u");
-    
+    domain = avahi_domain_browser_new (avahi, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, NULL, AVAHI_DOMAIN_BROWSER_BROWSE, 0, avahi_domain_browser_callback, (char*) "omghai3u");
+
     if (domain == NULL)
         printf ("Failed to create domain browser object\n");
     else
         printf ("Sucessfully created domain browser %p\n", (void*) domain);
 
-    st = avahi_service_type_browser_new (avahi, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, NULL, 0, avahi_service_type_browser_callback, "omghai3u");
+    st = avahi_service_type_browser_new (avahi, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, NULL, 0, avahi_service_type_browser_callback, (char*) "omghai3u");
     if (st == NULL)
         printf ("Failed to create service type browser object\n");
     else
         printf ("Sucessfully created service type browser %p\n", (void*) st);
 
-    sb = avahi_service_browser_new (avahi, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, "_http._tcp", NULL, 0, avahi_service_browser_callback, "omghai3u");
+    sb = avahi_service_browser_new (avahi, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, "_http._tcp", NULL, 0, avahi_service_browser_callback, (char*) "omghai3u");
     if (sb == NULL)
         printf ("Failed to create service browser object\n");
     else
         printf ("Sucessfully created service browser %p\n", (void*) sb);
 
-    hnr = avahi_host_name_resolver_new (avahi, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, "ecstasy.local", AVAHI_PROTO_UNSPEC, 0, avahi_host_name_resolver_callback, "omghai4u");
+    hnr = avahi_host_name_resolver_new (avahi, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, "ecstasy.local", AVAHI_PROTO_UNSPEC, 0, avahi_host_name_resolver_callback, (char*) "omghai4u");
     if (hnr == NULL)
         printf ("Failed to create hostname resolver object\n");
     else
@@ -291,7 +289,7 @@ int main (AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
     if (aar == NULL) {
         printf ("failed to create address object\n");
     } else {
-        group2 = avahi_entry_group_new (avahi, avahi_entry_group2_callback, "omghai222");
+        group2 = avahi_entry_group_new (avahi, avahi_entry_group2_callback, (char*) "omghai222");
         if ((error = avahi_entry_group_add_address (group2, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 0, "test-mdns.local.", aar)) < 0)
         {
             printf ("*** failed to add address to entry group: %s\n", avahi_strerror (error));
@@ -317,7 +315,7 @@ int main (AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
     avahi_simple_poll_loop(simple_poll);
 
     printf("terminating...\n");
-    
+
 fail:
 
     if (avahi)

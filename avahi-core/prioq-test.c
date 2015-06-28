@@ -1,18 +1,16 @@
-/* $Id$ */
-
 /***
   This file is part of avahi.
- 
+
   avahi is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation; either version 2.1 of the
   License, or (at your option) any later version.
- 
+
   avahi is distributed in the hope that it will be useful, but WITHOUT
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
   Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with avahi; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
@@ -32,8 +30,8 @@
 
 #include "prioq.h"
 
-#define POINTER_TO_INT(p) ((int) (p))
-#define INT_TO_POINTER(i) ((void*) (i))
+#define POINTER_TO_INT(p) ((int) (long) (p))
+#define INT_TO_POINTER(i) ((void*) (long) (i))
 
 static int compare_int(const void* a, const void* b) {
     int i = POINTER_TO_INT(a), j = POINTER_TO_INT(b);
@@ -69,7 +67,7 @@ static void rec(AvahiPrioQueueNode *n) {
             assert(n->parent->right == NULL);
     }
 
-    
+
     if (n->parent) {
         int a = POINTER_TO_INT(n->parent->data), b = POINTER_TO_INT(n->data);
         if (a > b) {
@@ -101,12 +99,12 @@ int main(AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
         assert(q->n_nodes == q2->n_nodes);
 
         printf("%i\n", POINTER_TO_INT(((AvahiPrioQueueNode*)q2->root->data)->data));
-        
+
         avahi_prio_queue_remove(q, q2->root->data);
         avahi_prio_queue_remove(q2, q2->root);
     }
 
-        
+
 /*     prev = 0; */
 /*     while (q->root) { */
 /*         int v = GPOINTER_TO_INT(q->root->data); */

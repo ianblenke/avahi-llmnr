@@ -1,5 +1,3 @@
-# $Id$
-
 # This file is part of avahi.
 #
 # avahi is free software; you can redistribute it and/or modify it
@@ -19,15 +17,15 @@
 
 AM_CFLAGS=-I$(top_srcdir)
 
-lib_LTLIBRARIES = 
-BUILT_SOURCES = 
+lib_LTLIBRARIES =
+BUILT_SOURCES =
 
 if HAVE_QT3
 
 avahiqt3includedir=$(includedir)/avahi-qt3
 
 avahiqt3include_HEADERS = \
-	qt-watch.h 
+	qt-watch.h
 
 lib_LTLIBRARIES += \
 	libavahi-qt3.la
@@ -35,10 +33,10 @@ lib_LTLIBRARIES += \
 BUILT_SOURCES += qt-watch.moc3
 
 libavahi_qt3_la_SOURCES = \
-	qt-watch.cpp 
+	qt-watch.cpp
 
 qt-watch.moc3: qt-watch.cpp
-	$(MOC_QT3) $^ > $@
+	$(AM_V_GEN)$(MOC_QT3) $^ > $@
 
 libavahi_qt3_la_CPPFLAGS = $(AM_CFLAGS) $(QT3_CFLAGS) $(VISIBILITY_HIDDEN_CFLAGS)
 libavahi_qt3_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(QT3_LIBS)
@@ -49,7 +47,7 @@ if HAVE_QT4
 
 avahiqt4includedir=$(includedir)/avahi-qt4
 avahiqt4include_HEADERS = \
-	qt-watch.h 
+	qt-watch.h
 
 lib_LTLIBRARIES += \
 	libavahi-qt4.la
@@ -57,10 +55,10 @@ lib_LTLIBRARIES += \
 BUILT_SOURCES += qt-watch.moc4
 
 libavahi_qt4_la_SOURCES = \
-	qt-watch.cpp 
+	qt-watch.cpp
 
 qt-watch.moc4: qt-watch.cpp
-	$(MOC_QT4) $^ > $@
+	$(AM_V_GEN)$(MOC_QT4) $^ > $@
 
 libavahi_qt4_la_CPPFLAGS = $(AM_CFLAGS) $(QT4_CFLAGS) -DQT4 $(VISIBILITY_HIDDEN_CFLAGS)
 libavahi_qt4_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(QT4_LIBS)

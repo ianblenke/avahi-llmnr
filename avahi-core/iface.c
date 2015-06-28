@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /***
   This file is part of avahi.
 
@@ -92,11 +90,11 @@ void avahi_interface_address_update_rrs(AvahiInterfaceAddress *a, int remove_rrs
             char t[AVAHI_ADDRESS_STR_MAX];
             avahi_address_snprint(t, sizeof(t), &a->address);
 
-            if (avahi_s_entry_group_get_state(a->entry_group) == AVAHI_ENTRY_GROUP_REGISTERING &&
-		m->server->state == AVAHI_SERVER_REGISTERING)
-                avahi_server_decrease_host_rr_pending(m->server);
-
             avahi_log_info("Withdrawing address record for %s on %s.", t, a->interface->hardware->name);
+
+            if (avahi_s_entry_group_get_state(a->entry_group) == AVAHI_ENTRY_GROUP_REGISTERING &&
+                m->server->state == AVAHI_SERVER_REGISTERING)
+                avahi_server_decrease_host_rr_pending(m->server);
 
             avahi_s_entry_group_reset(a->entry_group);
         }
@@ -134,10 +132,12 @@ void avahi_hw_interface_update_rrs(AvahiHwInterface *hw, int remove_rrs) {
             return; /* OOM */
 
         if (avahi_s_entry_group_is_empty(hw->entry_group)) {
-            char name[AVAHI_LABEL_MAX], mac[256];
+            char name[AVAHI_LABEL_MAX], unescaped[AVAHI_LABEL_MAX], mac[256];
+            const char *p = m->server->host_name;
 
+            avahi_unescape_label(&p, unescaped, sizeof(unescaped));
             avahi_format_mac_address(mac, sizeof(mac), hw->mac_address, hw->mac_address_size);
-            snprintf(name, sizeof(name), "%s [%s]", m->server->host_name, mac);
+            snprintf(name, sizeof(name), "%s [%s]", unescaped, mac);
 
             if (avahi_server_add_service(m->server, hw->entry_group, hw->index, AVAHI_PROTO_UNSPEC, 0, name, "_workstation._tcp", NULL, NULL, 9, NULL) < 0) {
                 avahi_log_warn(__FILE__": avahi_server_add_service() failed: %s", avahi_strerror(m->server->error));
@@ -151,7 +151,10 @@ void avahi_hw_interface_update_rrs(AvahiHwInterface *hw, int remove_rrs) {
 
         if (hw->entry_group && !avahi_s_entry_group_is_empty(hw->entry_group)) {
 
-            if (avahi_s_entry_group_get_state(hw->entry_group) == AVAHI_ENTRY_GROUP_REGISTERING)
+            avahi_log_info("Withdrawing workstation service for %s.", hw->name);
+
+            if (avahi_s_entry_group_get_state(hw->entry_group) == AVAHI_ENTRY_GROUP_REGISTERING &&
+                m->server->state == AVAHI_SERVER_REGISTERING)
                 avahi_server_decrease_host_rr_pending(m->server);
 
             avahi_s_entry_group_reset(hw->entry_group);
@@ -387,6 +390,9 @@ AvahiHwInterface *avahi_hw_interface_new(AvahiInterfaceMonitor *m, AvahiIfIndex 
     hw->index = idx;
     hw->mac_address_size = 0;
     hw->entry_group = NULL;
+    hw->ratelimit_begin.tv_sec = 0;
+    hw->ratelimit_begin.tv_usec = 0;
+    hw->ratelimit_counter = 0;
 
     AVAHI_LLIST_HEAD_INIT(AvahiInterface, hw->interfaces);
     AVAHI_LLIST_PREPEND(AvahiHwInterface, hardware, m->hw_interfaces, hw);
@@ -415,6 +421,7 @@ AvahiInterfaceAddress *avahi_interface_address_new(AvahiInterfaceMonitor *m, Ava
     a->address = *addr;
     a->prefix_len = prefix_len;
     a->global_scope = 0;
+    a->deprecated = 0;
     a->entry_group = NULL;
 
     AVAHI_LLIST_PREPEND(AvahiInterfaceAddress, address, i->addresses, a);
@@ -567,6 +574,27 @@ void avahi_interface_send_packet_unicast(AvahiInterface *i, AvahiDnsPacket *p, c
 
     assert(!a || a->proto == i->protocol);
 
+    if (i->monitor->server->config.ratelimit_interval > 0) {
+        struct timeval now, end;
+
+        gettimeofday(&now, NULL);
+
+        end = i->hardware->ratelimit_begin;
+        avahi_timeval_add(&end, i->monitor->server->config.ratelimit_interval);
+
+        if (i->hardware->ratelimit_begin.tv_sec <= 0 ||
+            avahi_timeval_compare(&end, &now) < 0) {
+
+            i->hardware->ratelimit_begin = now;
+            i->hardware->ratelimit_counter = 0;
+        }
+
+        if (i->hardware->ratelimit_counter > i->monitor->server->config.ratelimit_burst)
+            return;
+
+        i->hardware->ratelimit_counter++;
+    }
+
     if (i->protocol == AVAHI_PROTO_INET && i->monitor->server->fd_ipv4 >= 0)
         avahi_send_dns_packet_ipv4(i->monitor->server->fd_ipv4, i->hardware->index, p, i->mcast_joined ? &i->local_mcast_address.data.ipv4 : NULL, a ? &a->data.ipv4 : NULL, port);
     else if (i->protocol == AVAHI_PROTO_INET6 && i->monitor->server->fd_ipv6 >= 0)
@@ -672,24 +700,21 @@ int avahi_interface_address_is_relevant(AvahiInterfaceAddress *a) {
     AvahiInterfaceAddress *b;
     assert(a);
 
-    /* Publish public IP addresses */
-    if (a->global_scope)
+    /* Publish public and non-deprecated IP addresses */
+    if (a->global_scope && !a->deprecated)
         return 1;
-    else {
 
-        /* Publish link local IP addresses if they are the only ones on the link */
-        for (b = a->interface->addresses; b; b = b->address_next) {
-            if (b == a)
-                continue;
+    /* Publish link-local and deprecated IP addresses only if they are
+     * the only ones on the link */
+    for (b = a->interface->addresses; b; b = b->address_next) {
+        if (b == a)
+            continue;
 
-            if (b->global_scope)
-                return 0;
-        }
-
-        return 1;
+        if (b->global_scope && !b->deprecated)
+            return 0;
     }
 
-    return 0;
+    return 1;
 }
 
 int avahi_interface_match(AvahiInterface *i, AvahiIfIndex idx, AvahiProtocol protocol) {

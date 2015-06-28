@@ -558,7 +558,7 @@ gboolean ga_entry_group_service_remove_key(GaEntryGroupService * service,
     GaEntryGroupServicePrivate *priv = (GaEntryGroupServicePrivate *) service;
     GaEntryGroupServiceEntry entry;
 
-    entry.value = key;
+    entry.value = (void*) key;
     entry.size = strlen(key);
 
     g_hash_table_remove(priv->entries, &entry);
@@ -574,6 +574,7 @@ gboolean ga_entry_group_attach(GaEntryGroup * group,
                       GaClient * client, GError ** error) {
     GaEntryGroupPrivate *priv = GA_ENTRY_GROUP_GET_PRIVATE(group);
 
+    g_return_val_if_fail(client->avahi_client, FALSE);
     g_assert(priv->client == NULL || priv->client == client);
     g_assert(priv->group == NULL);
 

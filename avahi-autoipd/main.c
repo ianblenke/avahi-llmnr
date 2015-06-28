@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /***
     This file is part of avahi.
 
@@ -566,8 +564,7 @@ fail:
     return -1;
 }
 
-static void
-close_socket(int fd) {
+static void close_socket(int fd) {
     close(fd);
 }
 
@@ -582,16 +579,14 @@ static uint8_t __lladdr[ETHER_ADDRLEN];
 #define elementsof(array)       (sizeof(array)/sizeof(array[0]))
 #endif
 
-static int
-__get_ether_addr(int ifindex, u_char *lladdr)
-{
-    int                      mib[6];
-    char                    *buf;
-    struct if_msghdr        *ifm;
-    char                    *lim;
-    char                    *next;
-    struct sockaddr_dl      *sdl;
-    size_t                   len;
+static int __get_ether_addr(int ifindex, u_char *lladdr) {
+    int mib[6];
+    char *buf;
+    struct if_msghdr *ifm;
+    char *lim;
+    char *next;
+    struct sockaddr_dl *sdl;
+    size_t len;
 
     mib[0] = CTL_NET;
     mib[1] = PF_ROUTE;
@@ -603,20 +598,15 @@ __get_ether_addr(int ifindex, u_char *lladdr)
     if (sysctl(mib, elementsof(mib), NULL, &len, NULL, 0) != 0) {
         daemon_log(LOG_ERR, "sysctl(NET_RT_IFLIST): %s",
                    strerror(errno));
-        return (-1);
+        return -1;
     }
 
-    buf = malloc(len);
-    if (buf == NULL) {
-        daemon_log(LOG_ERR, "malloc(%d): %s", len, strerror(errno));
-        return (-1);
-    }
-
+    buf = avahi_malloc(len);
     if (sysctl(mib, elementsof(mib), buf, &len, NULL, 0) != 0) {
         daemon_log(LOG_ERR, "sysctl(NET_RT_IFLIST): %s",
                    strerror(errno));
         free(buf);
-        return (-1);
+        return -1;
     }
 
     lim = buf + len;
@@ -627,34 +617,31 @@ __get_ether_addr(int ifindex, u_char *lladdr)
             memcpy(lladdr, LLADDR(sdl), ETHER_ADDRLEN);
         }
     }
-    free(buf);
+    avahi_free(buf);
 
-    return (0);
+    return 0;
 }
 
 #define PCAP_TIMEOUT 500 /* 0.5s */
 
-static int
-open_socket(int iface, uint8_t *hw_address)
-{
-    struct bpf_program       bpf;
-    char                     *filter;
-    char                     ifname[IFNAMSIZ];
-    pcap_t                  *pp;
-    int                      err;
-    int                      fd;
+static int open_socket(int iface, uint8_t *hw_address) {
+    struct bpf_program bpf;
+    char *filter;
+    char ifname[IFNAMSIZ];
+    pcap_t *pp;
+    int err;
+    int fd;
 
     assert(__pp == NULL);
 
-    if (interface_up(iface) < 0) {
-        return (-1);
-    }
-    if (__get_ether_addr(iface, __lladdr) == -1) {
-        return (-1);
-    }
-    if (if_indextoname(iface, ifname) == NULL) {
-        return (-1);
-    }
+    if (interface_up(iface) < 0)
+        return -1;
+
+    if (__get_ether_addr(iface, __lladdr) == -1)
+        return -1;
+
+    if (if_indextoname(iface, ifname) == NULL)
+        return -1;
 
     /*
      * Using a timeout for BPF is fairly portable across BSDs. On most
@@ -728,10 +715,7 @@ open_socket(int iface, uint8_t *hw_address)
     return (fd);
 }
 
-static void
-close_socket(int fd __unused)
-{
-
+static void close_socket(int fd AVAHI_GCC_UNUSED) {
     assert(__pp != NULL);
     pcap_close(__pp);
     __pp = NULL;
@@ -741,10 +725,7 @@ close_socket(int fd __unused)
  * We trick avahi into allocating sizeof(packet) + sizeof(ether_header),
  * and prepend the required ethernet header information before sending.
  */
-static int
-send_packet(int fd __unused, int iface __unused, ArpPacket *packet,
-            size_t packet_len)
-{
+static int send_packet(int fd AVAHI_GCC_UNUSED, int iface AVAHI_GCC_UNUSED, ArpPacket *packet, size_t packet_len) {
     struct ether_header *eh;
 
     assert(__pp != NULL);
@@ -758,14 +739,12 @@ send_packet(int fd __unused, int iface __unused, ArpPacket *packet,
     return (pcap_inject(__pp, (void *)eh, packet_len + sizeof(*eh)));
 }
 
-static int
-recv_packet(int fd __unused, ArpPacket **packet, size_t *packet_len)
-{
-    struct pcap_pkthdr      *ph;
-    u_char                  *pd;
-    ArpPacket               *ap;
-    int                      err;
-    int                      retval;
+static int recv_packet(int fd AVAHI_GCC_UNUSED, ArpPacket **packet, size_t *packet_len) {
+    struct pcap_pkthdr *ph;
+    u_char *pd;
+    ArpPacket *ap;
+    int err;
+    int retval;
 
     assert(__pp != NULL);
     assert(packet != NULL);
@@ -791,10 +770,9 @@ recv_packet(int fd __unused, ArpPacket **packet, size_t *packet_len)
          * didn't match the filter, in which case we'll get 0 packets.
          */
         retval = 0;
-    } else {
+    } else
         daemon_log(LOG_ERR, "pcap_next_ex(%d): %s",
                    err, pcap_geterr(__pp));
-    }
 
     return (retval);
 }
@@ -842,8 +820,6 @@ static FILE* fork_dispatcher(void) {
          * process. */
 
         daemon_retval_done();
-
-        setsid();
 
         avahi_set_proc_title(argv0, "%s: [%s] callout dispatcher", argv0, interface_name);
 
@@ -1097,7 +1073,7 @@ static int loop(int iface, uint32_t addr) {
     char *address_fn = NULL;
     const char *p;
 
-    daemon_signal_init(SIGINT, SIGTERM, SIGCHLD, SIGHUP,0);
+    daemon_signal_init(SIGINT, SIGTERM, SIGCHLD, SIGHUP, 0);
 
     if (!(dispatcher = fork_dispatcher()))
         goto fail;
@@ -1244,9 +1220,14 @@ static int loop(int iface, uint32_t addr) {
                 int conflict = 0;
 
                 if (info.sender_ip_address == addr) {
-                    /* Normal conflict */
-                    conflict = 1;
-                    daemon_log(LOG_INFO, "Received conflicting normal ARP packet.");
+
+                    if (memcmp(hw_address, info.sender_hw_address, ETHER_ADDRLEN)) {
+                        /* Normal conflict */
+                        conflict = 1;
+                        daemon_log(LOG_INFO, "Received conflicting normal ARP packet.");
+                    } else
+                        daemon_log(LOG_DEBUG, "Received ARP packet back on source interface. Ignoring.");
+
                 } else if (state == STATE_WAITING_PROBE || state == STATE_PROBING || state == STATE_WAITING_ANNOUNCE) {
                     /* Probe conflict */
                     conflict = info.target_ip_address == addr && memcmp(hw_address, info.sender_hw_address, ETHER_ADDRLEN);

@@ -1,7 +1,5 @@
-# $Id$
-#
 # This file is part of avahi.
-# 
+#
 # avahi is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2 of the
@@ -20,13 +18,13 @@
 AM_CFLAGS=-I$(top_srcdir)
 
 interfaces = \
-        avahi-discover.glade
+        avahi-discover.ui
 
 # This cool debug trap works on i386/gcc only
 AM_CFLAGS+='-DDEBUG_TRAP=__asm__("int $$3")'
 
-if HAVE_GTK
-if  HAVE_GLIB
+if HAVE_GTK2OR3
+if HAVE_GLIB
 bin_PROGRAMS = \
 	avahi-discover-standalone
 
@@ -35,20 +33,30 @@ avahi_discover_standalone_SOURCES = \
 
 avahi_discover_standalone_CFLAGS = \
 	$(AM_CFLAGS) \
-	$(GLIB20_CFLAGS) $(GTK20_CFLAGS) $(GLADE20_CFLAGS)\
 	-DAVAHI_INTERFACES_DIR=\"$(interfacesdir)\"
 
 avahi_discover_standalone_LDADD = \
 	$(AM_LDADD) \
 	../avahi-common/libavahi-common.la \
 	../avahi-glib/libavahi-glib.la \
-	../avahi-core/libavahi-core.la  \
-	$(GLIB20_LIBS) $(GTK20_LIBS) $(GLADE20_LIBS)
+	../avahi-core/libavahi-core.la
+
+if HAVE_GTK3
+avahi_discover_standalone_CFLAGS += \
+	$(GLIB30_CFLAGS) $(GTK30_CFLAGS)
+avahi_discover_standalone_LDADD += \
+	$(GLIB30_LIBS) $(GTK30_LIBS)
+else
+avahi_discover_standalone_CFLAGS += \
+	$(GLIB20_CFLAGS) $(GTK20_CFLAGS)
+avahi_discover_standalone_LDADD += \
+	$(GLIB20_LIBS) $(GTK20_LIBS)
+endif
 
 interfaces_DATA = $(interfaces)
 
 endif  # HAVE_GLIB
-else 
+else
 
 if HAVE_PYTHON_DBUS
 
@@ -58,5 +66,4 @@ endif
 endif
 
 EXTRA_DIST = \
-	$(interfaces) \
-	avahi-discover.gladep
+	$(interfaces)

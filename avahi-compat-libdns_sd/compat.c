@@ -1,18 +1,16 @@
-/* $Id$ */
-
 /***
   This file is part of avahi.
- 
+
   avahi is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation; either version 2.1 of the
   License, or (at your option) any later version.
- 
+
   avahi is distributed in the hope that it will be useful, but WITHOUT
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
   Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with avahi; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
@@ -64,7 +62,7 @@ struct type_info {
 
 struct _DNSServiceRef_t {
     int n_ref;
-    
+
     AvahiSimplePoll *simple_poll;
 
     int thread_fd, main_fd;
@@ -73,17 +71,19 @@ struct _DNSServiceRef_t {
     int thread_running;
 
     pthread_mutex_t mutex;
-    
+
     void *context;
     DNSServiceBrowseReply service_browser_callback;
     DNSServiceResolveReply service_resolver_callback;
     DNSServiceDomainEnumReply domain_browser_callback;
     DNSServiceRegisterReply service_register_callback;
+    DNSServiceQueryRecordReply query_resolver_callback;
 
     AvahiClient *client;
     AvahiServiceBrowser *service_browser;
     AvahiServiceResolver *service_resolver;
     AvahiDomainBrowser *domain_browser;
+    AvahiRecordBrowser *record_browser;
 
     struct type_info type_info;
     char *service_name, *service_name_chosen, *service_domain, *service_host;
@@ -100,10 +100,10 @@ static DNSServiceErrorType map_error(int error) {
     switch (error) {
         case AVAHI_OK :
             return kDNSServiceErr_NoError;
-            
+
         case AVAHI_ERR_BAD_STATE :
             return kDNSServiceErr_BadState;
-            
+
         case AVAHI_ERR_INVALID_HOST_NAME:
         case AVAHI_ERR_INVALID_DOMAIN_NAME:
         case AVAHI_ERR_INVALID_TTL:
@@ -137,13 +137,13 @@ static DNSServiceErrorType map_error(int error) {
         case AVAHI_ERR_INVALID_INTERFACE:
         case AVAHI_ERR_INVALID_PROTOCOL:
             return kDNSServiceErr_BadInterfaceIndex;
-        
+
         case AVAHI_ERR_INVALID_FLAGS:
             return kDNSServiceErr_BadFlags;
-            
+
         case AVAHI_ERR_NOT_FOUND:
             return kDNSServiceErr_NoSuchName;
-            
+
         case AVAHI_ERR_VERSION_MISMATCH:
             return kDNSServiceErr_Incompatible;
 
@@ -179,7 +179,7 @@ static void type_info_free(struct type_info *i) {
 
 static int type_info_parse(struct type_info *i, const char *t) {
     char *token = NULL;
-    
+
     assert(i);
     assert(t);
 
@@ -190,12 +190,12 @@ static int type_info_parse(struct type_info *i, const char *t) {
 
         if (*t == 0)
             break;
-        
+
         l = strcspn(t, ",");
 
         if (l <= 0)
             goto fail;
-        
+
         token = avahi_strndup(t, l);
 
         if (!token)
@@ -211,7 +211,7 @@ static int type_info_parse(struct type_info *i, const char *t) {
             token = NULL;
         } else {
             char *fst;
-            
+
             /* This is not the first token, hence a subtype */
 
             if (!(fst = avahi_strdup_printf("%s._sub.%s", token, i->type)))
@@ -239,7 +239,7 @@ static int type_info_parse(struct type_info *i, const char *t) {
 
     if (i->type)
         return 0;
-    
+
 fail:
     type_info_free(i);
     avahi_free(token);
@@ -265,7 +265,7 @@ static int read_command(int fd) {
     char command;
 
     assert(fd >= 0);
-    
+
     if ((r = read(fd, &command, 1)) != 1) {
         fprintf(stderr, __FILE__": read() failed: %s\n", r < 0 ? strerror(errno) : "EOF");
         return -1;
@@ -288,15 +288,15 @@ static int write_command(int fd, char reply) {
 static int poll_func(struct pollfd *ufds, unsigned int nfds, int timeout, void *userdata) {
     DNSServiceRef sdref = userdata;
     int ret;
-    
+
     assert(sdref);
-    
+
     ASSERT_SUCCESS(pthread_mutex_unlock(&sdref->mutex));
 
 /*     fprintf(stderr, "pre-syscall\n"); */
     ret = poll(ufds, nfds, timeout);
 /*     fprintf(stderr, "post-syscall\n"); */
-    
+
     ASSERT_SUCCESS(pthread_mutex_lock(&sdref->mutex));
 
     return ret;
@@ -308,7 +308,7 @@ static void * thread_func(void *data) {
 
     sigfillset(&mask);
     pthread_sigmask(SIG_BLOCK, &mask, NULL);
-    
+
     sdref->thread = pthread_self();
     sdref->thread_running = 1;
 
@@ -319,7 +319,7 @@ static void * thread_func(void *data) {
             break;
 
 /*         fprintf(stderr, "Command: %c\n", command); */
-        
+
         switch (command) {
 
             case COMMAND_POLL: {
@@ -329,12 +329,12 @@ static void * thread_func(void *data) {
 
                 for (;;) {
                     errno = 0;
-                    
+
                     if ((ret = avahi_simple_poll_run(sdref->simple_poll)) < 0) {
 
                         if (errno == EINTR)
                             continue;
-                        
+
                         fprintf(stderr, __FILE__": avahi_simple_poll_run() failed: %s\n", strerror(errno));
                     }
 
@@ -345,14 +345,14 @@ static void * thread_func(void *data) {
 
                 if (write_command(sdref->thread_fd, ret < 0 ? COMMAND_POLL_FAILED : COMMAND_POLL_DONE) < 0)
                     break;
-                
+
                 break;
             }
 
             case COMMAND_QUIT:
                 return NULL;
         }
-        
+
     }
 
     return NULL;
@@ -402,12 +402,12 @@ static DNSServiceRef sdref_new(void) {
     /* Queue an initial POLL command for the thread */
     if (write_command(sdref->main_fd, COMMAND_POLL) < 0)
         goto fail;
-    
+
     if (pthread_create(&sdref->thread, NULL, thread_func, sdref) != 0)
         goto fail;
 
     sdref->thread_running = 1;
-    
+
     return sdref;
 
 fail:
@@ -420,7 +420,7 @@ fail:
 
 static void sdref_free(DNSServiceRef sdref) {
     assert(sdref);
-    
+
     if (sdref->thread_running) {
         ASSERT_SUCCESS(write_command(sdref->main_fd, COMMAND_QUIT));
         avahi_simple_poll_wakeup(sdref->simple_poll);
@@ -447,9 +447,9 @@ static void sdref_free(DNSServiceRef sdref) {
     avahi_free(sdref->service_host);
 
     type_info_free(&sdref->type_info);
-    
+
     avahi_string_list_free(sdref->service_txt);
-    
+
     avahi_free(sdref);
 }
 
@@ -471,7 +471,7 @@ static void sdref_unref(DNSServiceRef sdref) {
 int DNSSD_API DNSServiceRefSockFD(DNSServiceRef sdref) {
 
     AVAHI_WARN_LINKAGE;
-    
+
     if (!sdref || sdref->n_ref <= 0)
         return -1;
 
@@ -485,15 +485,15 @@ DNSServiceErrorType DNSSD_API DNSServiceProcessResult(DNSServiceRef sdref) {
 
     if (!sdref || sdref->n_ref <= 0)
         return kDNSServiceErr_BadParam;
-    
+
     sdref_ref(sdref);
 
     ASSERT_SUCCESS(pthread_mutex_lock(&sdref->mutex));
-    
+
     /* Cleanup notification socket */
     if (read_command(sdref->main_fd) != COMMAND_POLL_DONE)
         goto finish;
-    
+
     if (avahi_simple_poll_dispatch(sdref->simple_poll) < 0)
         goto finish;
 
@@ -508,13 +508,13 @@ DNSServiceErrorType DNSSD_API DNSServiceProcessResult(DNSServiceRef sdref) {
         /* Request the poll */
         if (write_command(sdref->main_fd, COMMAND_POLL) < 0)
             goto finish;
-    
+
     ret = kDNSServiceErr_NoError;
-    
+
 finish:
 
     ASSERT_SUCCESS(pthread_mutex_unlock(&sdref->mutex));
-    
+
     sdref_unref(sdref);
 
     return ret;
@@ -546,7 +546,7 @@ static void service_browser_callback(
 
     type = add_trailing_dot(type, type_fixed, sizeof(type_fixed));
     domain  = add_trailing_dot(domain, domain_fixed, sizeof(domain_fixed));
-    
+
     switch (event) {
         case AVAHI_BROWSER_NEW:
             sdref->service_browser_callback(sdref, kDNSServiceFlagsAdd, interface, kDNSServiceErr_NoError, name, type, domain, sdref->context);
@@ -559,7 +559,7 @@ static void service_browser_callback(
         case AVAHI_BROWSER_FAILURE:
             sdref->service_browser_callback(sdref, 0, interface, map_error(avahi_client_errno(sdref->client)), NULL, NULL, NULL, sdref->context);
             break;
-            
+
         case AVAHI_BROWSER_CACHE_EXHAUSTED:
         case AVAHI_BROWSER_ALL_FOR_NOW:
             break;
@@ -569,7 +569,7 @@ static void service_browser_callback(
 static void generic_client_callback(AvahiClient *s, AvahiClientState state, void* userdata) {
     DNSServiceRef sdref = userdata;
     int error = kDNSServiceErr_Unknown;
-        
+
     assert(s);
     assert(sdref);
     assert(sdref->n_ref >= 1);
@@ -584,6 +584,8 @@ static void generic_client_callback(AvahiClient *s, AvahiClientState state, void
                 sdref->service_resolver_callback(sdref, 0, 0, error, NULL, NULL, 0, 0, NULL, sdref->context);
             else if (sdref->domain_browser_callback)
                 sdref->domain_browser_callback(sdref, 0, 0, error, NULL, sdref->context);
+            else if (sdref->query_resolver_callback)
+                sdref->query_resolver_callback(sdref, 0, 0, error, NULL, 0, 0, 0, NULL, 0, sdref->context);
 
             break;
 
@@ -609,7 +611,7 @@ DNSServiceErrorType DNSSD_API DNSServiceBrowse(
     DNSServiceRef sdref = NULL;
     AvahiIfIndex ifindex;
     struct type_info type_info;
-    
+
     AVAHI_WARN_LINKAGE;
 
     if (!ret_sdref || !regtype)
@@ -622,7 +624,7 @@ DNSServiceErrorType DNSSD_API DNSServiceBrowse(
     }
 
     type_info_init(&type_info);
-    
+
     if (type_info_parse(&type_info, regtype) < 0 || type_info.n_subtypes > 1) {
         type_info_free(&type_info);
 
@@ -630,7 +632,7 @@ DNSServiceErrorType DNSSD_API DNSServiceBrowse(
             return kDNSServiceErr_Unsupported;
     } else
         regtype = type_info.subtypes ? (char*) type_info.subtypes->text : type_info.type;
-    
+
     if (!(sdref = sdref_new())) {
         type_info_free(&type_info);
         return kDNSServiceErr_Unknown;
@@ -640,26 +642,26 @@ DNSServiceErrorType DNSSD_API DNSServiceBrowse(
     sdref->service_browser_callback = callback;
 
     ASSERT_SUCCESS(pthread_mutex_lock(&sdref->mutex));
-    
+
     if (!(sdref->client = avahi_client_new(avahi_simple_poll_get(sdref->simple_poll), 0, generic_client_callback, sdref, &error))) {
         ret =  map_error(error);
         goto finish;
     }
 
     ifindex = interface == kDNSServiceInterfaceIndexAny ? AVAHI_IF_UNSPEC : (AvahiIfIndex) interface;
-    
+
     if (!(sdref->service_browser = avahi_service_browser_new(sdref->client, ifindex, AVAHI_PROTO_UNSPEC, regtype, domain, 0, service_browser_callback, sdref))) {
         ret = map_error(avahi_client_errno(sdref->client));
         goto finish;
     }
-    
+
     ret = kDNSServiceErr_NoError;
     *ret_sdref = sdref;
-                                                              
+
 finish:
 
     ASSERT_SUCCESS(pthread_mutex_unlock(&sdref->mutex));
-    
+
     if (ret != kDNSServiceErr_NoError)
         DNSServiceRefDeallocate(sdref);
 
@@ -707,7 +709,7 @@ static void service_resolver_callback(
             assert(ret == AVAHI_OK);
 
             strcat(full_name, ".");
-            
+
             sdref->service_resolver_callback(sdref, 0, interface, kDNSServiceErr_NoError, full_name, host_name, htons(port), l, (unsigned char*) p, sdref->context);
 
             avahi_free(p);
@@ -753,27 +755,27 @@ DNSServiceErrorType DNSSD_API DNSServiceResolve(
     sdref->service_resolver_callback = callback;
 
     ASSERT_SUCCESS(pthread_mutex_lock(&sdref->mutex));
-    
+
     if (!(sdref->client = avahi_client_new(avahi_simple_poll_get(sdref->simple_poll), 0, generic_client_callback, sdref, &error))) {
         ret =  map_error(error);
         goto finish;
     }
 
     ifindex = interface == kDNSServiceInterfaceIndexAny ? AVAHI_IF_UNSPEC : (AvahiIfIndex) interface;
-    
+
     if (!(sdref->service_resolver = avahi_service_resolver_new(sdref->client, ifindex, AVAHI_PROTO_UNSPEC, name, regtype, domain, AVAHI_PROTO_UNSPEC, 0, service_resolver_callback, sdref))) {
         ret = map_error(avahi_client_errno(sdref->client));
         goto finish;
     }
-    
+
 
     ret = kDNSServiceErr_NoError;
     *ret_sdref = sdref;
-                                                              
+
 finish:
 
     ASSERT_SUCCESS(pthread_mutex_unlock(&sdref->mutex));
-    
+
     if (ret != kDNSServiceErr_NoError)
         DNSServiceRefDeallocate(sdref);
 
@@ -782,7 +784,7 @@ finish:
 
 int DNSSD_API DNSServiceConstructFullName (
     char *fullName,
-    const char *service,   
+    const char *service,
     const char *regtype,
     const char *domain) {
 
@@ -793,7 +795,7 @@ int DNSSD_API DNSServiceConstructFullName (
 
     if (avahi_service_name_join(fullName, kDNSServiceMaxDomainName, service, regtype, domain) < 0)
         return -1;
-    
+
     return 0;
 }
 
@@ -827,7 +829,7 @@ static void domain_browser_callback(
         case AVAHI_BROWSER_FAILURE:
             sdref->domain_browser_callback(sdref, 0, interface, map_error(avahi_client_errno(sdref->client)), domain, sdref->context);
             break;
-            
+
         case AVAHI_BROWSER_CACHE_EXHAUSTED:
         case AVAHI_BROWSER_ALL_FOR_NOW:
             break;
@@ -865,28 +867,28 @@ DNSServiceErrorType DNSSD_API DNSServiceEnumerateDomains(
     sdref->domain_browser_callback = callback;
 
     ASSERT_SUCCESS(pthread_mutex_lock(&sdref->mutex));
-    
+
     if (!(sdref->client = avahi_client_new(avahi_simple_poll_get(sdref->simple_poll), 0, generic_client_callback, sdref, &error))) {
         ret =  map_error(error);
         goto finish;
     }
 
     ifindex = interface == kDNSServiceInterfaceIndexAny ? AVAHI_IF_UNSPEC : (AvahiIfIndex) interface;
-    
+
     if (!(sdref->domain_browser = avahi_domain_browser_new(sdref->client, ifindex, AVAHI_PROTO_UNSPEC, "local",
                                                            flags == kDNSServiceFlagsRegistrationDomains ? AVAHI_DOMAIN_BROWSER_REGISTER : AVAHI_DOMAIN_BROWSER_BROWSE,
                                                            0, domain_browser_callback, sdref))) {
         ret = map_error(avahi_client_errno(sdref->client));
         goto finish;
     }
-    
+
     ret = kDNSServiceErr_NoError;
     *ret_sdref = sdref;
-                                                              
+
 finish:
 
     ASSERT_SUCCESS(pthread_mutex_unlock(&sdref->mutex));
-    
+
     if (ret != kDNSServiceErr_NoError)
         DNSServiceRefDeallocate(sdref);
 
@@ -904,7 +906,7 @@ static void reg_report_error(DNSServiceRef sdref, DNSServiceErrorType error) {
 
     regtype = add_trailing_dot(sdref->type_info.type, regtype_fixed, sizeof(regtype_fixed));
     domain = add_trailing_dot(sdref->service_domain, domain_fixed, sizeof(domain_fixed));
-    
+
     sdref->service_register_callback(
         sdref, 0, error,
         sdref->service_name_chosen ? sdref->service_name_chosen : sdref->service_name,
@@ -916,7 +918,7 @@ static void reg_report_error(DNSServiceRef sdref, DNSServiceErrorType error) {
 static int reg_create_service(DNSServiceRef sdref) {
     int ret;
     AvahiStringList *l;
-    
+
     assert(sdref);
     assert(sdref->n_ref >= 1);
 
@@ -964,7 +966,7 @@ static void reg_client_callback(AvahiClient *s, AvahiClientState state, void* us
     /* We've not been setup completely */
     if (!sdref->entry_group)
         return;
-    
+
     switch (state) {
         case AVAHI_CLIENT_FAILURE:
             reg_report_error(sdref, kDNSServiceErr_Unknown);
@@ -994,29 +996,29 @@ static void reg_client_callback(AvahiClient *s, AvahiClientState state, void* us
             if (!sdref->service_name_chosen) {
 
                 assert(sdref->service_name);
-                
+
                 if (!(sdref->service_name_chosen = avahi_strdup(sdref->service_name))) {
                     reg_report_error(sdref, kDNSServiceErr_NoMemory);
                     return;
                 }
             }
-            
+
             /* Register the service */
 
             if ((ret = reg_create_service(sdref)) < 0) {
                 reg_report_error(sdref, map_error(ret));
                 return;
             }
-            
+
             break;
         }
-            
+
         case AVAHI_CLIENT_S_COLLISION:
         case AVAHI_CLIENT_S_REGISTERING:
 
             /* Remove our entry */
             avahi_entry_group_reset(sdref->entry_group);
-            
+
             break;
 
         case AVAHI_CLIENT_CONNECTING:
@@ -1042,7 +1044,7 @@ static void reg_entry_group_callback(AvahiEntryGroup *g, AvahiEntryGroupState st
         case AVAHI_ENTRY_GROUP_COLLISION: {
             char *n;
             int ret;
-            
+
             /* Remove our entry */
             avahi_entry_group_reset(sdref->entry_group);
 
@@ -1061,7 +1063,7 @@ static void reg_entry_group_callback(AvahiEntryGroup *g, AvahiEntryGroupState st
                 reg_report_error(sdref, map_error(ret));
                 return;
             }
-            
+
             break;
         }
 
@@ -1074,7 +1076,7 @@ static void reg_entry_group_callback(AvahiEntryGroup *g, AvahiEntryGroupState st
             /* Inform the user */
             reg_report_error(sdref, map_error(avahi_client_errno(sdref->client)));
             break;
-            
+
     }
 }
 
@@ -1082,14 +1084,14 @@ DNSServiceErrorType DNSSD_API DNSServiceRegister (
         DNSServiceRef *ret_sdref,
         DNSServiceFlags flags,
         uint32_t interface,
-        const char *name,        
+        const char *name,
         const char *regtype,
-        const char *domain,      
-        const char *host,        
+        const char *domain,
+        const char *host,
         uint16_t port,
         uint16_t txtLen,
-        const void *txtRecord,   
-        DNSServiceRegisterReply callback,    
+        const void *txtRecord,
+        DNSServiceRegisterReply callback,
         void *context) {
 
     DNSServiceErrorType ret = kDNSServiceErr_Unknown;
@@ -1103,7 +1105,7 @@ DNSServiceErrorType DNSSD_API DNSServiceRegister (
     if (!ret_sdref || !regtype)
         return kDNSServiceErr_BadParam;
     *ret_sdref = NULL;
-    
+
     if (!txtRecord) {
         txtLen = 1;
         txtRecord = "";
@@ -1114,7 +1116,7 @@ DNSServiceErrorType DNSSD_API DNSServiceRegister (
         return kDNSServiceErr_Unsupported;
     }
 
-    if (txtLen > 0) 
+    if (txtLen > 0)
         if (avahi_string_list_parse(txtRecord, txtLen, &txt) < 0)
             return kDNSServiceErr_Invalid;
 
@@ -1122,7 +1124,7 @@ DNSServiceErrorType DNSSD_API DNSServiceRegister (
         avahi_string_list_free(txt);
         return kDNSServiceErr_Invalid;
     }
-    
+
     if (!(sdref = sdref_new())) {
         avahi_string_list_free(txt);
         type_info_free(&type_info);
@@ -1141,9 +1143,9 @@ DNSServiceErrorType DNSSD_API DNSServiceRegister (
     sdref->service_txt = txt;
 
     /* Some OOM checking would be cool here */
-    
+
     ASSERT_SUCCESS(pthread_mutex_lock(&sdref->mutex));
-    
+
     if (!(sdref->client = avahi_client_new(avahi_simple_poll_get(sdref->simple_poll), 0, reg_client_callback, sdref, &error))) {
         ret =  map_error(error);
         goto finish;
@@ -1185,20 +1187,20 @@ DNSServiceErrorType DNSSD_API DNSServiceRegister (
             goto finish;
         }
 
-            
+
         if ((error = reg_create_service(sdref)) < 0) {
             ret = map_error(error);
             goto finish;
         }
     }
-    
+
     ret = kDNSServiceErr_NoError;
     *ret_sdref = sdref;
-                                                              
+
 finish:
 
     ASSERT_SUCCESS(pthread_mutex_unlock(&sdref->mutex));
-    
+
     if (ret != kDNSServiceErr_NoError)
         DNSServiceRefDeallocate(sdref);
 
@@ -1207,7 +1209,7 @@ finish:
 
 DNSServiceErrorType DNSSD_API DNSServiceUpdateRecord(
          DNSServiceRef sdref,
-         DNSRecordRef rref,     
+         DNSRecordRef rref,
          DNSServiceFlags flags,
          uint16_t rdlen,
          const void *rdata,
@@ -1226,7 +1228,7 @@ DNSServiceErrorType DNSSD_API DNSServiceUpdateRecord(
         return kDNSServiceErr_Unsupported;
     }
 
-    if (rdlen > 0) 
+    if (rdlen > 0)
         if (avahi_string_list_parse(rdata, rdlen, &txt) < 0)
             return kDNSServiceErr_Invalid;
 
@@ -1251,7 +1253,7 @@ DNSServiceErrorType DNSSD_API DNSServiceUpdateRecord(
                         sdref->type_info.type,
                         sdref->service_domain,
                         sdref->service_txt) < 0) {
-                
+
                 ret = map_error(avahi_client_errno(sdref->client));
                 goto finish;
             }
@@ -1260,10 +1262,111 @@ DNSServiceErrorType DNSSD_API DNSServiceUpdateRecord(
         avahi_string_list_free(txt);
 
     ret = kDNSServiceErr_NoError;
-    
+
 finish:
     ASSERT_SUCCESS(pthread_mutex_unlock(&sdref->mutex));
-    
+
     return ret;
 }
 
+static void query_resolver_callback(
+        AvahiRecordBrowser *r,
+        AvahiIfIndex interface,
+        AVAHI_GCC_UNUSED AvahiProtocol protocol,
+        AvahiBrowserEvent event,
+        const char *name,
+        uint16_t clazz,
+        uint16_t type,
+        const void* rdata,
+        size_t size,
+        AVAHI_GCC_UNUSED AvahiLookupResultFlags flags,
+        void *userdata) {
+
+    DNSServiceRef sdref = userdata;
+
+    assert(r);
+    assert(sdref);
+    assert(sdref->n_ref >= 1);
+
+    switch (event) {
+
+    case AVAHI_BROWSER_NEW:
+    case AVAHI_BROWSER_REMOVE: {
+
+        DNSServiceFlags qflags = 0;
+        if (event == AVAHI_BROWSER_NEW)
+            qflags |= kDNSServiceFlagsAdd;
+
+        sdref->query_resolver_callback(sdref, qflags, interface, kDNSServiceErr_NoError, name, type, clazz, size, rdata, 0, sdref->context);
+        break;
+    }
+
+    case AVAHI_BROWSER_ALL_FOR_NOW:
+    case AVAHI_BROWSER_CACHE_EXHAUSTED:
+        /* not implemented */
+        break;
+
+    case AVAHI_BROWSER_FAILURE:
+        sdref->query_resolver_callback(sdref, 0, interface, map_error(avahi_client_errno(sdref->client)), NULL, 0, 0, 0, NULL, 0, sdref->context);
+        break;
+    }
+}
+
+DNSServiceErrorType DNSSD_API DNSServiceQueryRecord (
+    DNSServiceRef *ret_sdref,
+    DNSServiceFlags flags,
+    uint32_t interface,
+    const char *fullname,
+    uint16_t type,
+    uint16_t clazz,
+    DNSServiceQueryRecordReply callback,
+    void *context) {
+
+    DNSServiceErrorType ret = kDNSServiceErr_Unknown;
+    int error;
+    DNSServiceRef sdref = NULL;
+    AvahiIfIndex ifindex;
+
+    AVAHI_WARN_LINKAGE;
+
+    if (!ret_sdref || !fullname)
+        return kDNSServiceErr_BadParam;
+    *ret_sdref = NULL;
+
+    if (interface == kDNSServiceInterfaceIndexLocalOnly || flags != 0) {
+        AVAHI_WARN_UNSUPPORTED;
+        return kDNSServiceErr_Unsupported;
+    }
+
+    if (!(sdref = sdref_new()))
+        return kDNSServiceErr_Unknown;
+
+    sdref->context = context;
+    sdref->query_resolver_callback = callback;
+
+    ASSERT_SUCCESS(pthread_mutex_lock(&sdref->mutex));
+
+    if (!(sdref->client = avahi_client_new(avahi_simple_poll_get(sdref->simple_poll), 0, generic_client_callback, sdref, &error))) {
+        ret =  map_error(error);
+        goto finish;
+    }
+
+    ifindex = interface == kDNSServiceInterfaceIndexAny ? AVAHI_IF_UNSPEC : (AvahiIfIndex) interface;
+
+    if (!(sdref->record_browser = avahi_record_browser_new(sdref->client, ifindex, AVAHI_PROTO_UNSPEC, fullname, clazz, type, 0, query_resolver_callback, sdref))) {
+        ret = map_error(avahi_client_errno(sdref->client));
+        goto finish;
+    }
+
+    ret = kDNSServiceErr_NoError;
+    *ret_sdref = sdref;
+
+finish:
+
+    ASSERT_SUCCESS(pthread_mutex_unlock(&sdref->mutex));
+
+    if (ret != kDNSServiceErr_NoError)
+        DNSServiceRefDeallocate(sdref);
+
+    return ret;
+}

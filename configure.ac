@@ -1,8 +1,6 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id$
-
 # This file is part of avahi.
 #
 # avahi is free software; you can redistribute it and/or modify it
@@ -20,44 +18,51 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA.
 
-AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.25],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_PREREQ(2.63)
+AC_INIT([avahi],[0.6.26],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
+AC_CONFIG_MACRO_DIR([common])
 AC_CONFIG_HEADERS([config.h])
-AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
+AM_INIT_AUTOMAKE([foreign 1.11 -Wall -Wno-portability silent-rules tar-pax])
 
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
-AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [8:1:5])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [6:1:0])
-AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:5:2])
-AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
-AC_SUBST(LIBAVAHI_GOBJECT_VERSION_INFO, [0:1:0])
+AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [8:2:5])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [7:0:0])
+AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:6:2])
+AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:2:0])
+AC_SUBST(LIBAVAHI_GOBJECT_VERSION_INFO, [0:2:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:2:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:2:0])
-AC_SUBST(LIBAVAHI_UI_VERSION_INFO, [1:1:1])
+AC_SUBST(LIBAVAHI_UI_VERSION_INFO, [1:2:1])
 
 # Do not touch these, since they we took this version-info from upstream HOWL/Bonjour
 AC_SUBST(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO, [1:0:0])
 AC_SUBST(LIBAVAHI_COMPAT_HOWL_VERSION_INFO, [0:0:0])
 AC_SUBST(HOWL_COMPAT_VERSION, [0.9.8])
 
-if type -p stow > /dev/null && test -d /usr/local/stow ; then
-    AC_MSG_NOTICE([*** Found /usr/local/stow: default install prefix set to /usr/local/stow/${PACKAGE_NAME}-${PACKAGE_VERSION} ***])
-    ac_default_prefix="/usr/local/stow/${PACKAGE_NAME}-${PACKAGE_VERSION}"
-fi
+AC_CANONICAL_HOST
+
+AM_SILENT_RULES([yes])
+
+AC_CHECK_PROG([STOW], [stow], [yes], [no])
+
+AS_IF([test "x$STOW" = "xyes" && test -d /usr/local/stow], [
+        AC_MSG_NOTICE([*** Found /usr/local/stow: default install prefix set to /usr/local/stow/${PACKAGE_NAME}-${PACKAGE_VERSION} ***])
+        ac_default_prefix="/usr/local/stow/${PACKAGE_NAME}-${PACKAGE_VERSION}"
+])
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CC_C99
 AC_PROG_CXX
-AC_GNU_SOURCE
+AM_PROG_CC_C_O
+AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_GCC_TRADITIONAL
-
-AM_PROG_CC_C_O
 
 # -fstack-protector
 AC_ARG_ENABLE([stack-protector],
@@ -169,6 +174,7 @@ AC_DEFINE([HAVE_PF_ROUTE],[],[Support for PF_ROUTE])
 , [], [
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <net/if_dl.h>
 ])
 
 AM_CONDITIONAL(HAVE_PF_ROUTE, [ test x"$HAVE_PF_ROUTE" = xyes ])
@@ -301,7 +307,7 @@ test_gcc_flag() {
 # If using GCC specify some additional parameters
 if test "x$GCC" = "xyes" ; then
 
-    DESIRED_FLAGS="-Wall -W -Wextra -pedantic -pipe -Wformat -Wold-style-definition -Wdeclaration-after-statement -Wfloat-equal -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wredundant-decls -Wmissing-noreturn -Wshadow -Wendif-labels -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wcast-align -Wwrite-strings -Winline"
+    DESIRED_FLAGS="-Wall -W -Wextra -pedantic -pipe -Wformat -Wold-style-definition -Wdeclaration-after-statement -Wfloat-equal -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wredundant-decls -Wmissing-noreturn -Wshadow -Wendif-labels -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wcast-align -Wwrite-strings -fdiagnostics-show-option -Wno-cast-qual -fno-strict-aliasing"
 
     if test "x$HAVE_NETLINK" = "xyes" ; then
         # Test whether rtnetlink.h can be included when compiled with -std=c99
@@ -350,7 +356,7 @@ AC_HEADER_SYS_WAIT
  # Solaris stuff
  AC_SEARCH_LIBS([inet_ntop],[nsl])
  AC_SEARCH_LIBS([recv],[socket])
- AC_CHECK_DECL([CMSG_SPACE],,CFLAGS="$CFLAGS -D_XOPEN_SOURCE=500 -D__EXTENSIONS__")
+ AC_CHECK_DECL([CMSG_SPACE],,CFLAGS="$CFLAGS -D_XOPEN_SOURCE=500 -D__EXTENSIONS__", [[#include <sys/socket.h>]])
 
 # Checks for library functions.
 AC_FUNC_MEMCMP
@@ -415,7 +421,6 @@ AM_GLIB_GNU_GETTEXT
 avahilocaledir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(avahilocaledir)
 
-
 # Check for pkg-config manually first, as if its not installed the
 # PKG_PROG_PKG_CONFIG macro won't be defined.
 AC_CHECK_PROG(have_pkg_config, pkg-config, yes, no)
@@ -463,6 +468,11 @@ if test "x$HAVE_GOBJECT" = "xyes" ; then
         AC_SUBST(GOBJECT_LIBS)
 fi
 AM_CONDITIONAL(HAVE_GOBJECT, test "x$HAVE_GOBJECT" = "xyes")
+
+#
+# Introspection support.
+#
+GOBJECT_INTROSPECTION_CHECK([0.6.7])
 
 #
 # Check for Qt 3
@@ -515,10 +525,10 @@ fi
 AM_CONDITIONAL(HAVE_QT4, test "x$HAVE_QT4" = "xyes")
 
 #
-# Check for GTK+
+# Check for GTK+ 2.0
 #
 AC_ARG_ENABLE(gtk,
-        AS_HELP_STRING([--disable-gtk],[Disable use of GTK+]),
+        AS_HELP_STRING([--disable-gtk],[Disable use of GTK+ 2]),
         [case "${enableval}" in
                 yes) HAVE_GTK=yes ;;
                 no)  HAVE_GTK=no ;;
@@ -528,16 +538,33 @@ AC_ARG_ENABLE(gtk,
 
 if test "x$HAVE_GTK" = "xyes" ; then
         # Check for GTK 2.0
-        PKG_CHECK_MODULES(GTK20, [ gtk+-2.0 >= 2.4.0 ])
+        PKG_CHECK_MODULES(GTK20, [ gtk+-2.0 >= 2.14.0 ])
         AC_SUBST(GTK20_CFLAGS)
         AC_SUBST(GTK20_LIBS)
-
-        # Check for GLADE 2.0
-        PKG_CHECK_MODULES(GLADE20, [ libglade-2.0 >= 2.4.0 ])
-        AC_SUBST(GLADE20_CFLAGS)
-        AC_SUBST(GLADE20_LIBS)
 fi
 AM_CONDITIONAL(HAVE_GTK, test "x$HAVE_GTK" = "xyes")
+
+#
+# Check for GTK+ 3.0
+#
+AC_ARG_ENABLE(gtk3,
+        AS_HELP_STRING([--disable-gtk3],[Disable use of GTK+ 3]),
+        [case "${enableval}" in
+                yes) HAVE_GTK3=yes ;;
+                no)  HAVE_GTK3=no ;;
+                *) AC_MSG_ERROR(bad value ${enableval} for --enable-gtk3) ;;
+        esac],
+        [HAVE_GTK3=yes])
+
+if test "x$HAVE_GTK3" = "xyes" ; then
+        # Check for GTK 3.0
+        PKG_CHECK_MODULES(GTK30, [ gtk+-3.0 ])
+        AC_SUBST(GTK30_CFLAGS)
+        AC_SUBST(GTK30_LIBS)
+fi
+AM_CONDITIONAL(HAVE_GTK3, test "x$HAVE_GTK3" = "xyes")
+
+AM_CONDITIONAL(HAVE_GTK2OR3, test "x$HAVE_GTK3" = "xyes" -o "x$HAVE_GTK2" = "xyes" )
 
 #
 # D-Bus
@@ -1046,6 +1073,15 @@ AC_ARG_ENABLE(compat-howl,
 
 AM_CONDITIONAL([ENABLE_COMPAT_HOWL], [test "x$ENABLE_COMPAT_HOWL" = "xyes"])
 
+#
+# systemd
+#
+AC_ARG_WITH([systemdsystemunitdir],
+        AS_HELP_STRING([--with-systemdsystemunitdir=DIR], [Directory for systemd service files]),
+        [],
+        [with_systemdsystemunitdir=$($PKG_CONFIG --variable=systemdsystemunitdir systemd)])
+AC_SUBST([systemdsystemunitdir], [$with_systemdsystemunitdir])
+AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$with_systemdsystemunitdir"])
 
 # ==========================================================================
 AC_CONFIG_FILES([
@@ -1106,7 +1142,9 @@ echo "
     CFLAGS:                                    ${CFLAGS}
     Enable GLIB:                               ${HAVE_GLIB}
     Enable GLIB GObject:                       ${HAVE_GOBJECT}
-    Enable GTK:                                ${HAVE_GTK}
+    Enable GObject Introspection:              ${found_introspection}
+    Enable GTK 2.0:                            ${HAVE_GTK}
+    Enable GTK 3.0:                            ${HAVE_GTK3}
     Enable D-Bus:                              ${HAVE_DBUS}
     With XML:                                  ${with_xml}
     Enable GDBM:                               ${HAVE_GDBM}
@@ -1128,6 +1166,7 @@ echo "
     Enable chroot():                           ${enable_chroot}
     Enable Linux inotify:                      ${have_inotify}
     Enable stack-smashing protection:          ${enable_ssp}
+    systemd unit directory:                    ${with_systemdsystemunitdir}
 "
 
 BUILD_DAEMON="no   (You need libdaemon and expat/bsdxml!)"
@@ -1158,8 +1197,13 @@ if test "x$ENABLE_AUTOIPD" = "xyes" -a "x$HAVE_LIBDAEMON" != "xyes" ; then
    ENABLE_AUTOIPD="no   (You need libdaemon!)"
 fi
 
+HAVE_GTK2OR3=no
+if test "x$HAVE_GTK" = "xyes" -o "x$HAVE_GTK3" = "xyes" ; then
+   HAVE_GTK2OR3=yes
+fi
+
 BUILD_UI="no"
-if test "x$HAVE_GTK" = "xyes" -a "x$BUILD_CLIENT" = "xyes" ; then
+if test "x$HAVE_GTK2OR3" = "xyes" -a "x$BUILD_CLIENT" = "xyes" ; then
    BUILD_UI="yes"
 fi
 
@@ -1177,7 +1221,7 @@ echo "\
     Building avahi-python:              ${BUILD_PYTHON}
     Building libavahi-glib:             ${HAVE_GLIB}
     Building libavahi-gobject:          ${BUILD_GOBJECT}
-    Building avahi-discover-standalone: ${HAVE_GTK}
+    Building avahi-discover-standalone: ${HAVE_GTK2OR3}
     Building libavahi-qt3:              ${HAVE_QT3}
     Building libavahi-qt4:              ${HAVE_QT4}
     Building avahi-sharp:               ${HAVE_MONO}

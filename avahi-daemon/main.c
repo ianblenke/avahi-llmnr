@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /***
   This file is part of avahi.
 
@@ -79,6 +77,7 @@
 #include "static-services.h"
 #include "static-hosts.h"
 #include "ini-file-parser.h"
+#include "sd-daemon.h"
 
 #ifdef HAVE_DBUS
 #include "dbus-protocol.h"
@@ -107,6 +106,9 @@ typedef struct {
 #ifdef HAVE_DBUS
     int enable_dbus;
     int fail_on_missing_dbus;
+    unsigned n_clients_max;
+    unsigned n_objects_per_client_max;
+    unsigned n_entries_per_entry_group_max;
 #endif
     int drop_root;
     int set_rlimits;
@@ -330,6 +332,7 @@ static void update_browse_domains(void) {
     l = filter_duplicate_domains(l);
 
     avahi_server_set_browse_domains(avahi_server, l);
+    avahi_string_list_free(l);
 }
 
 static void server_callback(AvahiServer *s, AvahiServerState state, void *userdata) {
@@ -528,6 +531,46 @@ static int is_yes(const char *s) {
     return *s == 'y' || *s == 'Y' || *s == '1' || *s == 't' || *s == 'T';
 }
 
+static int parse_unsigned(const char *s, unsigned *u) {
+    char *e = NULL;
+    unsigned long ul;
+    unsigned k;
+
+    errno = 0;
+    ul = strtoul(s, &e, 0);
+
+    if (!e || *e || errno != 0)
+        return -1;
+
+    k = (unsigned) ul;
+
+    if ((unsigned long) k != ul)
+        return -1;
+
+    *u = k;
+    return 0;
+}
+
+static int parse_usec(const char *s, AvahiUsec *u) {
+    char *e = NULL;
+    unsigned long long ull;
+    AvahiUsec k;
+
+    errno = 0;
+    ull = strtoull(s, &e, 0);
+
+    if (!e || *e || errno != 0)
+        return -1;
+
+    k = (AvahiUsec) ull;
+
+    if ((unsigned long long) k != ull)
+        return -1;
+
+    *u = k;
+    return 0;
+}
+
 static int load_config_file(DaemonConfig *c) {
     int r = -1;
     AvahiIniFile *f;
@@ -619,6 +662,64 @@ static int load_config_file(DaemonConfig *c) {
                         c->server_config.deny_interfaces = avahi_string_list_add(c->server_config.deny_interfaces, *t);
 
                     avahi_strfreev(e);
+                } else if (strcasecmp(p->key, "ratelimit-interval-usec") == 0) {
+                    AvahiUsec k;
+
+                    if (parse_usec(p->value, &k) < 0) {
+                        avahi_log_error("Invalid ratelimit-interval-usec setting %s", p->value);
+                        goto finish;
+                    }
+
+                    c->server_config.ratelimit_interval = k;
+
+                } else if (strcasecmp(p->key, "ratelimit-burst") == 0) {
+                    unsigned k;
+
+                    if (parse_unsigned(p->value, &k) < 0) {
+                        avahi_log_error("Invalid ratelimit-burst setting %s", p->value);
+                        goto finish;
+                    }
+
+                    c->server_config.ratelimit_burst = k;
+
+                } else if (strcasecmp(p->key, "cache-entries-max") == 0) {
+                    unsigned k;
+
+                    if (parse_unsigned(p->value, &k) < 0) {
+                        avahi_log_error("Invalid cache-entries-max setting %s", p->value);
+                        goto finish;
+                    }
+
+                    c->server_config.n_cache_entries_max = k;
+#ifdef HAVE_DBUS
+                } else if (strcasecmp(p->key, "clients-max") == 0) {
+                    unsigned k;
+
+                    if (parse_unsigned(p->value, &k) < 0) {
+                        avahi_log_error("Invalid clients-max setting %s", p->value);
+                        goto finish;
+                    }
+
+                    c->n_clients_max = k;
+                } else if (strcasecmp(p->key, "objects-per-client-max") == 0) {
+                    unsigned k;
+
+                    if (parse_unsigned(p->value, &k) < 0) {
+                        avahi_log_error("Invalid objects-per-client-max setting %s", p->value);
+                        goto finish;
+                    }
+
+                    c->n_objects_per_client_max = k;
+                } else if (strcasecmp(p->key, "entries-per-entry-group-max") == 0) {
+                    unsigned k;
+
+                    if (parse_unsigned(p->value, &k) < 0) {
+                        avahi_log_error("Invalid entries-per-entry-group-max setting %s", p->value);
+                        goto finish;
+                    }
+
+                    c->n_entries_per_entry_group_max = k;
+#endif
                 } else {
                     avahi_log_error("Invalid configuration key \"%s\" in group \"%s\"\n", p->key, g->name);
                     goto finish;
@@ -1010,7 +1111,12 @@ static int run_server(DaemonConfig *c) {
 
 #ifdef HAVE_DBUS
     if (c->enable_dbus) {
-        if (dbus_protocol_setup(poll_api, config.disable_user_service_publishing, !c->fail_on_missing_dbus
+        if (dbus_protocol_setup(poll_api,
+                                config.disable_user_service_publishing,
+                                config.n_clients_max,
+                                config.n_objects_per_client_max,
+                                config.n_entries_per_entry_group_max,
+                                !c->fail_on_missing_dbus
 #ifdef ENABLE_CHROOT
                                 && !config.use_chroot
 #endif
@@ -1307,7 +1413,7 @@ static void enforce_rlimits(void) {
 #endif
 
     /* the sysctl() call from iface-pfroute.c needs locked memory on FreeBSD */
-#if defined(RLIMIT_MEMLOCK) && !defined(__FreeBSD__)
+#if defined(RLIMIT_MEMLOCK) && !defined(__FreeBSD__) && !defined(__FreeBSD_kernel__)
     /* We don't need locked memory */
     set_one_rlimit(RLIMIT_MEMLOCK, 0, "RLIMIT_MEMLOCK");
 #endif
@@ -1348,6 +1454,9 @@ int main(int argc, char *argv[]) {
 #ifdef HAVE_DBUS
     config.enable_dbus = 1;
     config.fail_on_missing_dbus = 1;
+    config.n_clients_max = 0;
+    config.n_objects_per_client_max = 0;
+    config.n_entries_per_entry_group_max = 0;
 #endif
 
     config.drop_root = 1;
@@ -1455,10 +1564,9 @@ int main(int argc, char *argv[]) {
         if (config.use_syslog || config.daemonize)
             daemon_log_use = DAEMON_LOG_SYSLOG;
 
-        if (daemon_close_all(-1) < 0) {
-            avahi_log_error("Failed to close remaining file descriptors: %s", strerror(errno));
-            goto finish;
-        }
+        if (sd_listen_fds(0) <= 0)
+            if (daemon_close_all(-1) < 0)
+                avahi_log_warn("Failed to close all remaining file descriptors: %s", strerror(errno));
 
         if (make_runtime_dir() < 0)
             goto finish;

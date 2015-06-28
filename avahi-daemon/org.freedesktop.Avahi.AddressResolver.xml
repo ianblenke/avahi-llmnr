@@ -2,8 +2,6 @@
 <?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
 <!DOCTYPE node SYSTEM "introspect.dtd">
 
-<!-- $Id$ -->
-
 <!--
   This file is part of avahi.
 
@@ -31,16 +29,16 @@
     </method>
   </interface>
 
-  <interface name="org.freedesktop.Avahi.HostNameResolver">
+  <interface name="org.freedesktop.Avahi.AddressResolver">
 
     <method name="Free"/>
 
     <signal name="Found">
       <arg name="interface" type="i" direction="out"/>
       <arg name="protocol" type="i" direction="out"/>
-      <arg name="name" type="s" direction="out"/>
       <arg name="aprotocol" type="i" direction="out"/>
       <arg name="address" type="s" direction="out"/>
+      <arg name="name" type="s" direction="out"/>
       <arg name="flags" type="u" direction="out"/>
     </signal>
 

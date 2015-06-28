@@ -12,15 +12,15 @@ avahi-daemon.conf \- avahi-daemon configuration file
 .TP
 \fBdomain-name=\f1 Set the default domain name avahi-daemon tries to register its host name and services on the LAN in. If omitted defaults to ".local".
 .TP
-\fBbrowse-domains=\f1 Set a comma seperated list of browsing domains (in addition to the default one and those announced inside the default browsing domain). Please note that the user may specify additional browsing domains on the client side, either by setting $AVAHI_BROWSE_DOMAINS to a list of colon seperated domains or by adding them to the XDG config file \fI~/.config/avahi/browse-domains\f1 (seperated by newlines).
+\fBbrowse-domains=\f1 Set a comma separated list of browsing domains (in addition to the default one and those announced inside the default browsing domain). Please note that the user may specify additional browsing domains on the client side, either by setting $AVAHI_BROWSE_DOMAINS to a list of colon separated domains or by adding them to the XDG config file \fI~/.config/avahi/browse-domains\f1 (separated by newlines).
 .TP
 \fBuse-ipv4=\f1 Takes a boolean value ("yes" or "no"). If set to "no" avahi-daemon will not use IPv4 sockets. Default is "yes".
 .TP
 \fBuse-ipv6=\f1 Takes a boolean value ("yes" or "no"). If set to "no" avahi-daemon will not use IPv6 sockets. Default is "yes".
 .TP
-\fBallow-interfaces=\f1 Set a comma seperated list of allowed network interfaces that should be used by the avahi-daemon. Other interfaces will be ignored. If set to the empty list all local interfaces except loopback and point-to-point will be used.
+\fBallow-interfaces=\f1 Set a comma separated list of allowed network interfaces that should be used by the avahi-daemon. Traffic on other interfaces will be ignored. If set to an empty list all local interfaces except loopback and point-to-point will be used.
 .TP
-\fBdeny-interfaces=\f1 Set a comma seperated list of network interfaces that should be ignored by avahi-daemon. Other not specified interfaces will be used, unless \fBallow-interfaces\f1 is set. This option takes precedence over \fBdeny-interfaces\f1.
+\fBdeny-interfaces=\f1 Set a comma separated list of network interfaces that should be ignored by avahi-daemon. Other not specified interfaces will be used, unless \fBallow-interfaces=\f1 is set. This option takes precedence over \fBallow-interfaces=\f1.
 .TP
 \fBcheck-response-ttl=\f1 Takes a boolean value ("yes" or "no"). If set to "yes", an additional security check is activated: incoming IP packets will be ignored unless the IP TTL is 255. Earlier mDNS specifications required this check. Since this feature may be incompatible with newer implementations of mDNS it defaults to "no". On the other hand it provides extra security.
 .TP
@@ -31,6 +31,18 @@ avahi-daemon.conf \- avahi-daemon configuration file
 \fBdisallow-other-stacks=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" no other process is allowed to bind to UDP port 5353. This effectively impedes other mDNS stacks from running on the host. Use this as a security measure to make sure that only Avahi is responsible for mDNS traffic. Please note that we do not recommend running multiple mDNS stacks on the same host simultaneously. This hampers reliability and is a waste of resources. However, to not annoy people this option defaults to "no".
 .TP
 \fBallow-point-to-point=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" avahi-daemon will make use of interfaces with the POINTOPOINT flag set. This option defaults to "no" as it might make mDNS unreliable due to usually large latencies with such links and opens a potential security hole by allowing mDNS access from Internet connections. Use with care and YMMV!
+.TP
+\fBcache-entries-max=\f1 Takes an unsigned integer specifying how many resource records are cached per interface. Bigger values allow mDNS work correctly in large LANs but also increase memory consumption.
+.TP
+\fBclients-max=\f1 Takes an unsigned integer. The maximum number of concurrent D-Bus clients allowed. If the maximum number is reached further clients will be refused until at least one existing client disconnects.
+.TP
+\fBobjects-per-client-max=\f1 Takes an unsigned integer. The maximum number of objects (entry groups, browsers, resolvers) that may be registered per D-Bus client at a time. If the maximum number is reached further object creation will be refused until at least one object is freed.
+.TP
+\fBentries-per-entry-group-max=\f1 Takes an unsigned integer. The maximum number of entries (resource records) per entry group registered by a D-Bus client at a time. If the maximum number is reached further resource records may not be added to an entry group.
+.TP
+\fBratelimit-interval-usec=\f1 Takes an unsigned integer. Sets the per-interface packet rate-limiting interval parameter. Together with \fBratelimit-burst=\f1 this may be used to control the maximum number of packets Avahi will generated in a specific period of time on an interface.
+.TP
+\fBratelimit-burst=\f1 Takes an unsigned integer. Sets the per-interface packet rate-limiting burst parameter. Together with \fBratelimit-interval-usec=\f1 this may be used to control the maximum number of packets Avahi will generated in a specific period of time on an interface.
 .SH SECTION [WIDE-AREA]
 .TP
 \fBenable-wide-area=\f1 Takes a boolean value ("yes" or "no"). Enable wide-area DNS-SD, aka DNS-SD over unicast DNS. If this is enabled only domains ending in .local will be resolved on mDNS, all other domains are resolved via unicast DNS. If you want to maintain multiple different multicast DNS domains even with this option enabled we encourage you to use subdomains of .local, such as "kitchen.local". This option defaults to "yes".
@@ -50,7 +62,7 @@ avahi-daemon.conf \- avahi-daemon configuration file
 .TP
 \fBpublish-domain=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" avahi-daemon will announce the locally used domain name (see above) for browsing by other hosts. Defaults to "yes".
 .TP
-\fBpublish-dns-servers=\f1 Takes a comma seperated list of IP addresses for unicast DNS servers. You can use this to announce unicast DNS servers via mDNS. When used in conjunction with avahi-dnsconfd on the client side this allows DHCP-like configuration of unicast DNS servers.
+\fBpublish-dns-servers=\f1 Takes a comma separated list of IP addresses for unicast DNS servers. You can use this to announce unicast DNS servers via mDNS. When used in conjunction with avahi-dnsconfd on the client side this allows DHCP-like configuration of unicast DNS servers.
 .TP
 \fBpublish-resolv-conf-dns-servers=\f1 Takes a boolean value ("yes" or "no"). If set to "yes" avahi-daemon will publish the unicast DNS servers specified in \fI/etc/resolv.conf\f1 in addition to those specified with \fBpublish-dns-servers\f1. Send avahi-daemon a SIGHUP to have it reload this file. Defaults to "no".
 .TP

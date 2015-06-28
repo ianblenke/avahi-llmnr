@@ -1,7 +1,5 @@
-# $Id$
-#
 # This file is part of avahi.
-# 
+#
 # avahi is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2 of the
@@ -16,6 +14,8 @@
 # License along with avahi; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA.
+
+EXTRA_DIST=avahi-dnsconfd.action avahi-dnsconfd.service.in
 
 if HAVE_XML
 if HAVE_LIBDAEMON
@@ -33,13 +33,21 @@ AM_CFLAGS+='-DDEBUG_TRAP=__asm__("int $$3")'
 
 sbin_PROGRAMS = avahi-dnsconfd
 
-avahi_dnsconfd_SOURCES = main.c 
+avahi_dnsconfd_SOURCES = main.c
 avahi_dnsconfd_CFLAGS = $(AM_CFLAGS) $(LIBDAEMON_CFLAGS)
 avahi_dnsconfd_LDADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(LIBDAEMON_LIBS)
 
 pkgsysconf_SCRIPTS=avahi-dnsconfd.action
 
-endif
+%.service: %.service.in
+	$(AM_V_GEN)sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+
+if HAVE_SYSTEMD
+systemdsystemunit_DATA = \
+	avahi-dnsconfd.service
 endif
 
-EXTRA_DIST=avahi-dnsconfd.action
+CLEANFILES = $(systemdsystemunit_DATA)
+
+endif
+endif

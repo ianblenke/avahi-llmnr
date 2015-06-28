@@ -17,6 +17,9 @@ avahi-dnsconfd connects to a running avahi-daemon and runs the script \fI/etc/av
 \fB-D | --daemonize\f1
 Daemonize after startup and redirect log messages to syslog.
 .TP
+\fB-s | --syslog\f1
+Log to syslog instead of STDERR. Implied by \fB--daemonize\f1.
+.TP
 \fB-k | --kill\f1
 Kill an already running avahi-dnsconfd. (equivalent to sending a SIGTERM)
 .TP

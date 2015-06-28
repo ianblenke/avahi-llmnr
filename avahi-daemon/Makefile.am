@@ -1,7 +1,5 @@
-# $Id$
-#
 # This file is part of avahi.
-# 
+#
 # avahi is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2 of the
@@ -27,7 +25,8 @@ if HAVE_XML
 
 pkgsysconfdir=$(sysconfdir)/avahi
 servicedir=$(pkgsysconfdir)/services
-introspectiondir=$(pkgdatadir)/introspection
+introspectiondir=$(datadir)/dbus-1/interfaces
+dbussystemservicesdir=$(datadir)/dbus-1/system-services
 
 AM_CFLAGS+= \
 	-DAVAHI_DAEMON_RUNTIME_DIR=\"$(avahi_runtime_dir)/avahi-daemon/\" \
@@ -53,6 +52,7 @@ avahi_daemon_SOURCES = \
 	static-hosts.c static-hosts.h \
 	ini-file-parser.c ini-file-parser.h \
 	setproctitle.c setproctitle.h \
+	sd-daemon.h sd-daemon.c \
 	../avahi-client/check-nss.c
 
 avahi_daemon_CFLAGS = $(AM_CFLAGS) $(LIBDAEMON_CFLAGS) $(XML_CFLAGS)
@@ -63,18 +63,36 @@ ini_file_parser_test_SOURCES = \
 	ini-file-parser-test.c
 
 ini_file_parser_test_CFLAGS = $(AM_CFLAGS)
-ini_file_parser_test_LDADD = $(AM_LDADD) ../avahi-common/libavahi-common.la ../avahi-core/libavahi-core.la 
+ini_file_parser_test_LDADD = $(AM_LDADD) ../avahi-common/libavahi-common.la ../avahi-core/libavahi-core.la
 
 pkgsysconf_DATA = \
 	avahi-daemon.conf \
 	hosts
 
-service_DATA = \
+dist_service_DATA = \
 	ssh.service \
 	sftp-ssh.service
 
-pkgdata_DATA = \
+dist_pkgdata_DATA = \
 	avahi-service.dtd
+
+%.service: %.service.in
+	$(AM_V_GEN)sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+
+%.socket: %.socket.in
+	$(AM_V_GEN)sed -e 's,@sbindir\@,$(sbindir),g' \
+		-e 's,@avahi_runtime_dir\@,$(avahi_runtime_dir),g' $< > $@
+
+if HAVE_SYSTEMD
+systemdsystemunit_DATA = \
+	avahi-daemon.service \
+	avahi-daemon.socket
+
+dist_dbussystemservices_DATA = \
+	org.freedesktop.Avahi.service
+endif
+
+CLEANFILES = $(systemdsystemunit_DATA)
 
 if ENABLE_CHROOT
 
@@ -117,43 +135,32 @@ avahi_daemon_LDADD += \
 
 avahi_daemon_CFLAGS += $(DBUS_CFLAGS) -DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS=\"$(DBUS_SYSTEM_BUS_DEFAULT_ADDRESS)\"
 
-dbusservice_DATA = avahi-dbus.conf
+dist_dbusservice_DATA = avahi-dbus.conf
 
-introspection_DATA = \
-	Server.introspect \
-	EntryGroup.introspect \
-	DomainBrowser.introspect \
-	ServiceTypeBrowser.introspect \
-	ServiceBrowser.introspect \
-	ServiceResolver.introspect \
-	AddressResolver.introspect \
-	HostNameResolver.introspect \
-	RecordBrowser.introspect
+dist_introspection_DATA = \
+	org.freedesktop.Avahi.Server.xml \
+	org.freedesktop.Avahi.EntryGroup.xml \
+	org.freedesktop.Avahi.DomainBrowser.xml \
+	org.freedesktop.Avahi.ServiceTypeBrowser.xml \
+	org.freedesktop.Avahi.ServiceBrowser.xml \
+	org.freedesktop.Avahi.ServiceResolver.xml \
+	org.freedesktop.Avahi.AddressResolver.xml \
+	org.freedesktop.Avahi.HostNameResolver.xml \
+	org.freedesktop.Avahi.RecordBrowser.xml
 
 endif
 endif
 endif
 
 EXTRA_DIST = \
-	avahi-service.dtd \
 	avahi-daemon.conf \
 	example.service \
-	avahi-dbus.conf \
-	Server.introspect \
-	EntryGroup.introspect \
-	DomainBrowser.introspect \
-	ServiceTypeBrowser.introspect \
-	ServiceBrowser.introspect \
-	ServiceResolver.introspect \
-	AddressResolver.introspect \
-	HostNameResolver.introspect \
-	RecordBrowser.introspect \
-	ssh.service \
-	sftp-ssh.service \
 	hosts \
 	example.service \
 	introspect.dtd \
-	introspect.xsl
+	introspect.xsl \
+	avahi-daemon.service.in \
+	avahi-daemon.socket.in
 
 xmllint:
 	xmllint --noout --valid example.service
@@ -163,3 +170,7 @@ xmllint:
 
 install-data-local:
 	test -z "$(localstatedir)/run" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run"
+
+update-systemd:
+	curl http://cgit.freedesktop.org/systemd/plain/src/sd-daemon.c > sd-daemon.c
+	curl http://cgit.freedesktop.org/systemd/plain/src/sd-daemon.h > sd-daemon.h

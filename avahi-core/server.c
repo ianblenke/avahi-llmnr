@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /***
   This file is part of avahi.
 
@@ -50,6 +48,8 @@
 #include "addr-util.h"
 #include "domain-util.h"
 #include "rr-util.h"
+
+#define AVAHI_DEFAULT_CACHE_ENTRIES_MAX 4096
 
 static void enum_aux_records(AvahiServer *s, AvahiInterface *i, const char *name, uint16_t type, void (*callback)(AvahiServer *s, AvahiRecord *r, int flush_cache, void* userdata), void* userdata) {
     assert(s);
@@ -659,7 +659,6 @@ static void handle_response_packet(AvahiServer *s, AvahiDnsPacket *p, AvahiInter
              avahi_dns_packet_get_field(p, AVAHI_DNS_FIELD_ARCOUNT); n > 0; n--) {
         AvahiRecord *record;
         int cache_flush = 0;
-/*         char *txt; */
 
         if (!(record = avahi_dns_packet_consume_record(p, &cache_flush))) {
             avahi_log_warn(__FILE__": Packet too short or invalid while reading response record. (Maybe a UTF-8 problem?)");
@@ -669,7 +668,7 @@ static void handle_response_packet(AvahiServer *s, AvahiDnsPacket *p, AvahiInter
         if (!avahi_key_is_pattern(record->key)) {
 
             if (handle_conflict(s, i, record, cache_flush)) {
-                if (!from_local_iface)
+                if (!from_local_iface && !avahi_record_is_link_local_address(record))
                     reflect_response(s, i, record, cache_flush);
                 avahi_cache_update(i->cache, record, cache_flush, a);
                 avahi_response_scheduler_incoming(i->response_scheduler, record, cache_flush);
@@ -680,7 +679,7 @@ static void handle_response_packet(AvahiServer *s, AvahiDnsPacket *p, AvahiInter
     }
 
     /* If the incoming response contained a conflicting record, some
-       records have been scheduling for sending. We need to flush them
+       records have been scheduled for sending. We need to flush them
        here. */
     if (!avahi_record_list_is_empty(s->record_list))
         avahi_server_generate_response(s, i, NULL, NULL, 0, 0, 1);
@@ -924,10 +923,9 @@ static void dispatch_packet(AvahiServer *s, AvahiDnsPacket *p, const AvahiAddres
     if (avahi_dns_packet_is_query(p)) {
         int legacy_unicast = 0;
 
-        if (avahi_dns_packet_get_field(p, AVAHI_DNS_FIELD_ARCOUNT) != 0) {
-            avahi_log_warn("Invalid query packet.");
-            return;
-        }
+        /* For queries EDNS0 might allow ARCOUNT != 0. We ignore the
+         * AR section completely here, so far. Until the day we add
+         * EDNS0 support. */
 
         if (port != AVAHI_MDNS_PORT) {
             /* Legacy Unicast */
@@ -1009,13 +1007,6 @@ static void dispatch_legacy_unicast_packet(AvahiServer *s, AvahiDnsPacket *p) {
     avahi_dns_packet_set_field(p, AVAHI_DNS_FIELD_ID, slot->id);
 }
 
-static void cleanup_dead(AvahiServer *s) {
-    assert(s);
-
-    avahi_cleanup_dead_entries(s);
-    avahi_browser_cleanup(s);
-}
-
 static void mcast_socket_event(AvahiWatch *w, int fd, AvahiWatchEvent events, void *userdata) {
     AvahiServer *s = userdata;
     AvahiAddress dest, src;
@@ -1044,11 +1035,11 @@ static void mcast_socket_event(AvahiWatch *w, int fd, AvahiWatchEvent events, vo
         if (iface != AVAHI_IF_UNSPEC)
             dispatch_packet(s, p, &src, port, &dest, iface, ttl);
         else
-            avahi_log_error("Incoming packet recieved on address that isn't local.");
+            avahi_log_error("Incoming packet received on address that isn't local.");
 
         avahi_dns_packet_free(p);
 
-        cleanup_dead(s);
+        avahi_cleanup_dead_entries(s);
     }
 }
 
@@ -1071,7 +1062,7 @@ static void legacy_unicast_socket_event(AvahiWatch *w, int fd, AvahiWatchEvent e
         dispatch_legacy_unicast_packet(s, p);
         avahi_dns_packet_free(p);
 
-        cleanup_dead(s);
+        avahi_cleanup_dead_entries(s);
     }
 }
 
@@ -1224,6 +1215,7 @@ static void register_stuff(AvahiServer *s) {
     register_browse_domain(s);
     avahi_interface_monitor_update_rrs(s->monitor, 0);
 
+    assert(s->n_host_rr_pending > 0);
     s->n_host_rr_pending --;
 
     if (s->n_host_rr_pending == 0)
@@ -1250,13 +1242,14 @@ int avahi_server_set_host_name(AvahiServer *s, const char *host_name) {
 
     AVAHI_CHECK_VALIDITY(s, !host_name || avahi_is_valid_host_name(host_name), AVAHI_ERR_INVALID_HOST_NAME);
 
-    if (!host_name) {
+    if (!host_name)
         hn = avahi_get_host_name_strdup();
-        hn[strcspn(hn, ".")] = 0;
-        host_name = hn;
-    }
+    else
+        hn = avahi_normalize_name_strdup(host_name);
 
-    if (avahi_domain_equal(s->host_name, host_name) && s->state != AVAHI_SERVER_COLLISION) {
+    hn[strcspn(hn, ".")] = 0;
+
+    if (avahi_domain_equal(s->host_name, hn) && s->state != AVAHI_SERVER_COLLISION) {
         avahi_free(hn);
         return avahi_server_set_errno(s, AVAHI_ERR_NO_CHANGE);
     }
@@ -1264,7 +1257,7 @@ int avahi_server_set_host_name(AvahiServer *s, const char *host_name) {
     withdraw_host_rrs(s);
 
     avahi_free(s->host_name);
-    s->host_name = hn ? hn : avahi_strdup(host_name);
+    s->host_name = hn;
 
     update_fqdn(s);
 
@@ -1278,10 +1271,10 @@ int avahi_server_set_domain_name(AvahiServer *s, const char *domain_name) {
 
     AVAHI_CHECK_VALIDITY(s, !domain_name || avahi_is_valid_domain_name(domain_name), AVAHI_ERR_INVALID_DOMAIN_NAME);
 
-    if (!domain_name) {
+    if (!domain_name)
         dn = avahi_strdup("local");
-        domain_name = dn;
-    }
+    else
+        dn = avahi_normalize_name_strdup(domain_name);
 
     if (avahi_domain_equal(s->domain_name, domain_name)) {
         avahi_free(dn);
@@ -1291,7 +1284,7 @@ int avahi_server_set_domain_name(AvahiServer *s, const char *domain_name) {
     withdraw_host_rrs(s);
 
     avahi_free(s->domain_name);
-    s->domain_name = avahi_normalize_name_strdup(domain_name);
+    s->domain_name = dn;
     update_fqdn(s);
 
     register_stuff(s);
@@ -1394,6 +1387,7 @@ AvahiServer *avahi_server_new(const AvahiPoll *poll_api, const AvahiServerConfig
     s->need_entry_cleanup = 0;
     s->need_group_cleanup = 0;
     s->need_browser_cleanup = 0;
+    s->cleanup_time_event = NULL;
     s->hinfo_entry_group = NULL;
     s->browse_domain_entry_group = NULL;
     s->error = AVAHI_OK;
@@ -1492,6 +1486,9 @@ void avahi_server_free(AvahiServer* s) {
     if (s->wide_area_lookup_engine)
         avahi_wide_area_engine_free(s->wide_area_lookup_engine);
     avahi_multicast_lookup_engine_free(s->multicast_lookup_engine);
+
+    if (s->cleanup_time_event)
+        avahi_time_event_free(s->cleanup_time_event);
 
     avahi_time_event_queue_free(s->time_event_queue);
 
@@ -1593,6 +1590,9 @@ AvahiServerConfig* avahi_server_config_init(AvahiServerConfig *c) {
     c->allow_point_to_point = 0;
     c->publish_aaaa_on_ipv4 = 1;
     c->publish_a_on_ipv6 = 0;
+    c->n_cache_entries_max = AVAHI_DEFAULT_CACHE_ENTRIES_MAX;
+    c->ratelimit_interval = 0;
+    c->ratelimit_burst = 0;
 
     return c;
 }
