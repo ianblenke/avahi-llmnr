@@ -1,4 +1,4 @@
-/* $Id: Client.cs 1021 2005-11-20 17:37:32Z snorp $ */
+/* $Id: Client.cs 1073 2006-01-12 16:28:22Z snorp $ */
 
 /***
   This file is part of avahi.
@@ -25,6 +25,9 @@ using System.Threading;
 using System.Collections;
 using System.Runtime.InteropServices;
 using Mono.Unix;
+using Mono.Unix.Native;
+
+using Stdlib = Mono.Unix.Native.Stdlib;
 
 namespace Avahi
 {
@@ -86,7 +89,8 @@ namespace Avahi
     public enum LookupFlags {
         None = 0,
         UseWideArea = 1,
-        UseMulticast = 4,
+        UseMulticast = 2,
+	NoTxt = 4,
         NoAddress = 8
     }
 

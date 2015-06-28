@@ -1,4 +1,4 @@
-/* $Id: avahi-publish.c 1036 2005-11-25 10:33:51Z sebest $ */
+/* $Id: avahi-publish.c 1071 2006-01-11 13:33:59Z lathiat $ */
 
 /***
   This file is part of avahi.
@@ -322,6 +322,8 @@ static int parse_command_line(Config *c, const char *argv0, int argc, char *argv
             fprintf(stderr, "Failed to parse port number: %s\n", argv[optind+2]);
             return -1;
         }
+
+        c->port = p;
             
         for (i = optind+3; i < argc; i++)
             c->txt = avahi_string_list_add(c->txt, argv[i]);

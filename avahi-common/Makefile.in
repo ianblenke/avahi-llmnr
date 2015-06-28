@@ -60,7 +60,8 @@ host_triplet = @host@
 @ENABLE_TESTS_TRUE@noinst_PROGRAMS = strlst-test$(EXEEXT) \
 @ENABLE_TESTS_TRUE@	domain-test$(EXEEXT) \
 @ENABLE_TESTS_TRUE@	alternative-test$(EXEEXT) \
-@ENABLE_TESTS_TRUE@	timeval-test$(EXEEXT) watch-test$(EXEEXT)
+@ENABLE_TESTS_TRUE@	timeval-test$(EXEEXT) watch-test$(EXEEXT) \
+@ENABLE_TESTS_TRUE@	watch-test-thread$(EXEEXT)
 subdir = avahi-common
 DIST_COMMON = $(am__noinst_HEADERS_DIST) \
 	$(avahi_commoninclude_HEADERS) $(srcdir)/Makefile.am \
@@ -90,7 +91,8 @@ am_libavahi_common_la_OBJECTS = libavahi_common_la-malloc.lo \
 	libavahi_common_la-alternative.lo libavahi_common_la-error.lo \
 	libavahi_common_la-strlst.lo libavahi_common_la-domain.lo \
 	libavahi_common_la-timeval.lo \
-	libavahi_common_la-simple-watch.lo libavahi_common_la-rlist.lo
+	libavahi_common_la-simple-watch.lo \
+	libavahi_common_la-thread-watch.lo libavahi_common_la-rlist.lo
 libavahi_common_la_OBJECTS = $(am_libavahi_common_la_OBJECTS)
 PROGRAMS = $(noinst_PROGRAMS)
 am_alternative_test_OBJECTS = alternative_test-alternative.$(OBJEXT) \
@@ -118,6 +120,15 @@ am_watch_test_OBJECTS = watch_test-timeval.$(OBJEXT) \
 	watch_test-watch-test.$(OBJEXT)
 watch_test_OBJECTS = $(am_watch_test_OBJECTS)
 watch_test_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am__objects_1 = watch_test_thread-timeval.$(OBJEXT) \
+	watch_test_thread-simple-watch.$(OBJEXT) \
+	watch_test_thread-malloc.$(OBJEXT) \
+	watch_test_thread-watch-test.$(OBJEXT)
+am_watch_test_thread_OBJECTS = $(am__objects_1) \
+	watch_test_thread-thread-watch.$(OBJEXT)
+watch_test_thread_OBJECTS = $(am_watch_test_thread_OBJECTS)
+am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+watch_test_thread_DEPENDENCIES = $(am__DEPENDENCIES_2)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -131,11 +142,12 @@ LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libavahi_common_la_SOURCES) $(alternative_test_SOURCES) \
 	$(domain_test_SOURCES) $(strlst_test_SOURCES) \
-	$(timeval_test_SOURCES) $(watch_test_SOURCES)
+	$(timeval_test_SOURCES) $(watch_test_SOURCES) \
+	$(watch_test_thread_SOURCES)
 DIST_SOURCES = $(libavahi_common_la_SOURCES) \
 	$(alternative_test_SOURCES) $(domain_test_SOURCES) \
 	$(strlst_test_SOURCES) $(timeval_test_SOURCES) \
-	$(watch_test_SOURCES)
+	$(watch_test_SOURCES) $(watch_test_thread_SOURCES)
 avahi_commonincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 am__noinst_HEADERS_DIST = dbus.h dbus-watch-glue.h
 HEADERS = $(avahi_commoninclude_HEADERS) $(noinst_HEADERS)
@@ -440,6 +452,7 @@ libavahi_common_la_SOURCES = \
 	domain.c domain.h \
 	timeval.c timeval.h \
 	simple-watch.c simple-watch.h \
+	thread-watch.c thread-watch.h \
 	watch.h gccmacro.h \
 	rlist.h rlist.c
 
@@ -473,6 +486,9 @@ watch_test_SOURCES = \
 
 watch_test_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS)
 watch_test_LDADD = $(AM_LDADD) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS)
+watch_test_thread_SOURCES = $(watch_test_SOURCES) thread-watch.c thread-watch.h
+watch_test_thread_CFLAGS = $(watch_test_CFLAGS) -DUSE_THREAD
+watch_test_thread_LDADD = $(watch_test_LDADD)
 timeval_test_SOURCES = \
 	timeval.c timeval.h \
 	timeval-test.c
@@ -567,6 +583,9 @@ timeval-test$(EXEEXT): $(timeval_test_OBJECTS) $(timeval_test_DEPENDENCIES)
 watch-test$(EXEEXT): $(watch_test_OBJECTS) $(watch_test_DEPENDENCIES) 
 	@rm -f watch-test$(EXEEXT)
 	$(LINK) $(watch_test_LDFLAGS) $(watch_test_OBJECTS) $(watch_test_LDADD) $(LIBS)
+watch-test-thread$(EXEEXT): $(watch_test_thread_OBJECTS) $(watch_test_thread_DEPENDENCIES) 
+	@rm -f watch-test-thread$(EXEEXT)
+	$(LINK) $(watch_test_thread_LDFLAGS) $(watch_test_thread_OBJECTS) $(watch_test_thread_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -589,6 +608,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_common_la-rlist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_common_la-simple-watch.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_common_la-strlst.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_common_la-thread-watch.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libavahi_common_la-timeval.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strlst_test-malloc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strlst_test-strlst-test.Po@am__quote@
@@ -599,6 +619,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/watch_test-simple-watch.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/watch_test-timeval.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/watch_test-watch-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/watch_test_thread-malloc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/watch_test_thread-simple-watch.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/watch_test_thread-thread-watch.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/watch_test_thread-timeval.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/watch_test_thread-watch-test.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -676,6 +701,13 @@ libavahi_common_la-simple-watch.lo: simple-watch.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='simple-watch.c' object='libavahi_common_la-simple-watch.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libavahi_common_la_CFLAGS) $(CFLAGS) -c -o libavahi_common_la-simple-watch.lo `test -f 'simple-watch.c' || echo '$(srcdir)/'`simple-watch.c
+
+libavahi_common_la-thread-watch.lo: thread-watch.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libavahi_common_la_CFLAGS) $(CFLAGS) -MT libavahi_common_la-thread-watch.lo -MD -MP -MF "$(DEPDIR)/libavahi_common_la-thread-watch.Tpo" -c -o libavahi_common_la-thread-watch.lo `test -f 'thread-watch.c' || echo '$(srcdir)/'`thread-watch.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libavahi_common_la-thread-watch.Tpo" "$(DEPDIR)/libavahi_common_la-thread-watch.Plo"; else rm -f "$(DEPDIR)/libavahi_common_la-thread-watch.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='thread-watch.c' object='libavahi_common_la-thread-watch.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libavahi_common_la_CFLAGS) $(CFLAGS) -c -o libavahi_common_la-thread-watch.lo `test -f 'thread-watch.c' || echo '$(srcdir)/'`thread-watch.c
 
 libavahi_common_la-rlist.lo: rlist.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libavahi_common_la_CFLAGS) $(CFLAGS) -MT libavahi_common_la-rlist.lo -MD -MP -MF "$(DEPDIR)/libavahi_common_la-rlist.Tpo" -c -o libavahi_common_la-rlist.lo `test -f 'rlist.c' || echo '$(srcdir)/'`rlist.c; \
@@ -907,6 +939,76 @@ watch_test-watch-test.obj: watch-test.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='watch-test.c' object='watch_test-watch-test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_CFLAGS) $(CFLAGS) -c -o watch_test-watch-test.obj `if test -f 'watch-test.c'; then $(CYGPATH_W) 'watch-test.c'; else $(CYGPATH_W) '$(srcdir)/watch-test.c'; fi`
+
+watch_test_thread-timeval.o: timeval.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -MT watch_test_thread-timeval.o -MD -MP -MF "$(DEPDIR)/watch_test_thread-timeval.Tpo" -c -o watch_test_thread-timeval.o `test -f 'timeval.c' || echo '$(srcdir)/'`timeval.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/watch_test_thread-timeval.Tpo" "$(DEPDIR)/watch_test_thread-timeval.Po"; else rm -f "$(DEPDIR)/watch_test_thread-timeval.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='timeval.c' object='watch_test_thread-timeval.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -c -o watch_test_thread-timeval.o `test -f 'timeval.c' || echo '$(srcdir)/'`timeval.c
+
+watch_test_thread-timeval.obj: timeval.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -MT watch_test_thread-timeval.obj -MD -MP -MF "$(DEPDIR)/watch_test_thread-timeval.Tpo" -c -o watch_test_thread-timeval.obj `if test -f 'timeval.c'; then $(CYGPATH_W) 'timeval.c'; else $(CYGPATH_W) '$(srcdir)/timeval.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/watch_test_thread-timeval.Tpo" "$(DEPDIR)/watch_test_thread-timeval.Po"; else rm -f "$(DEPDIR)/watch_test_thread-timeval.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='timeval.c' object='watch_test_thread-timeval.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -c -o watch_test_thread-timeval.obj `if test -f 'timeval.c'; then $(CYGPATH_W) 'timeval.c'; else $(CYGPATH_W) '$(srcdir)/timeval.c'; fi`
+
+watch_test_thread-simple-watch.o: simple-watch.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -MT watch_test_thread-simple-watch.o -MD -MP -MF "$(DEPDIR)/watch_test_thread-simple-watch.Tpo" -c -o watch_test_thread-simple-watch.o `test -f 'simple-watch.c' || echo '$(srcdir)/'`simple-watch.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/watch_test_thread-simple-watch.Tpo" "$(DEPDIR)/watch_test_thread-simple-watch.Po"; else rm -f "$(DEPDIR)/watch_test_thread-simple-watch.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='simple-watch.c' object='watch_test_thread-simple-watch.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -c -o watch_test_thread-simple-watch.o `test -f 'simple-watch.c' || echo '$(srcdir)/'`simple-watch.c
+
+watch_test_thread-simple-watch.obj: simple-watch.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -MT watch_test_thread-simple-watch.obj -MD -MP -MF "$(DEPDIR)/watch_test_thread-simple-watch.Tpo" -c -o watch_test_thread-simple-watch.obj `if test -f 'simple-watch.c'; then $(CYGPATH_W) 'simple-watch.c'; else $(CYGPATH_W) '$(srcdir)/simple-watch.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/watch_test_thread-simple-watch.Tpo" "$(DEPDIR)/watch_test_thread-simple-watch.Po"; else rm -f "$(DEPDIR)/watch_test_thread-simple-watch.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='simple-watch.c' object='watch_test_thread-simple-watch.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -c -o watch_test_thread-simple-watch.obj `if test -f 'simple-watch.c'; then $(CYGPATH_W) 'simple-watch.c'; else $(CYGPATH_W) '$(srcdir)/simple-watch.c'; fi`
+
+watch_test_thread-malloc.o: malloc.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -MT watch_test_thread-malloc.o -MD -MP -MF "$(DEPDIR)/watch_test_thread-malloc.Tpo" -c -o watch_test_thread-malloc.o `test -f 'malloc.c' || echo '$(srcdir)/'`malloc.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/watch_test_thread-malloc.Tpo" "$(DEPDIR)/watch_test_thread-malloc.Po"; else rm -f "$(DEPDIR)/watch_test_thread-malloc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='malloc.c' object='watch_test_thread-malloc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -c -o watch_test_thread-malloc.o `test -f 'malloc.c' || echo '$(srcdir)/'`malloc.c
+
+watch_test_thread-malloc.obj: malloc.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -MT watch_test_thread-malloc.obj -MD -MP -MF "$(DEPDIR)/watch_test_thread-malloc.Tpo" -c -o watch_test_thread-malloc.obj `if test -f 'malloc.c'; then $(CYGPATH_W) 'malloc.c'; else $(CYGPATH_W) '$(srcdir)/malloc.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/watch_test_thread-malloc.Tpo" "$(DEPDIR)/watch_test_thread-malloc.Po"; else rm -f "$(DEPDIR)/watch_test_thread-malloc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='malloc.c' object='watch_test_thread-malloc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -c -o watch_test_thread-malloc.obj `if test -f 'malloc.c'; then $(CYGPATH_W) 'malloc.c'; else $(CYGPATH_W) '$(srcdir)/malloc.c'; fi`
+
+watch_test_thread-watch-test.o: watch-test.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -MT watch_test_thread-watch-test.o -MD -MP -MF "$(DEPDIR)/watch_test_thread-watch-test.Tpo" -c -o watch_test_thread-watch-test.o `test -f 'watch-test.c' || echo '$(srcdir)/'`watch-test.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/watch_test_thread-watch-test.Tpo" "$(DEPDIR)/watch_test_thread-watch-test.Po"; else rm -f "$(DEPDIR)/watch_test_thread-watch-test.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='watch-test.c' object='watch_test_thread-watch-test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -c -o watch_test_thread-watch-test.o `test -f 'watch-test.c' || echo '$(srcdir)/'`watch-test.c
+
+watch_test_thread-watch-test.obj: watch-test.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -MT watch_test_thread-watch-test.obj -MD -MP -MF "$(DEPDIR)/watch_test_thread-watch-test.Tpo" -c -o watch_test_thread-watch-test.obj `if test -f 'watch-test.c'; then $(CYGPATH_W) 'watch-test.c'; else $(CYGPATH_W) '$(srcdir)/watch-test.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/watch_test_thread-watch-test.Tpo" "$(DEPDIR)/watch_test_thread-watch-test.Po"; else rm -f "$(DEPDIR)/watch_test_thread-watch-test.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='watch-test.c' object='watch_test_thread-watch-test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -c -o watch_test_thread-watch-test.obj `if test -f 'watch-test.c'; then $(CYGPATH_W) 'watch-test.c'; else $(CYGPATH_W) '$(srcdir)/watch-test.c'; fi`
+
+watch_test_thread-thread-watch.o: thread-watch.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -MT watch_test_thread-thread-watch.o -MD -MP -MF "$(DEPDIR)/watch_test_thread-thread-watch.Tpo" -c -o watch_test_thread-thread-watch.o `test -f 'thread-watch.c' || echo '$(srcdir)/'`thread-watch.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/watch_test_thread-thread-watch.Tpo" "$(DEPDIR)/watch_test_thread-thread-watch.Po"; else rm -f "$(DEPDIR)/watch_test_thread-thread-watch.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='thread-watch.c' object='watch_test_thread-thread-watch.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -c -o watch_test_thread-thread-watch.o `test -f 'thread-watch.c' || echo '$(srcdir)/'`thread-watch.c
+
+watch_test_thread-thread-watch.obj: thread-watch.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -MT watch_test_thread-thread-watch.obj -MD -MP -MF "$(DEPDIR)/watch_test_thread-thread-watch.Tpo" -c -o watch_test_thread-thread-watch.obj `if test -f 'thread-watch.c'; then $(CYGPATH_W) 'thread-watch.c'; else $(CYGPATH_W) '$(srcdir)/thread-watch.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/watch_test_thread-thread-watch.Tpo" "$(DEPDIR)/watch_test_thread-thread-watch.Po"; else rm -f "$(DEPDIR)/watch_test_thread-thread-watch.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='thread-watch.c' object='watch_test_thread-thread-watch.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(watch_test_thread_CFLAGS) $(CFLAGS) -c -o watch_test_thread-thread-watch.obj `if test -f 'thread-watch.c'; then $(CYGPATH_W) 'thread-watch.c'; else $(CYGPATH_W) '$(srcdir)/thread-watch.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

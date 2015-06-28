@@ -1,6 +1,6 @@
 #!@PYTHON@
 # -*-python-*-
-# $Id: avahi-discover.in 1014 2005-11-19 15:48:33Z sebest $
+# $Id: avahi-discover.in 1070 2006-01-09 22:39:33Z sebest $
 
 # This file is part of avahi.
 #

@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1023 2005-11-23 22:35:32Z lathiat $
+# $Id: Makefile.am 1081 2006-01-15 14:33:02Z lennart $
 
 # This file is part of avahi.
 #
@@ -88,6 +88,7 @@ DX_INPUT = \
 	$(srcdir)/avahi-common/domain.h \
 	$(srcdir)/avahi-common/watch.h \
 	$(srcdir)/avahi-common/simple-watch.h \
+	$(srcdir)/avahi-common/thread-watch.h \
 	$(srcdir)/avahi-glib/glib-watch.h \
 	$(srcdir)/avahi-glib/glib-malloc.h \
 	$(srcdir)/avahi-common/timeval.h \
@@ -200,8 +201,8 @@ homepage:
 	$(MAKE) -C man
 	scp avahi-daemon/*.introspect avahi-daemon/introspect.dtd avahi-daemon/introspect.xsl\
 	    man/*.xml man/xmltoman.dtd man/xmltoman.xsl \
-	    fdo:public_html/
+	    tango:www/avahi.org/tree/download/
 	rm -rf doxygen
 	$(MAKE) doxygen-run
-	ssh fdo rm -rf public_html/doxygen
-	scp -r doxygen/html fdo:public_html/doxygen
+	ssh tango rm -rf www/avahi.org/tree/download/doxygen
+	scp -r doxygen/html tango:www/avahi.org/tree/download/doxygen

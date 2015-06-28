@@ -1,4 +1,4 @@
-/* $Id: Utility.cs 1064 2006-01-07 21:05:24Z snorp $ */
+/* $Id: Utility.cs 1073 2006-01-12 16:28:22Z snorp $ */
 
 /***
   This file is part of avahi.
@@ -24,7 +24,9 @@ using System.Net;
 using System.Text;
 using System.Runtime.InteropServices;
 using Mono.Unix;
+using Mono.Unix.Native;
 
+using Stdlib = Mono.Unix.Native.Stdlib;
 
 namespace Avahi
 {
