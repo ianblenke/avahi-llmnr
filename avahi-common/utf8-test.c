@@ -1,7 +1,4 @@
-#ifndef foodbusprotocolhfoo
-#define foodbusprotocolhfoo
-
-/* $Id: dbus-protocol.h 1197 2006-04-24 01:48:56Z lennart $ */
+/* $Id: utf8-test.c 1201 2006-04-24 21:51:00Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -22,8 +19,19 @@
   USA.
 ***/
 
-int dbus_protocol_setup(const AvahiPoll *poll_api, int disable_user_service_publishing, int force);
-void dbus_protocol_shutdown(void);
-void dbus_protocol_server_state_changed(AvahiServerState state);
-
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
+
+#include <assert.h>
+
+#include <avahi-common/gccmacro.h>
+
+#include "utf8.h"
+
+int main(AVAHI_GCC_UNUSED int argc, AVAHI_GCC_UNUSED char *argv[]) {
+
+    assert(avahi_utf8_valid("hallo"));
+    assert(!avahi_utf8_valid("üxknürz"));
+    assert(avahi_utf8_valid("Ã¼xknÃ¼rz"));
+}

@@ -1,6 +1,6 @@
 #!@PYTHON@
 # -*-python-*-
-# $Id: ServiceTypeDatabase.py.in 1172 2006-03-02 18:22:46Z lennart $
+# $Id: ServiceTypeDatabase.py.in 1189 2006-04-22 12:57:39Z lennart $
 
 # This file is part of avahi.
 #
@@ -71,7 +71,7 @@ class ServiceTypeDatabase:
         items = []
         key = self.db.firstkey()
         while key is not None:
-            if re.search('_\w*\._\w*', key) and not re.search('_\w*\._\w*\[.*\]', key):
+            if re.search('_[a-zA-Z0-9-]+\._[a-zA-Z0-9-]+', key) and not re.search('_[a-zA-Z0-9-]+\._[a-zA-Z0-9-]+\[.*\]', key):
                 localized_service_name = self[key]
                 items.append((key, localized_service_name))
             key = self.db.nextkey(key)
@@ -100,6 +100,7 @@ class ServiceTypeDatabase:
 if __name__ == "__main__":
     
     b = ServiceTypeDatabase()
+    print b.items()
 
     print b["_http._tcp"]
     print b["_ftp._tcp"]

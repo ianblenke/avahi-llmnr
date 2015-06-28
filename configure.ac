@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1170 2006-03-02 01:32:37Z lennart $
+# $Id: configure.ac 1213 2006-05-05 14:06:06Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,16 +21,16 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.9],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.10],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
-AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [6:0:3])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [4:1:0])
-AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [4:1:1])
+AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:0:4])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [4:2:0])
+AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [4:2:1])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:0:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:1:0])
@@ -83,6 +83,30 @@ AC_DEFINE([HAVE_PF_ROUTE],[],[Support for PF_ROUTE])
 ])
 
 AM_CONDITIONAL(HAVE_PF_ROUTE, [ test x"$HAVE_PF_ROUTE" = xyes ])
+
+#
+# Check for sys/filio.h; needed for FIONREAD on Solaris
+#
+AC_CHECK_HEADER(sys/filio.h, 
+HAVE_SYS_FILIO_H=yes
+AC_DEFINE([HAVE_SYS_FILIO_H],[],[Support for sys/filio.h])
+, [], [
+])
+
+AM_CONDITIONAL(HAVE_SYS_FILIO_H, [ test x"$HAVE_SYS_FILIO_H" = xyes ])
+
+#
+# Check for sys/sysctl.h; not present on Solaris
+#
+AC_CHECK_HEADER(sys/sysctl.h, 
+HAVE_SYS_SYSCTL=yes
+AC_DEFINE([HAVE_SYS_SYSCTL_H],[],[Support for sys/sysctl.h])
+, [], [
+#include <sys/types.h>
+#include <sys/socket.h>
+])
+
+AM_CONDITIONAL(HAVE_SYS_SYSCTL_H, [ test x"$HAVE_SYS_SYSCTL_H" = xyes ])
 
 #
 # Check for struct ip_mreqn
@@ -541,7 +565,9 @@ if test "x$HAVE_PYTHON" = "xyes" ; then
         fi
 
         AM_CHECK_PYMOD(socket,,,[AC_MSG_ERROR(Could not find Python module socket)])
-        AM_CHECK_PYMOD(gdbm,,,[AC_MSG_ERROR(Could not find Python module gdbm)])
+        if test "x$HAVE_GDBM" = "xyes"; then
+            AM_CHECK_PYMOD(gdbm,,,[AC_MSG_ERROR(Could not find Python module gdbm)])
+        fi
     fi
 fi
 AM_CONDITIONAL(HAVE_PYTHON, [test "x$HAVE_PYTHON" = "xyes" ])
@@ -565,7 +591,7 @@ if test "x$HAVE_DBUS" = "xyes" ; then
     if test "x$HAVE_MONO" = "xyes" ; then
         AC_PATH_PROG(MCS, mcs)
         if test "x$MCS" = "x" ; then
-            AC_MSG_ERROR([Can not find "mcs" in your PATH])
+            AC_MSG_ERROR([Can not find "mcs" - The Mono C-Sharp Compiler) in your PATH])
         fi
 
         AC_PATH_PROG(GACUTIL, gacutil)

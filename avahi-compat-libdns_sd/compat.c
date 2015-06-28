@@ -1,4 +1,4 @@
-/* $Id: compat.c 1042 2005-12-20 23:22:44Z lennart $ */
+/* $Id: compat.c 1205 2006-04-26 21:14:22Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -374,8 +374,8 @@ static void sdref_unref(DNSServiceRef sdref) {
 }
 
 int DNSSD_API DNSServiceRefSockFD(DNSServiceRef sdref) {
-    assert(sdref);
-    assert(sdref->n_ref >= 1);
+    if (!sdref || sdref->n_ref <= 0)
+        return -1;
 
     AVAHI_WARN_LINKAGE;
     

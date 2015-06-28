@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: bootstrap.sh 1147 2006-02-20 02:33:31Z lathiat $
+# $Id: bootstrap.sh 1206 2006-05-02 15:10:31Z sebest $
 
 # This file is part of avahi.
 #
@@ -55,7 +55,7 @@ case "$USER" in
     FLAGS="$FLAGS --disable-qt4"
     ;;
     sebest)
-    FLAGS="$FLAGS --disable-monodoc --disable-mono --disable-qt3 --disable-qt4 --sysconfdir=/etc --localstatedir=/var --prefix=/usr  --disable-manpages --disable-xmltoman"
+    FLAGS="$FLAGS --disable-monodoc --enable-dbus=no --enable-mono=no --enable-qt3=no --enable-qt4=no  --sysconfdir=/etc --localstatedir=/var --prefix=/usr  --disable-manpages --disable-xmltoman"
     ;;
 esac
 

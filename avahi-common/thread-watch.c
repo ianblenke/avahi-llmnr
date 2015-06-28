@@ -1,4 +1,4 @@
-/* $Id: thread-watch.c 1074 2006-01-14 01:54:10Z lennart $ */
+/* $Id: thread-watch.c 1212 2006-05-05 13:43:26Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -113,7 +113,7 @@ void avahi_threaded_poll_free(AvahiThreadedPoll *p) {
     assert(!p->thread_running || !pthread_equal(pthread_self(), p->thread_id));
 
     if (p->thread_running)
-        avahi_threaded_poll_quit(p);
+        avahi_threaded_poll_stop(p);
 
     if (p->simple_poll)
         avahi_simple_poll_free(p->simple_poll);

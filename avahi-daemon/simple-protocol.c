@@ -1,4 +1,4 @@
-/* $Id: simple-protocol.c 1161 2006-02-23 00:44:03Z lennart $ */
+/* $Id: simple-protocol.c 1206 2006-05-02 15:10:31Z sebest $ */
 
 /***
   This file is part of avahi.
@@ -47,6 +47,13 @@
 
 #ifdef ENABLE_CHROOT
 #include "chroot.h"
+#endif
+
+#ifndef AF_LOCAL
+#define AF_LOCAL AF_UNIX
+#endif
+#ifndef PF_LOCAL
+#define PF_LOCAL PF_UNIX
 #endif
 
 #define BUFFER_SIZE (20*1024)
@@ -325,7 +332,7 @@ static void handle_line(Client *c, const char *s) {
             goto fail;
         client_output_printf(c, "+ Browsing ...\n");
 
-        avahi_log_debug(__FILE__": Got %s request for '%s'.", cmd, arg);
+        avahi_log_debug(__FILE__": Got %s request.", cmd);
 
     } else if (strcmp(cmd, "BROWSE-DNS-SERVERS-IPV6") == 0 && n_args == 1) {
         c->state = CLIENT_BROWSE_DNS_SERVERS;
@@ -333,7 +340,7 @@ static void handle_line(Client *c, const char *s) {
             goto fail;
         client_output_printf(c, "+ Browsing ...\n");
 
-        avahi_log_debug(__FILE__": Got %s request for '%s'.", cmd, arg);
+        avahi_log_debug(__FILE__": Got %s request.", cmd);
 
     } else if (strcmp(cmd, "BROWSE-DNS-SERVERS") == 0 && n_args == 1) {
         c->state = CLIENT_BROWSE_DNS_SERVERS;
@@ -341,7 +348,7 @@ static void handle_line(Client *c, const char *s) {
             goto fail;
         client_output_printf(c, "+ Browsing ...\n");
 
-        avahi_log_debug(__FILE__": Got %s request for '%s'.", cmd, arg);
+        avahi_log_debug(__FILE__": Got %s request.", cmd);
 
     } else {
         client_output_printf(c, "%+i Invalid command \"%s\", try \"HELP\".\n", AVAHI_ERR_INVALID_OPERATION, cmd);

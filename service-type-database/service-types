@@ -1,4 +1,4 @@
-# $Id: service-types 1111 2006-01-27 20:32:01Z lennart $
+# $Id: service-types 1186 2006-04-11 15:52:58Z sebest $
 
 # This file is part of avahi.
 #
@@ -107,3 +107,5 @@ _lobby._tcp:Gobby Collaborative Editor Session
 _dpap._tcp:Digital Photo Sharing
 
 _skype._tcp:Skype VoIP
+
+_airport._tcp:Apple AirPort

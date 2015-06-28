@@ -1,4 +1,4 @@
-/* $Id: domain-util.c 940 2005-11-09 01:49:51Z lennart $ */
+/* $Id: domain-util.c 1194 2006-04-24 00:32:27Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -42,7 +42,10 @@ static void strip_bad_chars(char *s) {
     s[strcspn(s, ".")] = 0;
     
     for (p = s, d = s; *p; p++) 
-        if (isalnum(*p) || *p == '-')
+        if ((*p >= 'a' && *p <= 'z') ||
+            (*p >= 'A' && *p <= 'Z') ||
+            (*p >= '0' && *p <= '9') ||
+            *p == '-')
             *(d++) = *p;
 
     *d = 0;

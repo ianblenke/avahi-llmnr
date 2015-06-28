@@ -1,4 +1,4 @@
-/* $Id: domain.c 1168 2006-03-02 01:28:03Z lennart $ */
+/* $Id: domain.c 1202 2006-04-24 21:52:34Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -37,6 +37,7 @@
 #include "malloc.h"
 #include "error.h"
 #include "address.h"
+#include "utf8.h"
 
 /* Read the first label from string *name, unescape "\" and write it to dest */
 char *avahi_unescape_label(const char **name, char *dest, size_t size) {
@@ -106,6 +107,9 @@ char *avahi_unescape_label(const char **name, char *dest, size_t size) {
     assert(i < size);
 
     *d = 0;
+
+    if (!avahi_utf8_valid(dest))
+        return NULL;
 
     return dest;
 }

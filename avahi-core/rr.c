@@ -1,4 +1,4 @@
-/* $Id: rr.c 1120 2006-01-30 20:38:39Z lennart $ */
+/* $Id: rr.c 1209 2006-05-04 21:50:44Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -303,7 +303,7 @@ char *avahi_record_to_string(const AvahiRecord *r) {
             
             for (c = r->data.generic.data, n = r->data.generic.size, i = 0;
                  n > 0 && i < 20;
-                 c ++, n --) {
+                 c ++, n --, i++) {
 
                 sprintf(e, " %02X", *c);
                 e = strchr(e, 0);

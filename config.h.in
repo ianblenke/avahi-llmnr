@@ -190,6 +190,9 @@
 /* Define to 1 if you have the <sys/capability.h> header file. */
 #undef HAVE_SYS_CAPABILITY_H
 
+/* Support for sys/filio.h */
+#undef HAVE_SYS_FILIO_H
+
 /* Define to 1 if you have the <sys/ioctl.h> header file. */
 #undef HAVE_SYS_IOCTL_H
 
@@ -204,6 +207,9 @@
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
+
+/* Support for sys/sysctl.h */
+#undef HAVE_SYS_SYSCTL_H
 
 /* Define to 1 if you have the <sys/time.h> header file. */
 #undef HAVE_SYS_TIME_H

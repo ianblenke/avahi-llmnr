@@ -1,4 +1,4 @@
-/* $Id: txt.c 698 2005-10-04 19:22:29Z lennart $ */
+/* $Id: txt.c 1192 2006-04-24 00:04:17Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -60,7 +60,7 @@ void DNSSD_API TXTRecordCreate(
 
     if ((t = avahi_new(TXTRecordInternal, 1))) {
         t->buffer = buffer;
-        t->max_size = length;
+        t->max_size = buffer ? length : (size_t)0;
         t->size = 0;
         t->malloc_buffer = NULL;
     }

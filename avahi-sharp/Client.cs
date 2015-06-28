@@ -1,4 +1,4 @@
-/* $Id: Client.cs 1073 2006-01-12 16:28:22Z snorp $ */
+/* $Id: Client.cs 1177 2006-03-09 20:27:47Z snorp $ */
 
 /***
   This file is part of avahi.
@@ -52,15 +52,22 @@ namespace Avahi
     public class ClientStateArgs : EventArgs
     {
         private ClientState state;
+        private ErrorCode error;
 
         public ClientState State
         {
             get { return state; }
         }
 
-        public ClientStateArgs (ClientState state)
+        public ErrorCode Error
+        {
+            get { return error; }
+        }
+
+        public ClientStateArgs (ClientState state, ErrorCode error)
         {
             this.state = state;
+            this.error = error;
         }
     }
     
@@ -349,7 +356,7 @@ namespace Avahi
         private void OnClientCallback (IntPtr client, ClientState state, IntPtr userData)
         {
             if (StateChanged != null)
-                StateChanged (this, new ClientStateArgs (state));
+                StateChanged (this, new ClientStateArgs (state, LastError));
         }
 
         private int OnPollCallback (IntPtr ufds, uint nfds, int timeout) {

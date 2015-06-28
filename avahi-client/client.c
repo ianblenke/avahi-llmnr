@@ -1,4 +1,4 @@
-/* $Id: client.c 1090 2006-01-20 21:20:42Z lennart $ */
+/* $Id: client.c 1193 2006-04-24 00:18:41Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -863,6 +863,7 @@ int avahi_client_is_connected(AvahiClient *client) {
     assert(client);
 
     return
+        client->bus &&
         dbus_connection_get_is_connected(client->bus) &&
         (client->state == AVAHI_CLIENT_S_RUNNING || client->state == AVAHI_CLIENT_S_REGISTERING || client->state == AVAHI_CLIENT_S_COLLISION);
 }

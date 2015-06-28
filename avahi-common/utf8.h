@@ -1,7 +1,7 @@
-#ifndef foodbusprotocolhfoo
-#define foodbusprotocolhfoo
+#ifndef fooutf8hfoo
+#define fooutf8hfoo
 
-/* $Id: dbus-protocol.h 1197 2006-04-24 01:48:56Z lennart $ */
+/* $Id: utf8.h 1201 2006-04-24 21:51:00Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -22,8 +22,14 @@
   USA.
 ***/
 
-int dbus_protocol_setup(const AvahiPoll *poll_api, int disable_user_service_publishing, int force);
-void dbus_protocol_shutdown(void);
-void dbus_protocol_server_state_changed(AvahiServerState state);
+#include <inttypes.h>
+
+#include <avahi-common/cdecl.h>
+
+AVAHI_C_DECL_BEGIN
+
+const char *avahi_utf8_valid(const char *str);
+
+AVAHI_C_DECL_END
 
 #endif

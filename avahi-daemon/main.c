@@ -1,4 +1,4 @@
-/* $Id: main.c 1146 2006-02-19 23:28:57Z sebest $ */
+/* $Id: main.c 1200 2006-04-24 21:47:27Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -743,13 +743,16 @@ static int run_server(DaemonConfig *c) {
 
 #ifdef HAVE_DBUS
     if (c->enable_dbus) {
-        if (dbus_protocol_setup(poll_api, config.disable_user_service_publishing) < 0) {
+        if (dbus_protocol_setup(poll_api, config.disable_user_service_publishing, !c->fail_on_missing_dbus
+#ifdef ENABLE_CHROOT
+                                && !config.use_chroot
+#endif
+            ) < 0) {
+
+            avahi_log_warn("WARNING: Failed to contact D-BUS daemon.");
 
             if (c->fail_on_missing_dbus)
                 goto finish;
-
-            avahi_log_warn("WARNING: Failed to contact D-BUS daemon, disabling D-BUS support.");
-            c->enable_dbus = 0;
         }
     }
 #endif
