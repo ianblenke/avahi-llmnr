@@ -1,4 +1,4 @@
-/* $Id: timeval.c 980 2005-11-16 01:15:46Z lennart $ */
+/* $Id: timeval.c 1547 2007-09-28 16:34:49Z tedp $ */
 
 /***
   This file is part of avahi.
@@ -115,7 +115,7 @@ struct timeval *avahi_elapse_time(struct timeval *tv, unsigned msec, unsigned ji
 
         /* We use the same jitter for 10 seconds. That way our
          * time events elapse in bursts which has the advantage that
-         * packet data can be aggegrated better */
+         * packet data can be aggregated better */
         
         avahi_timeval_add(tv, (AvahiUsec) (jitter*1000.0*r/(RAND_MAX+1.0)));
     }

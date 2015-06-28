@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1477 2007-05-09 19:45:54Z lennart $
+# $Id: Makefile.am 1593 2007-12-17 12:36:14Z lennart $
 
 # This file is part of avahi.
 #
@@ -87,9 +87,9 @@ build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/common/doxygen.mk \
-	$(srcdir)/config.h.in $(top_srcdir)/configure compile \
-	config.guess config.sub depcomp install-sh ltmain.sh missing \
-	py-compile
+	$(srcdir)/config.h.in $(top_srcdir)/configure ABOUT-NLS \
+	compile config.guess config.rpath config.sub depcomp \
+	install-sh ltmain.sh missing py-compile
 @HAVE_QT3_TRUE@am__append_1 = \
 @HAVE_QT3_TRUE@	$(srcdir)/avahi-qt/qt-watch.h
 
@@ -100,44 +100,60 @@ DIST_COMMON = $(am__configure_deps) $(srcdir)/Makefile.am \
 @HAVE_GLIB_TRUE@	$(srcdir)/avahi-glib/glib-watch.h \
 @HAVE_GLIB_TRUE@	$(srcdir)/avahi-glib/glib-malloc.h
 
-@HAVE_DBUS_TRUE@am__append_4 = \
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@am__append_4 = \
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@	$(srcdir)/avahi-gobject/ga-client.h \
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@	$(srcdir)/avahi-gobject/ga-entry-group.h \
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@	$(srcdir)/avahi-gobject/ga-enums.h \
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@	$(srcdir)/avahi-gobject/ga-error.h \
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@	$(srcdir)/avahi-gobject/ga-record-browser.h \
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@	$(srcdir)/avahi-gobject/ga-service-browser.h \
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@	$(srcdir)/avahi-gobject/ga-service-resolver.h
+
+@HAVE_DBUS_TRUE@am__append_5 = \
 @HAVE_DBUS_TRUE@	$(srcdir)/avahi-client/client.h \
 @HAVE_DBUS_TRUE@	$(srcdir)/avahi-client/lookup.h \
 @HAVE_DBUS_TRUE@	$(srcdir)/avahi-client/publish.h
 
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_5 = \
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_6 = \
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	$(srcdir)/avahi-ui/avahi-ui.h
 
-@ENABLE_CORE_DOCS_TRUE@am__append_6 = \
+@ENABLE_CORE_DOCS_TRUE@am__append_7 = \
 @ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/core.h \
 @ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/lookup.h \
 @ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/publish.h \
 @ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/rr.h \
 @ENABLE_CORE_DOCS_TRUE@	$(srcdir)/avahi-core/log.h
 
-@HAVE_GTK_TRUE@am__append_7 = \
+@HAVE_GTK_TRUE@am__append_8 = \
 @HAVE_GTK_TRUE@	$(srcdir)/avahi-ui/avahi-ui.h
 
-@HAVE_DBUS_TRUE@am__append_8 = avahi-client.pc
 @HAVE_DBUS_TRUE@am__append_9 = avahi-client.pc
-@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_10 = avahi-compat-howl.pc
+@HAVE_DBUS_TRUE@am__append_10 = avahi-client.pc
 @ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_11 = avahi-compat-howl.pc
-@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_12 = avahi-compat-libdns_sd.pc
+@ENABLE_COMPAT_HOWL_TRUE@@HAVE_DBUS_TRUE@am__append_12 = avahi-compat-howl.pc
 @ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_13 = avahi-compat-libdns_sd.pc
-@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_14 = avahi-sharp.pc avahi-ui-sharp.pc
+@ENABLE_COMPAT_LIBDNS_SD_TRUE@@HAVE_DBUS_TRUE@am__append_14 = avahi-compat-libdns_sd.pc
 @HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_15 = avahi-sharp.pc avahi-ui-sharp.pc
-@HAVE_GLIB_TRUE@am__append_16 = avahi-glib.pc
+@HAVE_DBUS_TRUE@@HAVE_MONO_TRUE@am__append_16 = avahi-sharp.pc avahi-ui-sharp.pc
 @HAVE_GLIB_TRUE@am__append_17 = avahi-glib.pc
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_18 = avahi-ui.pc
-@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_19 = avahi-ui.pc
-@HAVE_QT3_TRUE@am__append_20 = avahi-qt3.pc
-@HAVE_QT3_TRUE@am__append_21 = avahi-qt3.pc
-@HAVE_QT4_TRUE@am__append_22 = avahi-qt4.pc
-@HAVE_QT4_TRUE@am__append_23 = avahi-qt4.pc
+@HAVE_GLIB_TRUE@am__append_18 = avahi-glib.pc
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@am__append_19 = avahi-gobject.pc
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@am__append_20 = avahi-gobject.pc
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_21 = avahi-ui.pc
+@HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@am__append_22 = avahi-ui.pc
+@HAVE_QT3_TRUE@am__append_23 = avahi-qt3.pc
+@HAVE_QT3_TRUE@am__append_24 = avahi-qt3.pc
+@HAVE_QT4_TRUE@am__append_25 = avahi-qt4.pc
+@HAVE_QT4_TRUE@am__append_26 = avahi-qt4.pc
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
 	$(top_srcdir)/common/gcc_stack_protect.m4 \
+	$(top_srcdir)/common/gettext.m4 $(top_srcdir)/common/iconv.m4 \
+	$(top_srcdir)/common/lib-ld.m4 \
+	$(top_srcdir)/common/lib-link.m4 \
+	$(top_srcdir)/common/lib-prefix.m4 $(top_srcdir)/common/nls.m4 \
+	$(top_srcdir)/common/po.m4 $(top_srcdir)/common/progtest.m4 \
 	$(top_srcdir)/common/python.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/common/doxygen.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -179,6 +195,7 @@ GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
+ALL_LINGUAS = @ALL_LINGUAS@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
@@ -194,6 +211,8 @@ AVAHI_USER = @AVAHI_USER@
 AWK = @AWK@
 BUILD_MANPAGES_FALSE = @BUILD_MANPAGES_FALSE@
 BUILD_MANPAGES_TRUE = @BUILD_MANPAGES_TRUE@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -204,6 +223,7 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIRNAME = @DATADIRNAME@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DBUS_SYSTEM_BUS_DEFAULT_ADDRESS = @DBUS_SYSTEM_BUS_DEFAULT_ADDRESS@
@@ -277,10 +297,16 @@ EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 GACUTIL = @GACUTIL@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLADE20_CFLAGS = @GLADE20_CFLAGS@
 GLADE20_LIBS = @GLADE20_LIBS@
 GLIB20_CFLAGS = @GLIB20_CFLAGS@
 GLIB20_LIBS = @GLIB20_LIBS@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
+GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
+GOBJECT_LIBS = @GOBJECT_LIBS@
 GREP = @GREP@
 GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
@@ -290,12 +316,12 @@ HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
 HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
 HAVE_DLOPEN_TRUE = @HAVE_DLOPEN_TRUE@
-HAVE_EXPAT_FALSE = @HAVE_EXPAT_FALSE@
-HAVE_EXPAT_TRUE = @HAVE_EXPAT_TRUE@
 HAVE_GDBM_FALSE = @HAVE_GDBM_FALSE@
 HAVE_GDBM_TRUE = @HAVE_GDBM_TRUE@
 HAVE_GLIB_FALSE = @HAVE_GLIB_FALSE@
 HAVE_GLIB_TRUE = @HAVE_GLIB_TRUE@
+HAVE_GOBJECT_FALSE = @HAVE_GOBJECT_FALSE@
+HAVE_GOBJECT_TRUE = @HAVE_GOBJECT_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
 HAVE_INOTIFY_FALSE = @HAVE_INOTIFY_FALSE@
@@ -326,11 +352,39 @@ HAVE_SYS_FILIO_H_FALSE = @HAVE_SYS_FILIO_H_FALSE@
 HAVE_SYS_FILIO_H_TRUE = @HAVE_SYS_FILIO_H_TRUE@
 HAVE_SYS_SYSCTL_H_FALSE = @HAVE_SYS_SYSCTL_H_FALSE@
 HAVE_SYS_SYSCTL_H_TRUE = @HAVE_SYS_SYSCTL_H_TRUE@
+HAVE_XML_FALSE = @HAVE_XML_FALSE@
+HAVE_XML_TRUE = @HAVE_XML_TRUE@
 HOWL_COMPAT_VERSION = @HOWL_COMPAT_VERSION@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INSTOBJEXT = @INSTOBJEXT@
+INTLLIBS = @INTLLIBS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_POLICY_RULE = @INTLTOOL_POLICY_RULE@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SERVICE_RULE = @INTLTOOL_SERVICE_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
+INTLTOOL_XML_NOMERGE_RULE = @INTLTOOL_XML_NOMERGE_RULE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LDFLAGS = @LDFLAGS@
 LIBAVAHI_CLIENT_VERSION_INFO = @LIBAVAHI_CLIENT_VERSION_INFO@
 LIBAVAHI_COMMON_VERSION_INFO = @LIBAVAHI_COMMON_VERSION_INFO@
@@ -338,25 +392,35 @@ LIBAVAHI_COMPAT_HOWL_VERSION_INFO = @LIBAVAHI_COMPAT_HOWL_VERSION_INFO@
 LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO = @LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO@
 LIBAVAHI_CORE_VERSION_INFO = @LIBAVAHI_CORE_VERSION_INFO@
 LIBAVAHI_GLIB_VERSION_INFO = @LIBAVAHI_GLIB_VERSION_INFO@
+LIBAVAHI_GOBJECT_VERSION_INFO = @LIBAVAHI_GOBJECT_VERSION_INFO@
 LIBAVAHI_QT3_VERSION_INFO = @LIBAVAHI_QT3_VERSION_INFO@
 LIBAVAHI_QT4_VERSION_INFO = @LIBAVAHI_QT4_VERSION_INFO@
 LIBAVAHI_UI_VERSION_INFO = @LIBAVAHI_UI_VERSION_INFO@
 LIBDAEMON_CFLAGS = @LIBDAEMON_CFLAGS@
 LIBDAEMON_LIBS = @LIBDAEMON_LIBS@
+LIBICONV = @LIBICONV@
+LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIBICONV = @LTLIBICONV@
+LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MCS = @MCS@
 MDASSEMBLER = @MDASSEMBLER@
+MKINSTALLDIRS = @MKINSTALLDIRS@
 MOC_QT3 = @MOC_QT3@
 MOC_QT4 = @MOC_QT4@
 MONODOCER = @MONODOCER@
 MONODOC_CFLAGS = @MONODOC_CFLAGS@
 MONODOC_DIR = @MONODOC_DIR@
 MONODOC_LIBS = @MONODOC_LIBS@
+MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
+MSGFMT_OPTS = @MSGFMT_OPTS@
+MSGMERGE = @MSGMERGE@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -367,6 +431,10 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_CC = @PTHREAD_CC@
 PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
 PTHREAD_LIBS = @PTHREAD_LIBS@
@@ -380,6 +448,7 @@ QT3_LIBS = @QT3_LIBS@
 QT4_CFLAGS = @QT4_CFLAGS@
 QT4_LIBS = @QT4_LIBS@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -403,9 +472,14 @@ TARGET_SLACKWARE_FALSE = @TARGET_SLACKWARE_FALSE@
 TARGET_SLACKWARE_TRUE = @TARGET_SLACKWARE_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
 TARGET_SUSE_TRUE = @TARGET_SUSE_TRUE@
+USE_NLS = @USE_NLS@
 USE_XMLTOMAN_FALSE = @USE_XMLTOMAN_FALSE@
 USE_XMLTOMAN_TRUE = @USE_XMLTOMAN_TRUE@
 VERSION = @VERSION@
+XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XML_CFLAGS = @XML_CFLAGS@
+XML_LIBS = @XML_LIBS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
@@ -421,6 +495,7 @@ am__tar = @am__tar@
 am__untar = @am__untar@
 avahi_runtime_dir = @avahi_runtime_dir@
 avahi_socket = @avahi_socket@
+avahilocaledir = @avahilocaledir@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -509,22 +584,28 @@ EXTRA_DIST = \
 	avahi-core.pc.in \
 	avahi-client.pc.in \
 	avahi-glib.pc.in \
+	avahi-gobject.pc.in \
 	avahi-qt3.pc.in \
 	avahi-qt4.pc.in \
 	avahi-sharp.pc.in \
 	avahi-ui-sharp.pc.in \
 	avahi-compat-libdns_sd.pc.in \
 	avahi-compat-howl.pc.in \
-	avahi-ui.pc.in
+	avahi-ui.pc.in \
+	doxygen_to_devhelp.xsl \
+	intltool-merge.in \
+        intltool-update.in \
+        intltool-extract.in
 
 SUBDIRS = \
 	common \
 	avahi-common \
-	avahi-glib \
 	avahi-core \
-	avahi-discover-standalone \
 	avahi-qt \
 	avahi-client \
+	avahi-glib \
+	avahi-gobject \
+	avahi-discover-standalone \
 	avahi-daemon \
 	avahi-sharp \
 	initscript \
@@ -539,7 +620,8 @@ SUBDIRS = \
 	avahi-compat-howl \
 	avahi-autoipd \
 	avahi-ui \
-	avahi-ui-sharp
+	avahi-ui-sharp \
+	po
 
 DX_INPUT = $(srcdir)/avahi-common/address.h \
 	$(srcdir)/avahi-common/malloc.h \
@@ -550,19 +632,28 @@ DX_INPUT = $(srcdir)/avahi-common/address.h \
 	$(srcdir)/avahi-common/simple-watch.h \
 	$(srcdir)/avahi-common/thread-watch.h $(am__append_1) \
 	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6) $(am__append_7)
+	$(am__append_5) $(am__append_6) $(am__append_7) \
+	$(am__append_8)
 DX_EXAMPLE_PATH = $(srcdir)/examples
 DX_EXAMPLE_PATTERNS = *.c
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = avahi-core.pc $(am__append_8) $(am__append_10) \
-	$(am__append_12) $(am__append_14) $(am__append_16) \
-	$(am__append_18) $(am__append_20) $(am__append_22)
-CLEANFILES = avahi-core.pc $(am__append_9) $(am__append_11) \
+pkgconfig_DATA = avahi-core.pc $(am__append_9) $(am__append_11) \
 	$(am__append_13) $(am__append_15) $(am__append_17) \
-	$(am__append_19) $(am__append_21) $(am__append_23)
+	$(am__append_19) $(am__append_21) $(am__append_23) \
+	$(am__append_25)
+CLEANFILES = avahi-core.pc $(am__append_10) $(am__append_12) \
+	$(am__append_14) $(am__append_16) $(am__append_18) \
+	$(am__append_20) $(am__append_22) $(am__append_24) \
+	$(am__append_26) avahi.devhelp
 MOSTLYCLEANFILES = $(DX_CLEANFILES)
 DISTCHECK_CONFIGURE_FLAGS = \
 	--disable-monodoc
+
+DISTCLEANFILES = \
+        intltool-extract \
+        intltool-merge \
+        intltool-update \
+	po/.intltool-merge-cache
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -781,7 +872,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/avahi-daemon $(distdir)/common $(distdir)/docs
+	$(mkdir_p) $(distdir)/avahi-daemon $(distdir)/common $(distdir)/docs $(distdir)/po
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -823,6 +914,9 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
+	  dist-hook
 	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
 	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
 	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
@@ -950,6 +1044,7 @@ clean-generic:
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -1009,7 +1104,7 @@ uninstall-info: uninstall-info-recursive
 .PHONY: $(RECURSIVE_TARGETS) CTAGS GTAGS all all-am am--refresh check \
 	check-am clean clean-generic clean-libtool clean-recursive \
 	ctags ctags-recursive dist dist-all dist-bzip2 dist-gzip \
-	dist-shar dist-tarZ dist-zip distcheck distclean \
+	dist-hook dist-shar dist-tarZ dist-zip distcheck distclean \
 	distclean-generic distclean-hdr distclean-libtool \
 	distclean-recursive distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
@@ -1106,6 +1201,11 @@ avahi-core.pc: avahi-core.pc.in
 @HAVE_GLIB_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
 @HAVE_GLIB_TRUE@	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
 
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@avahi-gobject.pc: avahi-gobject.pc.in
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
+@HAVE_GLIB_TRUE@@HAVE_GOBJECT_TRUE@	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
+
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@avahi-ui.pc: avahi-ui.pc.in
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	sed -e 's,@prefix\@,$(prefix),g' \
 @HAVE_DBUS_TRUE@@HAVE_GTK_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
@@ -1121,6 +1221,9 @@ avahi-core.pc: avahi-core.pc.in
 @HAVE_QT4_TRUE@	    -e 's,@libdir\@,$(libdir),g' \
 @HAVE_QT4_TRUE@	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
 
+avahi.devhelp: doxygen-run
+	xsltproc -o $@ doxygen_to_devhelp.xsl doxygen/xml/index.xml
+
 homepage:
 	$(MAKE) -C man
 	scp avahi-daemon/*.introspect avahi-daemon/introspect.dtd avahi-daemon/introspect.xsl\
@@ -1131,6 +1234,13 @@ homepage:
 	$(MAKE) doxygen-run
 	ssh tango rm -rf www/avahi.org/tree/download/doxygen
 	scp -r doxygen/html tango:www/avahi.org/tree/download/doxygen
+
+dist-hook:
+	if test -d .svn ; then \
+		svn update ; \
+		chmod u+w ${distdir}/ChangeLog || true ; \
+		svn2cl -o ${distdir}/ChangeLog ; \
+	fi
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

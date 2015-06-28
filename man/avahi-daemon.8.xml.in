@@ -2,7 +2,7 @@
 <!DOCTYPE manpage SYSTEM "xmltoman.dtd">
 <?xml-stylesheet type="text/xsl" href="xmltoman.xsl" ?>
 
-<!-- $Id: avahi-daemon.8.xml.in 1375 2007-01-06 17:35:10Z lennart $ -->
+<!-- $Id: avahi-daemon.8.xml.in 1569 2007-11-09 13:18:41Z lennart $ -->
 
 <!-- 
   This file is part of avahi.
@@ -33,7 +33,7 @@
 	</synopsis>
 	
     <description>
-      <p>The Avahi mDNS/DNS-SD daemon implementing Apple's ZeroConf
+      <p>The Avahi mDNS/DNS-SD daemon implements Apple's Zeroconf
       architecture (also known as "Rendezvous" or "Bonjour"). The daemon
       registers local IP addresses and static services using
       mDNS/DNS-SD and provides two IPC APIs for local programs to make
@@ -95,7 +95,7 @@
         <p><opt>--no-proc-title</opt></p>
         <optdesc><p>Don't change the process name while
         running. Unless this option is specified avahi-daemon will reflect
-        it's current state and the selected host name in the process
+        its current state and the selected host name in the process
         title.</p></optdesc>
       </option>
 

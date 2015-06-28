@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1263 2006-08-22 02:27:14Z lennart $
+# $Id: Makefile.am 1537 2007-09-06 17:49:29Z lennart $
 
 # This file is part of avahi.
 #
@@ -32,13 +32,13 @@ avahi_browse_LDADD = $(AM_LDADD) ../avahi-client/libavahi-client.la ../avahi-com
 
 if HAVE_GDBM
 avahi_browse_SOURCES += stdb.h stdb.c
-avahi_browse_CFLAGS += -DDATABASE_FILE=\"$(pkgdatadir)/service-types.db\"
+avahi_browse_CFLAGS += -DDATABASE_FILE=\"$(pkglibdir)/service-types.db\"
 avahi_browse_LDADD += -lgdbm
 endif
 
 if HAVE_DBM
 avahi_browse_SOURCES += stdb.h stdb.c
-avahi_browse_CFLAGS += -DDATABASE_FILE=\"$(pkgdatadir)/service-types.db\"
+avahi_browse_CFLAGS += -DDATABASE_FILE=\"$(pkglibdir)/service-types.db\"
 endif
 
 avahi_resolve_SOURCES = avahi-resolve.c sigint.c sigint.h

@@ -1,7 +1,7 @@
 #ifndef foothreadedwatchhfoo
 #define foothreadedwatchhfoo
 
-/* $Id: thread-watch.h 1244 2006-08-06 11:53:01Z lennart $ */
+/* $Id: thread-watch.h 1547 2007-09-28 16:34:49Z tedp $ */
 
 /***
   This file is part of avahi.
@@ -37,7 +37,7 @@ typedef struct AvahiThreadedPoll AvahiThreadedPoll;
  * AvahiSimplePoll, but will not start the helper thread. \since 0.6.4 */
 AvahiThreadedPoll *avahi_threaded_poll_new(void);
 
-/** Free an event loop object. Ths will stop the associated evet loop
+/** Free an event loop object. This will stop the associated event loop
  * thread (if it is running). \since 0.6.4 */
 void avahi_threaded_poll_free(AvahiThreadedPoll *p);
 

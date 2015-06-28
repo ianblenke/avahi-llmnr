@@ -1,7 +1,7 @@
 #ifndef footxtlisthfoo
 #define footxtlisthfoo
 
-/* $Id: strlst.h 1477 2007-05-09 19:45:54Z lennart $ */
+/* $Id: strlst.h 1547 2007-09-28 16:34:49Z tedp $ */
 
 /***
   This file is part of avahi.
@@ -110,7 +110,7 @@ AvahiStringList *avahi_string_list_add_many_va(AvahiStringList *r, va_list va);
 
 /** Convert the string list object to a single character string,
  * seperated by spaces and enclosed in "". avahi_free() the result! This
- * function doesn't work well with string that contain NUL bytes. */
+ * function doesn't work well with strings that contain NUL bytes. */
 char* avahi_string_list_to_string(AvahiStringList *l);
 
 /** \cond fulldocs */

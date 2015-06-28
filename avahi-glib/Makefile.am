@@ -1,7 +1,7 @@
-# $Id: Makefile.am 819 2005-10-19 00:10:02Z lennart $
+# $Id: Makefile.am 1564 2007-10-28 00:17:16Z lennart $
 #
 # This file is part of avahi.
-# 
+#
 # avahi is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2 of the
@@ -24,25 +24,24 @@ AM_CFLAGS+='-DDEBUG_TRAP=__asm__("int $$3")'
 
 if HAVE_GLIB
 
-avahiincludedir=$(includedir)/avahi-glib
+avahiglibincludedir=$(includedir)/avahi-glib
 
-avahiinclude_HEADERS = \
+avahiglibinclude_HEADERS = \
 	glib-watch.h \
 	glib-malloc.h
 
 lib_LTLIBRARIES = \
-	libavahi-glib.la 
+	libavahi-glib.la
 
 if ENABLE_TESTS
-
 noinst_PROGRAMS = \
 	glib-watch-test
-
 endif
 
 libavahi_glib_la_SOURCES = \
 	glib-watch.c glib-watch.h \
 	glib-malloc.h glib-malloc.c
+
 libavahi_glib_la_CFLAGS = $(AM_CFLAGS) $(GLIB20_CFLAGS)
 libavahi_glib_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(GLIB20_LIBS)
 libavahi_glib_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info $(LIBAVAHI_GLIB_VERSION_INFO)

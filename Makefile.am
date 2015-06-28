@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1477 2007-05-09 19:45:54Z lennart $
+# $Id: Makefile.am 1593 2007-12-17 12:36:14Z lennart $
 
 # This file is part of avahi.
 #
@@ -42,22 +42,28 @@ EXTRA_DIST = \
 	avahi-core.pc.in \
 	avahi-client.pc.in \
 	avahi-glib.pc.in \
+	avahi-gobject.pc.in \
 	avahi-qt3.pc.in \
 	avahi-qt4.pc.in \
 	avahi-sharp.pc.in \
 	avahi-ui-sharp.pc.in \
 	avahi-compat-libdns_sd.pc.in \
 	avahi-compat-howl.pc.in \
-	avahi-ui.pc.in
+	avahi-ui.pc.in \
+	doxygen_to_devhelp.xsl \
+	intltool-merge.in \
+        intltool-update.in \
+        intltool-extract.in
 
 SUBDIRS = \
 	common \
 	avahi-common \
-	avahi-glib \
 	avahi-core \
-	avahi-discover-standalone \
 	avahi-qt \
 	avahi-client \
+	avahi-glib \
+	avahi-gobject \
+	avahi-discover-standalone \
 	avahi-daemon \
 	avahi-sharp \
 	initscript \
@@ -72,7 +78,8 @@ SUBDIRS = \
 	avahi-compat-howl \
 	avahi-autoipd \
 	avahi-ui \
-	avahi-ui-sharp
+	avahi-ui-sharp \
+	po
 
 DX_INPUT = \
 	$(srcdir)/avahi-common/address.h \
@@ -103,6 +110,17 @@ if HAVE_GLIB
 DX_INPUT += \
 	$(srcdir)/avahi-glib/glib-watch.h \
 	$(srcdir)/avahi-glib/glib-malloc.h
+
+if HAVE_GOBJECT
+DX_INPUT += \
+	$(srcdir)/avahi-gobject/ga-client.h \
+	$(srcdir)/avahi-gobject/ga-entry-group.h \
+	$(srcdir)/avahi-gobject/ga-enums.h \
+	$(srcdir)/avahi-gobject/ga-error.h \
+	$(srcdir)/avahi-gobject/ga-record-browser.h \
+	$(srcdir)/avahi-gobject/ga-service-browser.h \
+	$(srcdir)/avahi-gobject/ga-service-resolver.h
+endif
 endif
 
 if HAVE_DBUS
@@ -211,6 +229,18 @@ avahi-glib.pc: avahi-glib.pc.in
 
 CLEANFILES += avahi-glib.pc
 
+if HAVE_GOBJECT
+
+pkgconfig_DATA += avahi-gobject.pc
+
+avahi-gobject.pc: avahi-gobject.pc.in
+	sed -e 's,@prefix\@,$(prefix),g' \
+	    -e 's,@libdir\@,$(libdir),g' \
+	    -e 's,@PACKAGE_VERSION\@,$(PACKAGE_VERSION),g' $< > $@
+
+CLEANFILES += avahi-gobject.pc
+
+endif
 endif
 
 if HAVE_GTK
@@ -254,6 +284,11 @@ CLEANFILES += avahi-qt4.pc
 
 endif
 
+CLEANFILES += avahi.devhelp
+
+avahi.devhelp: doxygen-run
+	xsltproc -o $@ doxygen_to_devhelp.xsl doxygen/xml/index.xml
+
 MOSTLYCLEANFILES = $(DX_CLEANFILES)
 
 DISTCHECK_CONFIGURE_FLAGS = \
@@ -269,3 +304,16 @@ homepage:
 	$(MAKE) doxygen-run
 	ssh tango rm -rf www/avahi.org/tree/download/doxygen
 	scp -r doxygen/html tango:www/avahi.org/tree/download/doxygen
+
+dist-hook:
+	if test -d .svn ; then \
+		svn update ; \
+		chmod u+w ${distdir}/ChangeLog || true ; \
+		svn2cl -o ${distdir}/ChangeLog ; \
+	fi
+
+DISTCLEANFILES = \
+        intltool-extract \
+        intltool-merge \
+        intltool-update \
+	po/.intltool-merge-cache

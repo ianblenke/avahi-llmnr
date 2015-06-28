@@ -1,7 +1,7 @@
 #ifndef fooavahiifacehfoo
 #define fooavahiifacehfoo
 
-/* $Id: iface.h 1288 2006-08-30 21:18:14Z lennart $ */
+/* $Id: iface.h 1547 2007-09-28 16:34:49Z tedp $ */
 
 /***
   This file is part of avahi.
@@ -40,7 +40,7 @@ void iface_done(void);
 
 /* Deduce the initial state of our state machine. If a routable
  * address is configured for the interface, *state should be set to
- * STATE_SLEEPING., otherwide STATE_START */
+ * STATE_SLEEPING, otherwise STATE_START */
 
 int iface_get_initial_state(State *state);
 

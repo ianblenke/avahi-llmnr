@@ -1,4 +1,4 @@
-/* $Id: main.c 1513 2007-08-12 15:45:03Z lennart $ */
+/* $Id: main.c 1547 2007-09-28 16:34:49Z tedp $ */
 
 /***
   This file is part of avahi.
@@ -316,6 +316,11 @@ static void update_browse_domains(void) {
     AvahiStringList *l;
     int n;
     char **p;
+
+    if (!resolv_conf_search_domains) {
+        avahi_server_set_browse_domains(avahi_server, NULL);
+        return;
+    }
 
     l = avahi_string_list_copy(config.server_config.browse_domains);
     
@@ -1172,7 +1177,7 @@ static int drop_root(void) {
 #elif defined(HAVE_SETREGID)
     r = setregid(gr->gr_gid, gr->gr_gid);
 #else
-#error "No API to drop priviliges"
+#error "No API to drop privileges"
 #endif
 
     if (r < 0) {
@@ -1188,7 +1193,7 @@ static int drop_root(void) {
 #elif defined(HAVE_SETREUID)
     r = setreuid(pw->pw_uid, pw->pw_uid);
 #else
-#error "No API to drop priviliges"
+#error "No API to drop privileges"
 #endif
 
     if (r < 0) {

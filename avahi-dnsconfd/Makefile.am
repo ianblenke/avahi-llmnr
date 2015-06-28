@@ -1,4 +1,4 @@
-# $Id: Makefile.am 336 2005-08-15 21:31:30Z lennart $
+# $Id: Makefile.am 1585 2007-12-16 20:23:22Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA.
 
-if HAVE_EXPAT
+if HAVE_XML
 if HAVE_LIBDAEMON
 
 pkgsysconfdir=$(sysconfdir)/avahi

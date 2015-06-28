@@ -1,4 +1,4 @@
-/* $Id: iface.c 1399 2007-03-24 11:41:03Z lathiat $ */
+/* $Id: iface.c 1544 2007-09-28 14:51:54Z tedp $ */
 
 /***
   This file is part of avahi.
@@ -799,7 +799,7 @@ AvahiIfIndex avahi_find_interface_for_address(AvahiInterfaceMonitor *m, const Av
     assert(m);
 
     /* Some stupid OS don't support passing the interface index when a
-     * packet is recieved. We have to work around that limitation by
+     * packet is received. We have to work around that limitation by
      * looking for an interface that has the incoming address
      * attached. This is sometimes ambiguous, but we have to live with
      * it. */

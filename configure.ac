@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1515 2007-08-12 16:08:21Z lennart $
+# $Id: configure.ac 1600 2007-12-17 15:35:49Z lennart $
 
 # This file is part of avahi.
 #
@@ -21,20 +21,21 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.21],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.22],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
-AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [7:5:4])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [5:3:0])
-AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:3:2])
+AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [8:0:5])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [5:4:0])
+AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:4:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
+AC_SUBST(LIBAVAHI_GOBJECT_VERSION_INFO, [0:0:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:1:0])
-AC_SUBST(LIBAVAHI_UI_VERSION_INFO, [0:2:0])
+AC_SUBST(LIBAVAHI_UI_VERSION_INFO, [1:0:1])
 
 # Do not touch these, since they we took this version-info from upstream HOWL/Bonjour
 AC_SUBST(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO, [1:0:0])
@@ -55,6 +56,8 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_GCC_TRADITIONAL
+
+AM_PROG_CC_C_O
 
 # -fstack-protector
 AC_ARG_ENABLE([stack-protector],
@@ -147,7 +150,7 @@ ACX_PTHREAD(,AC_MSG_ERROR([Missing POSIX Threads support]))
 #
 # Check for netlink.h
 #
-AC_CHECK_HEADER(linux/netlink.h, 
+AC_CHECK_HEADER(linux/netlink.h,
 HAVE_NETLINK=yes
 AC_DEFINE([HAVE_NETLINK],[],[Support for Linux netlink])
 , [], [
@@ -160,7 +163,7 @@ AM_CONDITIONAL(HAVE_NETLINK, [ test x"$HAVE_NETLINK" = xyes ])
 #
 # Check for net/route.h
 #
-AC_CHECK_HEADER(net/route.h, 
+AC_CHECK_HEADER(net/route.h,
 HAVE_PF_ROUTE=yes
 AC_DEFINE([HAVE_PF_ROUTE],[],[Support for PF_ROUTE])
 , [], [
@@ -173,7 +176,7 @@ AM_CONDITIONAL(HAVE_PF_ROUTE, [ test x"$HAVE_PF_ROUTE" = xyes ])
 #
 # Check for sys/filio.h; needed for FIONREAD on Solaris
 #
-AC_CHECK_HEADER(sys/filio.h, 
+AC_CHECK_HEADER(sys/filio.h,
 HAVE_SYS_FILIO_H=yes
 AC_DEFINE([HAVE_SYS_FILIO_H],[],[Support for sys/filio.h])
 , [], [
@@ -184,7 +187,7 @@ AM_CONDITIONAL(HAVE_SYS_FILIO_H, [ test x"$HAVE_SYS_FILIO_H" = xyes ])
 #
 # Check for sys/sysctl.h; not present on Solaris
 #
-AC_CHECK_HEADER(sys/sysctl.h, 
+AC_CHECK_HEADER(sys/sysctl.h,
 HAVE_SYS_SYSCTL=yes
 AC_DEFINE([HAVE_SYS_SYSCTL_H],[],[Support for sys/sysctl.h])
 , [], [
@@ -318,13 +321,13 @@ if test "x$GCC" = "xyes" ; then
 
     for flag in $DESIRED_FLAGS ; do
         AC_MSG_CHECKING([whether $CC accepts $flag])
-        if test_gcc_flag $flag ; then 
+        if test_gcc_flag $flag ; then
            CFLAGS="$CFLAGS $flag"
            AC_MSG_RESULT([yes])
         else
            AC_MSG_RESULT([no])
         fi
-    done 
+    done
 fi
 
 # Checks for header files.
@@ -338,10 +341,10 @@ AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_HEADER_SYS_WAIT
 
- # Solaris stuff 
- AC_SEARCH_LIBS([inet_ntop],[nsl]) 
- AC_SEARCH_LIBS([recv],[socket]) 
- AC_CHECK_DECL([CMSG_SPACE],,CFLAGS="$CFLAGS -D_XOPEN_SOURCE=500 -D__EXTENSIONS__") 
+ # Solaris stuff
+ AC_SEARCH_LIBS([inet_ntop],[nsl])
+ AC_SEARCH_LIBS([recv],[socket])
+ AC_CHECK_DECL([CMSG_SPACE],,CFLAGS="$CFLAGS -D_XOPEN_SOURCE=500 -D__EXTENSIONS__")
 
 # Checks for library functions.
 AC_FUNC_MEMCMP
@@ -393,6 +396,18 @@ if test "x$have_kqueue" = "xyes" ; then
     AC_DEFINE([HAVE_KQUEUE], 1, [Enable BSD kqueue() usage])
 fi
 
+AM_GNU_GETTEXT([external])
+
+IT_PROG_INTLTOOL([0.35.0])
+GETTEXT_PACKAGE=avahi
+AC_SUBST([GETTEXT_PACKAGE])
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE],["$GETTEXT_PACKAGE"],[Gettext package])
+AM_GLIB_GNU_GETTEXT
+
+avahilocaledir='${prefix}/${DATADIRNAME}/locale'
+AC_SUBST(avahilocaledir)
+
+
 # Check for pkg-config manually first, as if its not installed the
 # PKG_PROG_PKG_CONFIG macro won't be defined.
 AC_CHECK_PROG(have_pkg_config, pkg-config, yes, no)
@@ -423,6 +438,25 @@ fi
 AM_CONDITIONAL(HAVE_GLIB, test "x$HAVE_GLIB" = "xyes")
 
 #
+# Check for GLIB's gobject 2.0
+#
+AC_ARG_ENABLE(gobject,
+        AS_HELP_STRING([--disable-gobject],[Disable use of GLib GObject]),
+        [case "${enableval}" in
+                yes) HAVE_GOBJECT=yes ;;
+                no)  HAVE_GOBJECT=no ;;
+                *) AC_MSG_ERROR(bad value ${enableval} for --enable-gobject) ;;
+        esac],
+        [HAVE_GOBJECT=yes])
+
+if test "x$HAVE_GOBJECT" = "xyes" ; then
+        PKG_CHECK_MODULES(GOBJECT, [ glib-2.0 >= 2.4.0 gobject-2.0 ])
+        AC_SUBST(GOBJECT_CFLAGS)
+        AC_SUBST(GOBJECT_LIBS)
+fi
+AM_CONDITIONAL(HAVE_GOBJECT, test "x$HAVE_GOBJECT" = "xyes")
+
+#
 # Check for Qt 3
 #
 AC_ARG_ENABLE(qt3,
@@ -441,7 +475,7 @@ if test "x$HAVE_QT3" = "xyes" ; then
 	    QT3_PREFIX="`$PKG_CONFIG --variable=prefix qt-mt`/bin"
         MOC_QT3="no"
 	    AC_CHECK_FILE( "$QT3_PREFIX/moc-qt3", [ MOC_QT3=$QT3_PREFIX/moc-qt3 ], [
-        	    AC_CHECK_FILE("$QT3_PREFIX/moc", [ MOC_QT3=$QT3_PREFIX/moc ], [ 
+        	    AC_CHECK_FILE("$QT3_PREFIX/moc", [ MOC_QT3=$QT3_PREFIX/moc ], [
                 AC_MSG_ERROR([Couldn't find QT3 moc])])])
         AC_SUBST(MOC_QT3)
 fi
@@ -466,7 +500,7 @@ if test "x$HAVE_QT4" = "xyes" ; then
 	    QT4_PREFIX="`$PKG_CONFIG --variable=prefix QtCore`/bin"
         MOC_QT4="no"
 	    AC_CHECK_FILE( "$QT4_PREFIX/moc-qt4", [ MOC_QT4=$QT4_PREFIX/moc-qt4 ], [
-               AC_CHECK_FILE("$QT4_PREFIX/moc", [ MOC_QT4=$QT4_PREFIX/moc ], [ 
+               AC_CHECK_FILE("$QT4_PREFIX/moc", [ MOC_QT4=$QT4_PREFIX/moc ], [
                AC_MSG_ERROR([Couldn't find QT4 moc])])])
         AC_SUBST(MOC_QT4)
 fi
@@ -489,7 +523,7 @@ if test "x$HAVE_GTK" = "xyes" ; then
         PKG_CHECK_MODULES(GTK20, [ gtk+-2.0 >= 2.4.0 ])
         AC_SUBST(GTK20_CFLAGS)
         AC_SUBST(GTK20_LIBS)
-        
+
         # Check for GLADE 2.0
         PKG_CHECK_MODULES(GLADE20, [ libglade-2.0 >= 2.4.0 ])
         AC_SUBST(GLADE20_CFLAGS)
@@ -507,7 +541,7 @@ AC_ARG_ENABLE(dbus,
                 no)  HAVE_DBUS=no ;;
                 *) AC_MSG_ERROR(bad value ${enableval} for --enable-dbus) ;;
         esac],
-        [HAVE_DBUS=yes]) 
+        [HAVE_DBUS=yes])
 
 AC_ARG_WITH(dbus-sys, AS_HELP_STRING([--with-dbus-sys=<dir>], [Path to D-Bus system.d directory]))
 AC_ARG_WITH(dbus-system-socket, AS_HELP_STRING([--with-dbus-system-address=<address>], [Path to the D-Bus system socket, you probably want to put unix:path= at the start. Only needed for very old D-Bus releases]))
@@ -565,7 +599,7 @@ if test "x$HAVE_DBUS" = "xyes" ; then
         DBUS_SYSTEM_BUS_DEFAULT_ADDRESS="$with_dbus_system_address"
     else
         # This is ugly, but D-Bus doesn't export this address for us
-        # so we have to guess, pretty much all setups i've seen have 
+        # so we have to guess, pretty much all setups i've seen have
         # it in /var/lib/dbus or /var/run/dbus, and its defaulted to
         # /var/run upstream so we will try guess first then default
         # to /var/run/dbus.
@@ -579,7 +613,7 @@ if test "x$HAVE_DBUS" = "xyes" ; then
         done
     fi
     AC_SUBST(DBUS_SYSTEM_BUS_DEFAULT_ADDRESS)
-    
+
     SAVED_LIBS="$LIBS"
     LIBS="$LIBS $DBUS_LIBS"
     AC_CHECK_FUNCS([dbus_connection_close dbus_bus_get_private])
@@ -590,23 +624,56 @@ AM_CONDITIONAL(HAVE_DBUS, test "x$HAVE_DBUS" = "xyes")
 #
 # Expat
 #
-AC_ARG_ENABLE(expat,
-        AS_HELP_STRING([--disable-expat],[Disable use of Expat]),
-        [case "${enableval}" in
-                yes) HAVE_EXPAT=yes ;;
-                no)  HAVE_EXPAT=no ;;
-                *) AC_MSG_ERROR(bad value ${enableval} for --enable-expat) ;;
-        esac],
-        [HAVE_EXPAT=yes]) 
+AC_ARG_WITH(xml, AS_HELP_STRING([--with-xml=[expat/bsdxml/none]],[XML library to use]))
+use_expat=false
+use_bsdxml=false
 
-if test "x$HAVE_EXPAT" = "xyes" ; then
-    AC_CHECK_LIB(expat, XML_ParserCreate, [ AC_CHECK_HEADERS(expat.h, have_expat=true, have_expat=false) ], have_expat=false)
+# See what we have
+AC_CHECK_LIB(expat, XML_ParserCreate, [ AC_CHECK_HEADERS(expat.h, have_expat=true, have_expat=false) ], have_expat=false)
+AC_CHECK_LIB(bsdxml, XML_ParserCreate, [ AC_CHECK_HEADERS(bsdxml.h, have_bsdxml=true, have_bsdxml=false) ], have_bsdxml=false)
 
-    if ! $have_expat ; then
-        AC_MSG_ERROR([*** libexpat not found ***])
-    fi
+if test "x$with_xml" = "xnone"; then
+        :
+elif test "x$with_xml" = "xexpat"; then
+	use_expat=true
+	if ! $have_expat ; then
+		AC_MSG_ERROR([*** libexpat requested, but not found ***])
+	fi
+elif test "x$with_xml" = "xbsdxml"; then
+	use_bsdxml=true
+	if ! $have_bsdxml ; then
+		AC_MSG_ERROR([*** libbsdxml requested, but not found ***])
+	fi
+elif test "x$with_xml" != "x"; then
+	AC_MSG_ERROR([*** unknown with-xml option ***])
+else
+	if $have_expat ; then
+		use_expat=true
+	elif $have_bsdxml ; then
+		use_bsdxml=true
+	else
+		AC_MSG_ERROR([*** neither libexpat not libbsdxml could be found ***])
+	fi
 fi
-AM_CONDITIONAL(HAVE_EXPAT, test "x$HAVE_EXPAT" = "xyes")
+
+if $use_expat; then
+	with_xml=expat
+	XML_CFLAGS=-DUSE_EXPAT_H
+	XML_LIBS=-lexpat
+fi
+if $use_bsdxml; then
+	with_xml=bsdxml
+	XML_CFLAGS=-DUSE_BSDXML_H
+	XML_LIBS=-lbsdxml
+fi
+AC_SUBST(XML_LIBS)
+AC_SUBST(XML_CFLAGS)
+
+if $use_expat || $use_bsdxml; then
+	HAVE_XML=yes
+fi
+
+AM_CONDITIONAL(HAVE_XML, test "x$HAVE_XML" = "xyes")
 
 #
 # GDBM
@@ -621,7 +688,7 @@ AC_ARG_ENABLE(dbm,
                 no)  HAVE_DBM=no ;;
                 *) AC_MSG_ERROR(bad value ${enableval} for --enable-dbm) ;;
         esac],
-        [HAVE_DBM=no]) 
+        [HAVE_DBM=no])
 
 AC_ARG_ENABLE(gdbm,
         AS_HELP_STRING([--disable-gdbm],[Disable use of GDBM]),
@@ -630,7 +697,7 @@ AC_ARG_ENABLE(gdbm,
                 no)  HAVE_GDBM=no ;;
                 *) AC_MSG_ERROR(bad value ${enableval} for --disable-gdbm) ;;
         esac],
-        [HAVE_GDBM=yes]) 
+        [HAVE_GDBM=yes])
 
 if test "x$HAVE_GDBM" = "xyes" ; then
     if test "x$HAVE_DBM" = "xyes" ; then
@@ -665,7 +732,7 @@ AC_ARG_ENABLE(libdaemon,
                 no)  HAVE_LIBDAEMON=no ;;
                 *) AC_MSG_ERROR(bad value ${enableval} for --enable-libdaemon) ;;
         esac],
-        [HAVE_LIBDAEMON=yes]) 
+        [HAVE_LIBDAEMON=yes])
 
 if test "x$HAVE_LIBDAEMON" = "xyes" ; then
     PKG_CHECK_MODULES(LIBDAEMON, [ libdaemon >= 0.11 ])
@@ -699,7 +766,7 @@ if test "x$HAVE_PYTHON" = "xyes" ; then
                 *) AC_MSG_ERROR(bad value ${enableval} for --enable-pygtk) ;;
         esac],
         [HAVE_PYGTK=yes])
-    
+
     if test "x$HAVE_PYGTK" = "xyes" ; then
         AM_CHECK_PYMOD(gtk,,,[AC_MSG_ERROR(Could not find Python module gtk)])
     fi
@@ -714,7 +781,7 @@ if test "x$HAVE_PYTHON" = "xyes" ; then
                    *) AC_MSG_ERROR(bad value ${enableval} for --enable-python-dbus) ;;
             esac],
             [HAVE_PYTHON_DBUS=yes])
-    
+
         if test "x$HAVE_PYTHON_DBUS" = "xyes"; then
             AM_CHECK_PYMOD(dbus,,,[AC_MSG_ERROR(Could not find Python module dbus)])
         fi
@@ -778,7 +845,7 @@ AC_ARG_ENABLE(monodoc,
 
 if test "x$HAVE_MONO" = "xyes" && test "x$HAVE_MONODOC" = "xyes" ; then
         PKG_CHECK_MODULES(MONODOC, [monodoc >= 1.1.8])
-        MONODOC_DIR=`$PKG_CONFIG --variable=sourcesdir monodoc`        
+        MONODOC_DIR=`$PKG_CONFIG --variable=sourcesdir monodoc`
 
         AC_PATH_PROG(MONODOCER, monodocer)
         AC_PATH_PROG(MDASSEMBLER, mdassembler)
@@ -875,7 +942,7 @@ DX_CHM_FEATURE(OFF)
 DX_CHI_FEATURE(OFF)
 DX_MAN_FEATURE(OFF)
 DX_RTF_FEATURE(OFF)
-DX_XML_FEATURE(OFF)
+DX_XML_FEATURE(ON)
 DX_PDF_FEATURE(OFF)
 DX_PS_FEATURE(OFF)
 DX_INIT_DOXYGEN(avahi, doxygen.cfg, doxygen)
@@ -912,7 +979,7 @@ if test x$manpages = xyes ; then
       no)  xmltoman=no ;;
       *) AC_MSG_ERROR([bad value ${enableval} for --disable-xmltoman]) ;;
     esac],[xmltoman=yes])
-    
+
     if test x$xmltoman = xyes ; then
         AC_CHECK_PROG(have_xmltoman, xmltoman, yes, no)
     fi
@@ -974,16 +1041,17 @@ AM_CONDITIONAL([ENABLE_COMPAT_HOWL], [test "x$ENABLE_COMPAT_HOWL" = "xyes"])
 
 # ==========================================================================
 AC_CONFIG_FILES([
-Makefile 
-avahi-common/Makefile 
-avahi-core/Makefile 
-avahi-glib/Makefile 
+Makefile
+avahi-common/Makefile
+avahi-core/Makefile
+avahi-glib/Makefile
+avahi-gobject/Makefile
 avahi-qt/Makefile
-avahi-daemon/Makefile 
+avahi-daemon/Makefile
 avahi-daemon/avahi-dbus.conf
-avahi-discover-standalone/Makefile 
-avahi-client/Makefile 
-initscript/Makefile 
+avahi-discover-standalone/Makefile
+avahi-client/Makefile
+initscript/Makefile
 initscript/debian/Makefile
 initscript/gentoo/Makefile
 initscript/archlinux/Makefile
@@ -997,6 +1065,7 @@ avahi-dnsconfd/Makefile
 avahi-utils/Makefile
 avahi-python/Makefile
 avahi-python/avahi/Makefile
+avahi-python/avahi-discover/Makefile
 examples/Makefile
 common/Makefile
 man/Makefile
@@ -1009,6 +1078,7 @@ avahi-compat-howl/Makefile
 avahi-compat-howl/samples/Makefile
 avahi-autoipd/Makefile
 avahi-ui/Makefile
+po/Makefile.in
 ])
 AC_OUTPUT
 
@@ -1026,9 +1096,10 @@ echo "
     C Compiler:                                ${CC}
     CFLAGS:                                    ${CFLAGS}
     Enable GLIB:                               ${HAVE_GLIB}
+    Enable GLIB GObject:                       ${HAVE_GOBJECT}
     Enable GTK:                                ${HAVE_GTK}
     Enable D-Bus:                              ${HAVE_DBUS}
-    Enable Expat:                              ${HAVE_EXPAT}
+    With XML:                                  ${with_xml}
     Enable GDBM:                               ${HAVE_GDBM}
     Enable DBM:                                ${HAVE_DBM}
     Enable libdaemon:                          ${HAVE_LIBDAEMON}
@@ -1050,9 +1121,9 @@ echo "
     Enable stack-smashing protection:          ${enable_ssp}
 "
 
-BUILD_DAEMON="no   (You need libdaemon and expat!)"
+BUILD_DAEMON="no   (You need libdaemon and expat/bsdxml!)"
 
-if test "x$HAVE_EXPAT" = "xyes" -a "x$HAVE_LIBDAEMON" = "xyes" ; then
+if test "x$HAVE_XML" = "xyes" -a "x$HAVE_LIBDAEMON" = "xyes" ; then
     BUILD_DAEMON=yes
 fi
 
@@ -1091,6 +1162,7 @@ echo "\
     Building avahi-utils:               ${BUILD_CLIENT}
     Building avahi-python:              ${BUILD_PYTHON}
     Building libavahi-glib:             ${HAVE_GLIB}
+    Building libavahi-gobject:          ${HAVE_GOBJECT}
     Building avahi-discover-standalone: ${HAVE_GTK}
     Building libavahi-qt3:              ${HAVE_QT3}
     Building libavahi-qt4:              ${HAVE_QT4}

@@ -1,7 +1,7 @@
 #ifndef foocdeclhfoo
 #define foocdeclhfoo
 
-/* $Id: cdecl.h 872 2005-10-26 01:21:30Z lennart $ */
+/* $Id: cdecl.h 1547 2007-09-28 16:34:49Z tedp $ */
 
 /***
   This file is part of avahi.
@@ -26,13 +26,13 @@
 #ifdef __cplusplus
 /** If using C++ this macro enables C mode, otherwise does nothing */
 #define AVAHI_C_DECL_BEGIN extern "C" {
-/** If using C++ this macros switches back to C++ mode, otherwise does nothing */
+/** If using C++ this macro switches back to C++ mode, otherwise does nothing */
 #define AVAHI_C_DECL_END }
 
 #else
 /** If using C++ this macro enables C mode, otherwise does nothing */
 #define AVAHI_C_DECL_BEGIN
-/** If using C++ this macros switches back to C++ mode, otherwise does nothing */
+/** If using C++ this macro switches back to C++ mode, otherwise does nothing */
 #define AVAHI_C_DECL_END
 
 #endif

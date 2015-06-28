@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: autogen.sh 862 2005-10-24 23:44:05Z sebest $
+# $Id: autogen.sh 1593 2007-12-17 12:36:14Z lennart $
 
 # This file is part of avahi.
 #
@@ -49,8 +49,15 @@ else
     rm -rf autom4te.cache
     rm -f config.cache
 
+    rm -f Makefile.am~ configure.ac~
+    # Evil, evil, evil, evil hack
+    sed 's/read dummy/\#/' `which gettextize` | sh -s -- --copy --force
+    test -f Makefile.am~ && mv Makefile.am~ Makefile.am
+    test -f configure.ac~ && mv configure.ac~ configure.ac
+
     test "x$LIBTOOLIZE" = "x" && LIBTOOLIZE=libtoolize
 
+    intltoolize --copy --force --automake
     "$LIBTOOLIZE" -c --force
     run_versioned aclocal "$VERSION" -I common
     run_versioned autoconf 2.59 -Wall

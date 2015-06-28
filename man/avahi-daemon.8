@@ -11,7 +11,7 @@ avahi-daemon --reload\fB
 avahi-daemon --check\fB
 \f1
 .SH DESCRIPTION
-The Avahi mDNS/DNS-SD daemon implementing Apple's ZeroConf architecture (also known as "Rendezvous" or "Bonjour"). The daemon registers local IP addresses and static services using mDNS/DNS-SD and provides two IPC APIs for local programs to make use of the mDNS record cache the avahi-daemon maintains. First there is the so called "simple protocol" which is used exclusively by avahi-dnsconfd (a daemon which configures unicast DNS servers using server info published via mDNS) and nss-mdns (a libc NSS plugin, providing name resolution via mDNS). Finally there is the D-Bus interface which provides a rich object oriented interface to D-Bus enabled applications.
+The Avahi mDNS/DNS-SD daemon implements Apple's Zeroconf architecture (also known as "Rendezvous" or "Bonjour"). The daemon registers local IP addresses and static services using mDNS/DNS-SD and provides two IPC APIs for local programs to make use of the mDNS record cache the avahi-daemon maintains. First there is the so called "simple protocol" which is used exclusively by avahi-dnsconfd (a daemon which configures unicast DNS servers using server info published via mDNS) and nss-mdns (a libc NSS plugin, providing name resolution via mDNS). Finally there is the D-Bus interface which provides a rich object oriented interface to D-Bus enabled applications.
 
 Upon startup avahi-daemon interprets its configuration file \fI/etc/avahi/avahi-daemon.conf\f1 and reads XML fragments from \fI/etc/avahi/services/*.service\f1 which may define static DNS-SD services. If you enable \fBpublish-resolv-conf-dns-servers\f1 in \fIavahi-daemon.conf\f1 the file \fI/etc/resolv.conf\f1 will be read, too.
 .SH OPTIONS
@@ -38,7 +38,7 @@ Don't drop root priviliges after startup and don't require daemon to be started 
 Don't \fBchroot(2)\f1 the daemon. This option is only available when compiled with chroot() support.
 .TP
 \fB--no-proc-title\f1
-Don't change the process name while running. Unless this option is specified avahi-daemon will reflect it's current state and the selected host name in the process title.
+Don't change the process name while running. Unless this option is specified avahi-daemon will reflect its current state and the selected host name in the process title.
 .TP
 \fB-k | --kill\f1
 Kill an already running avahi-daemon. (equivalent to sending a SIGTERM)

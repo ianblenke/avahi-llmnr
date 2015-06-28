@@ -1,4 +1,4 @@
-/* $Id: ini-file-parser-test.c 879 2005-10-26 21:27:40Z lennart $ */
+/* $Id: ini-file-parser-test.c 1535 2007-09-06 17:01:24Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -18,6 +18,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
   USA.
 ***/
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <stdio.h>
 

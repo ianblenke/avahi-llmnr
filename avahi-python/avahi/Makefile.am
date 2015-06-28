@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1451 2007-04-21 18:48:27Z lennart $
+# $Id: Makefile.am 1540 2007-09-25 00:25:26Z lennart $
 
 # This file is part of avahi.
 #
@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA.
 
-EXTRA_DIST = __init__.py SimpleGladeApp.py ServiceTypeDatabase.py.in
+EXTRA_DIST = __init__.py ServiceTypeDatabase.py.in
 
 if HAVE_PYTHON
 
@@ -33,7 +33,7 @@ ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
 		-e 's,@FIRST_KEY\@,key = self.db.firstkey(),g' \
 		-e 's,@CHECK_KEY\@,while key is not None:,g' \
 		-e 's,@NEXT_KEY\@,key = self.db.nextkey(key),g' \
-		-e 's,@pkgdatadir\@,$(pkgdatadir),g' $< > $@
+		-e 's,@pkglibdir\@,$(pkglibdir),g' $< > $@
 	chmod +x $@
 endif
 
@@ -46,7 +46,7 @@ ServiceTypeDatabase.py: ServiceTypeDatabase.py.in
 		-e 's,@FIRST_KEY\@,keys = self.db.keys(),g' \
 		-e 's,@CHECK_KEY\@,for key in keys:,g' \
 		-e 's,@NEXT_KEY\@,,g' \
-		-e 's,@pkgdatadir\@,$(pkgdatadir),g' $< > $@
+		-e 's,@pkglibdir\@,$(pkglibdir),g' $< > $@
 	chmod +x $@
 endif
 
@@ -55,7 +55,7 @@ avahi_PYTHON = $(avahi_SCRIPTS)
 if HAVE_PYGTK
 if HAVE_PYTHON_DBUS
 
-avahi_PYTHON += __init__.py SimpleGladeApp.py 
+avahi_PYTHON += __init__.py
 
 endif
 endif

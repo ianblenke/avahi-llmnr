@@ -14,10 +14,10 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 819 2005-10-19 00:10:02Z lennart $
+# $Id: Makefile.am 1564 2007-10-28 00:17:16Z lennart $
 #
 # This file is part of avahi.
-# 
+#
 # avahi is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2 of the
@@ -60,11 +60,16 @@ host_triplet = @host@
 @ENABLE_TESTS_TRUE@@HAVE_GLIB_TRUE@noinst_PROGRAMS =  \
 @ENABLE_TESTS_TRUE@@HAVE_GLIB_TRUE@	glib-watch-test$(EXEEXT)
 subdir = avahi-glib
-DIST_COMMON = $(am__avahiinclude_HEADERS_DIST) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+DIST_COMMON = $(am__avahiglibinclude_HEADERS_DIST) \
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
 	$(top_srcdir)/common/gcc_stack_protect.m4 \
+	$(top_srcdir)/common/gettext.m4 $(top_srcdir)/common/iconv.m4 \
+	$(top_srcdir)/common/lib-ld.m4 \
+	$(top_srcdir)/common/lib-link.m4 \
+	$(top_srcdir)/common/lib-prefix.m4 $(top_srcdir)/common/nls.m4 \
+	$(top_srcdir)/common/po.m4 $(top_srcdir)/common/progtest.m4 \
 	$(top_srcdir)/common/python.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/common/doxygen.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -78,7 +83,8 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(avahiincludedir)"
+am__installdirs = "$(DESTDIR)$(libdir)" \
+	"$(DESTDIR)$(avahiglibincludedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
@@ -116,13 +122,14 @@ LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 SOURCES = $(libavahi_glib_la_SOURCES) $(glib_watch_test_SOURCES)
 DIST_SOURCES = $(am__libavahi_glib_la_SOURCES_DIST) \
 	$(am__glib_watch_test_SOURCES_DIST)
-am__avahiinclude_HEADERS_DIST = glib-watch.h glib-malloc.h
-avahiincludeHEADERS_INSTALL = $(INSTALL_HEADER)
-HEADERS = $(avahiinclude_HEADERS)
+am__avahiglibinclude_HEADERS_DIST = glib-watch.h glib-malloc.h
+avahiglibincludeHEADERS_INSTALL = $(INSTALL_HEADER)
+HEADERS = $(avahiglibinclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
+ALL_LINGUAS = @ALL_LINGUAS@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
@@ -138,6 +145,8 @@ AVAHI_USER = @AVAHI_USER@
 AWK = @AWK@
 BUILD_MANPAGES_FALSE = @BUILD_MANPAGES_FALSE@
 BUILD_MANPAGES_TRUE = @BUILD_MANPAGES_TRUE@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -148,6 +157,7 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIRNAME = @DATADIRNAME@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DBUS_SYSTEM_BUS_DEFAULT_ADDRESS = @DBUS_SYSTEM_BUS_DEFAULT_ADDRESS@
@@ -221,10 +231,16 @@ EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 GACUTIL = @GACUTIL@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLADE20_CFLAGS = @GLADE20_CFLAGS@
 GLADE20_LIBS = @GLADE20_LIBS@
 GLIB20_CFLAGS = @GLIB20_CFLAGS@
 GLIB20_LIBS = @GLIB20_LIBS@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
+GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
+GOBJECT_LIBS = @GOBJECT_LIBS@
 GREP = @GREP@
 GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
@@ -234,12 +250,12 @@ HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
 HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
 HAVE_DLOPEN_TRUE = @HAVE_DLOPEN_TRUE@
-HAVE_EXPAT_FALSE = @HAVE_EXPAT_FALSE@
-HAVE_EXPAT_TRUE = @HAVE_EXPAT_TRUE@
 HAVE_GDBM_FALSE = @HAVE_GDBM_FALSE@
 HAVE_GDBM_TRUE = @HAVE_GDBM_TRUE@
 HAVE_GLIB_FALSE = @HAVE_GLIB_FALSE@
 HAVE_GLIB_TRUE = @HAVE_GLIB_TRUE@
+HAVE_GOBJECT_FALSE = @HAVE_GOBJECT_FALSE@
+HAVE_GOBJECT_TRUE = @HAVE_GOBJECT_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
 HAVE_INOTIFY_FALSE = @HAVE_INOTIFY_FALSE@
@@ -270,11 +286,39 @@ HAVE_SYS_FILIO_H_FALSE = @HAVE_SYS_FILIO_H_FALSE@
 HAVE_SYS_FILIO_H_TRUE = @HAVE_SYS_FILIO_H_TRUE@
 HAVE_SYS_SYSCTL_H_FALSE = @HAVE_SYS_SYSCTL_H_FALSE@
 HAVE_SYS_SYSCTL_H_TRUE = @HAVE_SYS_SYSCTL_H_TRUE@
+HAVE_XML_FALSE = @HAVE_XML_FALSE@
+HAVE_XML_TRUE = @HAVE_XML_TRUE@
 HOWL_COMPAT_VERSION = @HOWL_COMPAT_VERSION@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INSTOBJEXT = @INSTOBJEXT@
+INTLLIBS = @INTLLIBS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_POLICY_RULE = @INTLTOOL_POLICY_RULE@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SERVICE_RULE = @INTLTOOL_SERVICE_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
+INTLTOOL_XML_NOMERGE_RULE = @INTLTOOL_XML_NOMERGE_RULE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LDFLAGS = @LDFLAGS@
 LIBAVAHI_CLIENT_VERSION_INFO = @LIBAVAHI_CLIENT_VERSION_INFO@
 LIBAVAHI_COMMON_VERSION_INFO = @LIBAVAHI_COMMON_VERSION_INFO@
@@ -282,25 +326,35 @@ LIBAVAHI_COMPAT_HOWL_VERSION_INFO = @LIBAVAHI_COMPAT_HOWL_VERSION_INFO@
 LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO = @LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO@
 LIBAVAHI_CORE_VERSION_INFO = @LIBAVAHI_CORE_VERSION_INFO@
 LIBAVAHI_GLIB_VERSION_INFO = @LIBAVAHI_GLIB_VERSION_INFO@
+LIBAVAHI_GOBJECT_VERSION_INFO = @LIBAVAHI_GOBJECT_VERSION_INFO@
 LIBAVAHI_QT3_VERSION_INFO = @LIBAVAHI_QT3_VERSION_INFO@
 LIBAVAHI_QT4_VERSION_INFO = @LIBAVAHI_QT4_VERSION_INFO@
 LIBAVAHI_UI_VERSION_INFO = @LIBAVAHI_UI_VERSION_INFO@
 LIBDAEMON_CFLAGS = @LIBDAEMON_CFLAGS@
 LIBDAEMON_LIBS = @LIBDAEMON_LIBS@
+LIBICONV = @LIBICONV@
+LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIBICONV = @LTLIBICONV@
+LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MCS = @MCS@
 MDASSEMBLER = @MDASSEMBLER@
+MKINSTALLDIRS = @MKINSTALLDIRS@
 MOC_QT3 = @MOC_QT3@
 MOC_QT4 = @MOC_QT4@
 MONODOCER = @MONODOCER@
 MONODOC_CFLAGS = @MONODOC_CFLAGS@
 MONODOC_DIR = @MONODOC_DIR@
 MONODOC_LIBS = @MONODOC_LIBS@
+MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
+MSGFMT_OPTS = @MSGFMT_OPTS@
+MSGMERGE = @MSGMERGE@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -311,6 +365,10 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_CC = @PTHREAD_CC@
 PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
 PTHREAD_LIBS = @PTHREAD_LIBS@
@@ -324,6 +382,7 @@ QT3_LIBS = @QT3_LIBS@
 QT4_CFLAGS = @QT4_CFLAGS@
 QT4_LIBS = @QT4_LIBS@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -347,9 +406,14 @@ TARGET_SLACKWARE_FALSE = @TARGET_SLACKWARE_FALSE@
 TARGET_SLACKWARE_TRUE = @TARGET_SLACKWARE_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
 TARGET_SUSE_TRUE = @TARGET_SUSE_TRUE@
+USE_NLS = @USE_NLS@
 USE_XMLTOMAN_FALSE = @USE_XMLTOMAN_FALSE@
 USE_XMLTOMAN_TRUE = @USE_XMLTOMAN_TRUE@
 VERSION = @VERSION@
+XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XML_CFLAGS = @XML_CFLAGS@
+XML_LIBS = @XML_LIBS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
@@ -365,6 +429,7 @@ am__tar = @am__tar@
 am__untar = @am__untar@
 avahi_runtime_dir = @avahi_runtime_dir@
 avahi_socket = @avahi_socket@
+avahilocaledir = @avahilocaledir@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -410,13 +475,13 @@ target_alias = @target_alias@
 
 # This cool debug trap works on i386/gcc only
 AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")'
-@HAVE_GLIB_TRUE@avahiincludedir = $(includedir)/avahi-glib
-@HAVE_GLIB_TRUE@avahiinclude_HEADERS = \
+@HAVE_GLIB_TRUE@avahiglibincludedir = $(includedir)/avahi-glib
+@HAVE_GLIB_TRUE@avahiglibinclude_HEADERS = \
 @HAVE_GLIB_TRUE@	glib-watch.h \
 @HAVE_GLIB_TRUE@	glib-malloc.h
 
 @HAVE_GLIB_TRUE@lib_LTLIBRARIES = \
-@HAVE_GLIB_TRUE@	libavahi-glib.la 
+@HAVE_GLIB_TRUE@	libavahi-glib.la
 
 @HAVE_GLIB_TRUE@libavahi_glib_la_SOURCES = \
 @HAVE_GLIB_TRUE@	glib-watch.c glib-watch.h \
@@ -587,22 +652,22 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-install-avahiincludeHEADERS: $(avahiinclude_HEADERS)
+install-avahiglibincludeHEADERS: $(avahiglibinclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(avahiincludedir)" || $(mkdir_p) "$(DESTDIR)$(avahiincludedir)"
-	@list='$(avahiinclude_HEADERS)'; for p in $$list; do \
+	test -z "$(avahiglibincludedir)" || $(mkdir_p) "$(DESTDIR)$(avahiglibincludedir)"
+	@list='$(avahiglibinclude_HEADERS)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f=$(am__strip_dir) \
-	  echo " $(avahiincludeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(avahiincludedir)/$$f'"; \
-	  $(avahiincludeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(avahiincludedir)/$$f"; \
+	  echo " $(avahiglibincludeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(avahiglibincludedir)/$$f'"; \
+	  $(avahiglibincludeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(avahiglibincludedir)/$$f"; \
 	done
 
-uninstall-avahiincludeHEADERS:
+uninstall-avahiglibincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(avahiinclude_HEADERS)'; for p in $$list; do \
+	@list='$(avahiglibinclude_HEADERS)'; for p in $$list; do \
 	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(avahiincludedir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(avahiincludedir)/$$f"; \
+	  echo " rm -f '$(DESTDIR)$(avahiglibincludedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(avahiglibincludedir)/$$f"; \
 	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
@@ -684,7 +749,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(avahiincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(avahiglibincludedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -732,7 +797,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-avahiincludeHEADERS
+install-data-am: install-avahiglibincludeHEADERS
 
 install-exec-am: install-libLTLIBRARIES
 
@@ -760,7 +825,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-avahiincludeHEADERS uninstall-info-am \
+uninstall-am: uninstall-avahiglibincludeHEADERS uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
@@ -768,13 +833,13 @@ uninstall-am: uninstall-avahiincludeHEADERS uninstall-info-am \
 	distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am \
-	install-avahiincludeHEADERS install-data install-data-am \
+	install-avahiglibincludeHEADERS install-data install-data-am \
 	install-exec install-exec-am install-info install-info-am \
 	install-libLTLIBRARIES install-man install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-avahiincludeHEADERS \
+	tags uninstall uninstall-am uninstall-avahiglibincludeHEADERS \
 	uninstall-info-am uninstall-libLTLIBRARIES
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

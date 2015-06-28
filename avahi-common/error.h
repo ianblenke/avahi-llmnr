@@ -1,7 +1,7 @@
 #ifndef fooerrorhfoo
 #define fooerrorhfoo
 
-/* $Id: error.h 1298 2006-08-31 17:26:29Z lennart $ */
+/* $Id: error.h 1547 2007-09-28 16:34:49Z tedp $ */
 
 /***
   This file is part of avahi.
@@ -88,7 +88,7 @@ enum {
     AVAHI_ERR_NOT_PERMITTED = -50,           /**< Operation not permitted */
     AVAHI_ERR_INVALID_ARGUMENT = -51,        /**< Invalid argument */
     AVAHI_ERR_IS_EMPTY = -52,                /**< Is empty */
-    AVAHI_ERR_NO_CHANGE = -53,               /**< The requested operation is invalid because redundant */
+    AVAHI_ERR_NO_CHANGE = -53,               /**< The requested operation is invalid because it is redundant */
     
     /****
      ****    IF YOU ADD A NEW ERROR CODE HERE, PLEASE DON'T FORGET TO ADD

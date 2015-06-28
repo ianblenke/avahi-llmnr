@@ -1,6 +1,6 @@
 #!@PYTHON@
 # -*-python-*-
-# $Id: ServiceTypeDatabase.py.in 1245 2006-08-06 11:54:31Z lennart $
+# $Id: ServiceTypeDatabase.py.in 1540 2007-09-25 00:25:26Z lennart $
 
 # This file is part of avahi.
 #
@@ -27,7 +27,7 @@ locale.setlocale(locale.LC_ALL, '')
 
 class ServiceTypeDatabase:
 
-    def __init__(self, filename = "@pkgdatadir@/service-types.db"):
+    def __init__(self, filename = "@pkglibdir@/service-types.db"):
 
         self.db = @DBM@.open(filename, "r")
 

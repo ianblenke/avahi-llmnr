@@ -1,4 +1,4 @@
-/* $Id: dbus-watch-glue.c 1507 2007-08-12 15:39:18Z lennart $ */
+/* $Id: dbus-watch-glue.c 1535 2007-09-06 17:01:24Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -18,6 +18,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
   USA.
 ***/
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <assert.h>
 #include <stdio.h>
@@ -134,7 +138,11 @@ static dbus_bool_t update_watch(const AvahiPoll *poll_api, DBusWatch *dbus_watch
 
         if (!(avahi_watch = poll_api->watch_new(
                   poll_api,
+#if (DBUS_VERSION_MAJOR == 1 && DBUS_VERSION_MINOR == 1 && DBUS_VERSION_MICRO >= 1) || (DBUS_VERSION_MAJOR == 1 && DBUS_VERSION_MINOR > 1) || (DBUS_VERSION_MAJOR > 1)
                   dbus_watch_get_unix_fd(dbus_watch),
+#else
+                  dbus_watch_get_fd(dbus_watch),
+#endif
                   translate_dbus_to_avahi(dbus_watch_get_flags(dbus_watch)),
                   watch_callback,
                   dbus_watch)))

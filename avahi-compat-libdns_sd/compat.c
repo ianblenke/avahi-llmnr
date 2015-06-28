@@ -1,4 +1,4 @@
-/* $Id: compat.c 1409 2007-04-12 21:04:32Z lennart $ */
+/* $Id: compat.c 1536 2007-09-06 17:20:03Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -986,6 +986,16 @@ static void reg_client_callback(AvahiClient *s, AvahiClientState state, void* us
                 }
 
                 if (!(sdref->service_name_chosen = avahi_strdup(n))) {
+                    reg_report_error(sdref, kDNSServiceErr_NoMemory);
+                    return;
+                }
+            }
+
+            if (!sdref->service_name_chosen) {
+
+                assert(sdref->service_name);
+                
+                if (!(sdref->service_name_chosen = avahi_strdup(sdref->service_name))) {
                     reg_report_error(sdref, kDNSServiceErr_NoMemory);
                     return;
                 }

@@ -2,7 +2,7 @@
 <!DOCTYPE manpage SYSTEM "xmltoman.dtd">
 <?xml-stylesheet type="text/xsl" href="xmltoman.xsl" ?>
 
-<!-- $Id: avahi-resolve.1.xml.in 1309 2006-09-02 13:48:59Z lennart $ -->
+<!-- $Id: avahi-resolve.1.xml.in 1551 2007-10-19 17:52:13Z tedp $ -->
 
 <!-- 
   This file is part of avahi.
@@ -40,7 +40,7 @@
       
       <p>When passing -n, specify one or more fully qualified mDNS/DNS host name(s)
       (e.g. "foo.local") to resolve into IP addresses on the
-      command line. When passing -a, specifiy one or more IP address
+      command line. When passing -a, specify one or more IP address
       to resolve into host names.</p>
 
       <p>avahi-resolve-host-name is equivalent to avahi-resolve --name.</p>

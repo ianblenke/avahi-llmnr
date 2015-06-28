@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1457 2007-05-08 21:57:32Z lennart $
+# $Id: Makefile.am 1570 2007-11-09 13:42:35Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA.
 
-AM_CFLAGS=-I$(top_srcdir)
+AM_CFLAGS=-I$(top_srcdir) -DG_DISABLE_DEPRECATED=1 -DGDK_DISABLE_DEPRECATED=1 -DGTK_DISABLE_DEPRECATED=1
 
 # This cool debug trap works on i386/gcc only
 AM_CFLAGS+='-DDEBUG_TRAP=__asm__("int $$3")'
@@ -47,13 +47,13 @@ libavahi_ui_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info $(LIBAVAHI_
 
 if HAVE_GDBM
 libavahi_ui_la_SOURCES += ../avahi-utils/stdb.h ../avahi-utils/stdb.c
-libavahi_ui_la_CFLAGS += -DDATABASE_FILE=\"$(pkgdatadir)/service-types.db\"
+libavahi_ui_la_CFLAGS += -DDATABASE_FILE=\"$(pkglibdir)/service-types.db\"
 libavahi_ui_la_LIBADD += -lgdbm
 endif
 
 if HAVE_DBM
 libavahi_ui_la_SOURCES += ../avahi-utils/stdb.h ../avahi-utils/stdb.c
-libavahi_ui_la_CFLAGS += -DDATABASE_FILE=\"$(pkgdatadir)/service-types.db\"
+libavahi_ui_la_CFLAGS += -DDATABASE_FILE=\"$(pkglibdir)/service-types.db\"
 endif
 
 bin_PROGRAMS = bssh
@@ -65,8 +65,9 @@ bssh_LDADD = $(AM_LDADD) $(GTK20_LIBS) ../avahi-client/libavahi-client.la ../ava
 
 install-exec-local:
 	cd $(DESTDIR)/$(bindir) && \
-		rm -f bvnc && \
-		$(LN_S) bssh bvnc
+		rm -f bvnc bshell && \
+		$(LN_S) bssh bvnc && \
+		$(LN_S) bssh bshell
 
 bssh.desktop: bssh.desktop.in
 	sed -e 's,@bindir\@,$(bindir),g' $< > $@

@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1394 2007-02-08 11:33:36Z lennart $
+# $Id: Makefile.am 1537 2007-09-06 17:49:29Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -20,12 +20,13 @@
 EXTRA_DIST=build-db.in service-types
 
 pkgdata_DATA=service-types
+pkglib_DATA=
 
 if HAVE_PYTHON
 if HAVE_GDBM
 
 noinst_SCRIPTS=build-db
-pkgdata_DATA+=service-types.db
+pkglib_DATA+=service-types.db
 
 build-db: build-db.in
 	sed -e 's,@PYTHON\@,$(PYTHON),g' \
@@ -42,7 +43,7 @@ endif
 if HAVE_DBM
 
 noinst_SCRIPTS=build-db
-pkgdata_DATA+=service-types.db.pag service-types.db.dir
+pkglib_DATA+=service-types.db.pag service-types.db.dir
 
 build-db: build-db.in
 	sed -e 's,@PYTHON\@,$(PYTHON),g' \

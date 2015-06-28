@@ -1,7 +1,7 @@
 #ifndef fooalternativehfoo
 #define fooalternativehfoo
 
-/* $Id: alternative.h 874 2005-10-26 01:34:48Z lennart $ */
+/* $Id: alternative.h 1546 2007-09-28 16:09:32Z tedp $ */
 
 /***
   This file is part of avahi.
@@ -29,8 +29,8 @@
 AVAHI_C_DECL_BEGIN
 
 /** Find an alternative for the specified host name. If called with an
- * original host name, "2" is appended, Afterwards the number is
- * increased on each call. (i.e. "foo" becomes "foo2" becomes "foo3"
+ * original host name, "-2" is appended, afterwards the number is
+ * increased on each call. (i.e. "foo" becomes "foo-2" becomes "foo-3"
  * and so on.) avahi_free() the result. */
 char *avahi_alternative_host_name(const char *s);
 

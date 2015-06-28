@@ -1,4 +1,4 @@
-# $Id: Makefile.am 417 2005-08-23 13:02:11Z lathiat $
+# $Id: Makefile.am 1593 2007-12-17 12:36:14Z lennart $
 
 # This file is part of avahi.
 #
@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA.
 
-EXTRA_DIST = \
+EXTRA_DIST = gettext.m4 iconv.m4 lib-ld.m4 lib-link.m4 lib-prefix.m4 nls.m4 po.m4 progtest.m4 \
     doxygen.m4 \
 	doxygen.mk \
 	python.m4

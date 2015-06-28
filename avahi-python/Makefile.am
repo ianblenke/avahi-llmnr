@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1436 2007-04-17 11:35:58Z lennart $
+# $Id: Makefile.am 1539 2007-09-23 18:47:13Z sjoerd $
 
 # This file is part of avahi.
 #
@@ -23,11 +23,9 @@ AM_CFLAGS=-I$(top_srcdir)
 AM_CFLAGS+='-DDEBUG_TRAP=__asm__("int $$3")'
 
 EXTRA_DIST = \
-	avahi-bookmarks.in \
-	avahi-discover.in \
-	avahi-discover.desktop.in
+	avahi-bookmarks.in
 
-SUBDIRS=avahi
+SUBDIRS=avahi avahi-discover
 
 if HAVE_PYTHON
 if HAVE_PYTHON_DBUS
@@ -36,35 +34,12 @@ if HAVE_PYGTK
 pythonscripts = \
 	avahi-bookmarks
 
-desktopdir = $(datadir)/applications
-desktop_DATA = 
-
-if HAVE_GDBM
-pythonscripts += \
-	avahi-discover
-desktop_DATA += avahi-discover.desktop
-endif
-
-if HAVE_DBM
-pythonscripts += \
-	avahi-discover
-desktop_DATA += avahi-discover.desktop
-endif
-
-avahi-discover.desktop: avahi-discover.desktop.in
-	sed -e 's,@bindir\@,$(bindir),g' $< > $@
-
-avahi-discover: avahi-discover.in
-	sed -e 's,@PYTHON\@,$(PYTHON),g' \
-		-e 's,@interfacesdir\@,$(interfacesdir),g' $< > $@
-	chmod +x $@
-
 avahi-bookmarks: avahi-bookmarks.in
 	sed -e 's,@PYTHON\@,$(PYTHON),g' $< > $@
 	chmod +x $@
 
 bin_SCRIPTS = $(pythonscripts)
-CLEANFILES = $(pythonscripts) $(desktop_DATA)
+CLEANFILES = $(pythonscripts)
 
 endif
 endif

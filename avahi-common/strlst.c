@@ -1,4 +1,4 @@
-/* $Id: strlst.c 1482 2007-05-21 17:13:05Z lennart $ */
+/* $Id: strlst.c 1524 2007-08-25 23:16:36Z lennart $ */
 
 /***
   This file is part of avahi.
@@ -337,8 +337,11 @@ AvahiStringList *avahi_string_list_add_vprintf(AvahiStringList *l, const char *f
     for (;;) {
         int n;
         AvahiStringList *nr;
+        va_list va2;
         
-        n = vsnprintf((char*) r->text, len+1, format, va);
+        va_copy(va2, va);
+        n = vsnprintf((char*) r->text, len, format, va2);
+        va_end(va2);
 
         if (n >= 0 && n < (int) len)
             break;
@@ -355,7 +358,6 @@ AvahiStringList *avahi_string_list_add_vprintf(AvahiStringList *l, const char *f
 
         r = nr;
     }
-
     
     r->next = l;
     r->size = strlen((char*) r->text); 

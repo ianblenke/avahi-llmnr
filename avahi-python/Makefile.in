@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1436 2007-04-17 11:35:58Z lennart $
+# $Id: Makefile.am 1539 2007-09-23 18:47:13Z sjoerd $
 
 # This file is part of avahi.
 #
@@ -32,7 +32,6 @@
 # License along with avahi; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA.
-
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -56,19 +55,16 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@HAVE_GDBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@am__append_1 = \
-@HAVE_GDBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-discover
-
-@HAVE_GDBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@am__append_2 = avahi-discover.desktop
-@HAVE_DBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@am__append_3 = \
-@HAVE_DBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-discover
-
-@HAVE_DBM_TRUE@@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@am__append_4 = avahi-discover.desktop
 subdir = avahi-python
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
 	$(top_srcdir)/common/gcc_stack_protect.m4 \
+	$(top_srcdir)/common/gettext.m4 $(top_srcdir)/common/iconv.m4 \
+	$(top_srcdir)/common/lib-ld.m4 \
+	$(top_srcdir)/common/lib-link.m4 \
+	$(top_srcdir)/common/lib-prefix.m4 $(top_srcdir)/common/nls.m4 \
+	$(top_srcdir)/common/po.m4 $(top_srcdir)/common/progtest.m4 \
 	$(top_srcdir)/common/python.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/common/doxygen.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -76,7 +72,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)"
+am__installdirs = "$(DESTDIR)$(bindir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(bin_SCRIPTS)
 SOURCES =
@@ -87,19 +83,12 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	install-recursive installcheck-recursive installdirs-recursive \
 	pdf-recursive ps-recursive uninstall-info-recursive \
 	uninstall-recursive
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-desktopDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(desktop_DATA)
 ETAGS = etags
 CTAGS = ctags
 DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
+ALL_LINGUAS = @ALL_LINGUAS@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
@@ -115,6 +104,8 @@ AVAHI_USER = @AVAHI_USER@
 AWK = @AWK@
 BUILD_MANPAGES_FALSE = @BUILD_MANPAGES_FALSE@
 BUILD_MANPAGES_TRUE = @BUILD_MANPAGES_TRUE@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -125,6 +116,7 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIRNAME = @DATADIRNAME@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DBUS_SYSTEM_BUS_DEFAULT_ADDRESS = @DBUS_SYSTEM_BUS_DEFAULT_ADDRESS@
@@ -198,10 +190,16 @@ EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 GACUTIL = @GACUTIL@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLADE20_CFLAGS = @GLADE20_CFLAGS@
 GLADE20_LIBS = @GLADE20_LIBS@
 GLIB20_CFLAGS = @GLIB20_CFLAGS@
 GLIB20_LIBS = @GLIB20_LIBS@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
+GOBJECT_CFLAGS = @GOBJECT_CFLAGS@
+GOBJECT_LIBS = @GOBJECT_LIBS@
 GREP = @GREP@
 GTK20_CFLAGS = @GTK20_CFLAGS@
 GTK20_LIBS = @GTK20_LIBS@
@@ -211,12 +209,12 @@ HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
 HAVE_DLOPEN_FALSE = @HAVE_DLOPEN_FALSE@
 HAVE_DLOPEN_TRUE = @HAVE_DLOPEN_TRUE@
-HAVE_EXPAT_FALSE = @HAVE_EXPAT_FALSE@
-HAVE_EXPAT_TRUE = @HAVE_EXPAT_TRUE@
 HAVE_GDBM_FALSE = @HAVE_GDBM_FALSE@
 HAVE_GDBM_TRUE = @HAVE_GDBM_TRUE@
 HAVE_GLIB_FALSE = @HAVE_GLIB_FALSE@
 HAVE_GLIB_TRUE = @HAVE_GLIB_TRUE@
+HAVE_GOBJECT_FALSE = @HAVE_GOBJECT_FALSE@
+HAVE_GOBJECT_TRUE = @HAVE_GOBJECT_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
 HAVE_INOTIFY_FALSE = @HAVE_INOTIFY_FALSE@
@@ -247,11 +245,39 @@ HAVE_SYS_FILIO_H_FALSE = @HAVE_SYS_FILIO_H_FALSE@
 HAVE_SYS_FILIO_H_TRUE = @HAVE_SYS_FILIO_H_TRUE@
 HAVE_SYS_SYSCTL_H_FALSE = @HAVE_SYS_SYSCTL_H_FALSE@
 HAVE_SYS_SYSCTL_H_TRUE = @HAVE_SYS_SYSCTL_H_TRUE@
+HAVE_XML_FALSE = @HAVE_XML_FALSE@
+HAVE_XML_TRUE = @HAVE_XML_TRUE@
 HOWL_COMPAT_VERSION = @HOWL_COMPAT_VERSION@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INSTOBJEXT = @INSTOBJEXT@
+INTLLIBS = @INTLLIBS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_POLICY_RULE = @INTLTOOL_POLICY_RULE@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SERVICE_RULE = @INTLTOOL_SERVICE_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
+INTLTOOL_XML_NOMERGE_RULE = @INTLTOOL_XML_NOMERGE_RULE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LDFLAGS = @LDFLAGS@
 LIBAVAHI_CLIENT_VERSION_INFO = @LIBAVAHI_CLIENT_VERSION_INFO@
 LIBAVAHI_COMMON_VERSION_INFO = @LIBAVAHI_COMMON_VERSION_INFO@
@@ -259,25 +285,35 @@ LIBAVAHI_COMPAT_HOWL_VERSION_INFO = @LIBAVAHI_COMPAT_HOWL_VERSION_INFO@
 LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO = @LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO@
 LIBAVAHI_CORE_VERSION_INFO = @LIBAVAHI_CORE_VERSION_INFO@
 LIBAVAHI_GLIB_VERSION_INFO = @LIBAVAHI_GLIB_VERSION_INFO@
+LIBAVAHI_GOBJECT_VERSION_INFO = @LIBAVAHI_GOBJECT_VERSION_INFO@
 LIBAVAHI_QT3_VERSION_INFO = @LIBAVAHI_QT3_VERSION_INFO@
 LIBAVAHI_QT4_VERSION_INFO = @LIBAVAHI_QT4_VERSION_INFO@
 LIBAVAHI_UI_VERSION_INFO = @LIBAVAHI_UI_VERSION_INFO@
 LIBDAEMON_CFLAGS = @LIBDAEMON_CFLAGS@
 LIBDAEMON_LIBS = @LIBDAEMON_LIBS@
+LIBICONV = @LIBICONV@
+LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIBICONV = @LTLIBICONV@
+LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MCS = @MCS@
 MDASSEMBLER = @MDASSEMBLER@
+MKINSTALLDIRS = @MKINSTALLDIRS@
 MOC_QT3 = @MOC_QT3@
 MOC_QT4 = @MOC_QT4@
 MONODOCER = @MONODOCER@
 MONODOC_CFLAGS = @MONODOC_CFLAGS@
 MONODOC_DIR = @MONODOC_DIR@
 MONODOC_LIBS = @MONODOC_LIBS@
+MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
+MSGFMT_OPTS = @MSGFMT_OPTS@
+MSGMERGE = @MSGMERGE@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -288,6 +324,10 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_CC = @PTHREAD_CC@
 PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
 PTHREAD_LIBS = @PTHREAD_LIBS@
@@ -301,6 +341,7 @@ QT3_LIBS = @QT3_LIBS@
 QT4_CFLAGS = @QT4_CFLAGS@
 QT4_LIBS = @QT4_LIBS@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -324,9 +365,14 @@ TARGET_SLACKWARE_FALSE = @TARGET_SLACKWARE_FALSE@
 TARGET_SLACKWARE_TRUE = @TARGET_SLACKWARE_TRUE@
 TARGET_SUSE_FALSE = @TARGET_SUSE_FALSE@
 TARGET_SUSE_TRUE = @TARGET_SUSE_TRUE@
+USE_NLS = @USE_NLS@
 USE_XMLTOMAN_FALSE = @USE_XMLTOMAN_FALSE@
 USE_XMLTOMAN_TRUE = @USE_XMLTOMAN_TRUE@
 VERSION = @VERSION@
+XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XML_CFLAGS = @XML_CFLAGS@
+XML_LIBS = @XML_LIBS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
@@ -342,6 +388,7 @@ am__tar = @am__tar@
 am__untar = @am__untar@
 avahi_runtime_dir = @avahi_runtime_dir@
 avahi_socket = @avahi_socket@
+avahilocaledir = @avahilocaledir@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -388,19 +435,14 @@ target_alias = @target_alias@
 # This cool debug trap works on i386/gcc only
 AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")'
 EXTRA_DIST = \
-	avahi-bookmarks.in \
-	avahi-discover.in \
-	avahi-discover.desktop.in
+	avahi-bookmarks.in
 
-SUBDIRS = avahi
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@pythonscripts = avahi-bookmarks \
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	$(am__append_1) \
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	$(am__append_3)
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@desktopdir = $(datadir)/applications
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@desktop_DATA = $(am__append_2) \
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	$(am__append_4)
+SUBDIRS = avahi avahi-discover
+@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@pythonscripts = \
+@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	avahi-bookmarks
+
 @HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@bin_SCRIPTS = $(pythonscripts)
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@CLEANFILES = $(pythonscripts) $(desktop_DATA)
+@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@CLEANFILES = $(pythonscripts)
 all: all-recursive
 
 .SUFFIXES:
@@ -462,23 +504,6 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-install-desktopDATA: $(desktop_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(desktopdir)" || $(mkdir_p) "$(DESTDIR)$(desktopdir)"
-	@list='$(desktop_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(desktopDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(desktopdir)/$$f'"; \
-	  $(desktopDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(desktopdir)/$$f"; \
-	done
-
-uninstall-desktopDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(desktop_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(desktopdir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(desktopdir)/$$f"; \
-	done
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -656,10 +681,10 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(SCRIPTS) $(DATA)
+all-am: Makefile $(SCRIPTS)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)"; do \
+	for dir in "$(DESTDIR)$(bindir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-recursive
@@ -706,7 +731,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-desktopDATA
+install-data-am:
 
 install-exec-am: install-binSCRIPTS
 
@@ -732,8 +757,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-binSCRIPTS uninstall-desktopDATA \
-	uninstall-info-am
+uninstall-am: uninstall-binSCRIPTS uninstall-info-am
 
 uninstall-info: uninstall-info-recursive
 
@@ -742,23 +766,15 @@ uninstall-info: uninstall-info-recursive
 	ctags-recursive distclean distclean-generic distclean-libtool \
 	distclean-recursive distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-binSCRIPTS \
-	install-data install-data-am install-desktopDATA install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
+	install-data install-data-am install-exec install-exec-am \
+	install-info install-info-am install-man install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic \
 	maintainer-clean-recursive mostlyclean mostlyclean-generic \
 	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
 	tags tags-recursive uninstall uninstall-am \
-	uninstall-binSCRIPTS uninstall-desktopDATA uninstall-info-am
+	uninstall-binSCRIPTS uninstall-info-am
 
-
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@avahi-discover.desktop: avahi-discover.desktop.in
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@bindir\@,$(bindir),g' $< > $@
-
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@avahi-discover: avahi-discover.in
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' \
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@		-e 's,@interfacesdir\@,$(interfacesdir),g' $< > $@
-@HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	chmod +x $@
 
 @HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@avahi-bookmarks: avahi-bookmarks.in
 @HAVE_PYGTK_TRUE@@HAVE_PYTHON_DBUS_TRUE@@HAVE_PYTHON_TRUE@	sed -e 's,@PYTHON\@,$(PYTHON),g' $< > $@

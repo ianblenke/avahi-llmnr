@@ -1,21 +1,21 @@
 #ifndef fooclientlookuphfoo
 #define fooclientlookuphfoo
 
-/* $Id: lookup.h 1477 2007-05-09 19:45:54Z lennart $ */
+/* $Id: lookup.h 1597 2007-12-17 14:14:39Z lennart $ */
 
 /***
   This file is part of avahi.
- 
+
   avahi is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation; either version 2.1 of the
   License, or (at your option) any later version.
- 
+
   avahi is distributed in the hope that it will be useful, but WITHOUT
   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
   Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with avahi; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
@@ -91,13 +91,23 @@ typedef void (*AvahiServiceBrowserCallback) (
     AvahiLookupResultFlags flags,
     void *userdata);
 
-/** Browse for services of a type on the local network */
+/** Browse for services of a type on the network. In most cases you
+ * probably want to pass AVAHI_IF_UNSPEC and AVAHI_PROTO_UNSPED in
+ * interface, resp. protocol to browse on all local networks. The
+ * specified callback will be called whenever a new service appears
+ * or is removed from the network. Please note that events may be
+ * collapsed to minimize traffic (i.e. a REMOVED followed by a NEW for
+ * the same service data is dropped because redundant). If you want to
+ * subscribe to service data changes, you should use
+ * avahi_service_resolver_new() and keep it open, in which case you
+ * will be notified via AVAHI_RESOLVE_FOUND everytime the service data
+ * changes. */
 AvahiServiceBrowser* avahi_service_browser_new (
     AvahiClient *client,
-    AvahiIfIndex interface,
-    AvahiProtocol protocol,
-    const char *type,
-    const char *domain,
+    AvahiIfIndex interface,     /**< In most cases pass AVAHI_IF_UNSPEC here */
+    AvahiProtocol protocol,     /**< In most cases pass AVAHI_PROTO_UNSPEC here */
+    const char *type,           /**< A service type such as "_http._tcp" */
+    const char *domain,         /**< A domain to browse in. In most cases you want to pass NULL here for the default domain (usually ".local") */
     AvahiLookupFlags flags,
     AvahiServiceBrowserCallback callback,
     void *userdata);
@@ -161,20 +171,31 @@ typedef void (*AvahiServiceResolverCallback) (
     const AvahiAddress *a,
     uint16_t port,
     AvahiStringList *txt,
-    AvahiLookupResultFlags flags, 
+    AvahiLookupResultFlags flags,
     void *userdata);
 
 /** Create a new service resolver object. Please make sure to pass all
  * the service data you received via avahi_service_browser_new()'s
- * callback function, especially interface and protocol. */
+ * callback function, especially interface and protocol. The protocol
+ * argument specifies the protocol (IPv4 or IPv6) to use as transport
+ * for the queries which are sent out by this resolver. The
+ * aprotocol argument specifies the adress family (IPv4 or IPv6) of
+ * the address of the service we are looking for. Generally, on
+ * "protocol" you should only pass what was supplied to you as
+ * parameter to your AvahiServiceBrowserCallback. In "aprotocol" you
+ * should pass what your application code can deal with when
+ * connecting to the service. Or, more technically speaking: protocol
+ * specifies if the mDNS queries should be sent as UDP/IPv4
+ * resp. UDP/IPv6 packets. aprotocol specifies whether the query is for a A
+ * resp. AAAA resource record. */
 AvahiServiceResolver * avahi_service_resolver_new(
     AvahiClient *client,
-    AvahiIfIndex interface,
-    AvahiProtocol protocol,
-    const char *name,
-    const char *type,
-    const char *domain,
-    AvahiProtocol aprotocol,
+    AvahiIfIndex interface,   /**< Pass the interface argument you recieved in AvahiServiceBrowserCallback here. */
+    AvahiProtocol protocol,   /**< Pass the protocol argument you recieved in AvahiServiceBrowserCallback here. */
+    const char *name,         /**< Pass the name argument you recieved in AvahiServiceBrowserCallback here. */
+    const char *type,         /**< Pass the type argument you recieved in AvahiServiceBrowserCallback here. */
+    const char *domain,       /**< Pass the domain argument you recieved in AvahiServiceBrowserCallback here. */
+    AvahiProtocol aprotocol,  /**< The desired address family of the service address to resolve. AVAHI_PROTO_UNSPEC if your application can deal with both IPv4 and IPv6 */
     AvahiLookupFlags flags,
     AvahiServiceResolverCallback callback,
     void *userdata);
@@ -199,7 +220,7 @@ typedef void (*AvahiHostNameResolverCallback) (
     AvahiResolverEvent event,
     const char *name,
     const AvahiAddress *a,
-    AvahiLookupResultFlags flags, 
+    AvahiLookupResultFlags flags,
     void *userdata);
 
 /** Create a new hostname resolver object */
@@ -230,7 +251,7 @@ typedef void (*AvahiAddressResolverCallback) (
     AvahiResolverEvent event,
     const AvahiAddress *a,
     const char *name,
-    AvahiLookupResultFlags flags, 
+    AvahiLookupResultFlags flags,
     void *userdata);
 
 /** Create a new address resolver object from an AvahiAddress object */
