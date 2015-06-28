@@ -1,4 +1,4 @@
-# $Id: Makefile.am 413 2005-08-23 11:28:40Z lathiat $
+# $Id: Makefile.am 1171 2006-03-02 17:05:13Z lennart $
 
 # This file is part of avahi.
 #
@@ -17,6 +17,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA.
 
+if !HAVE_DBUS
+NO_DBUS_DEPENDENCY=/need dbus/d
+endif
+
 initddir = $(sysconfdir)/init.d
 
 EXTRA_DIST = \
@@ -32,7 +36,8 @@ CLEANFILES = \
 	avahi-dnsconfd
 
 avahi-daemon: avahi-daemon.in
-	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+	
+	sed -e 's,@sbindir\@,$(sbindir),g; $(NO_DBUS_DEPENDENCY)' $< > $@
 	chmod +x $@
 
 avahi-dnsconfd: avahi-dnsconfd.in

@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1152 2006-02-20 22:21:40Z sebest $
+# $Id: Makefile.am 1165 2006-03-01 23:51:22Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -85,6 +85,10 @@ avahi_daemon_LDADD += -lcap
 
 endif
 
+if HAVE_DLOPEN
+avahi_daemon_LDADD += -ldl
+endif
+
 if HAVE_DBUS
 
 dbusservicedir=$(DBUS_SYS_DIR)
@@ -109,10 +113,6 @@ avahi_daemon_SOURCES += \
 
 avahi_daemon_LDADD += \
 	$(DBUS_LIBS)
-
-if HAVE_DLOPEN
-avahi_daemon_LDADD += -ldl
-endif
 
 avahi_daemon_CFLAGS += $(DBUS_CFLAGS)
 

@@ -1,12 +1,13 @@
 #!/sbin/runscript
-# $Id: avahi-daemon.in 416 2005-08-23 11:59:02Z lathiat $
+# $Id: avahi-daemon.in 1171 2006-03-02 17:05:13Z lennart $
 # Copyright 1999-2005 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 opts="${opts} reload"
 
 depend() {
-	use net dbus
+	use net
+	need dbus
 }
 
 start() {

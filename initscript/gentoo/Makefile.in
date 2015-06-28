@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 413 2005-08-23 11:28:40Z lathiat $
+# $Id: Makefile.am 1171 2006-03-02 17:05:13Z lennart $
 
 # This file is part of avahi.
 #
@@ -344,6 +344,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
+@HAVE_DBUS_FALSE@NO_DBUS_DEPENDENCY = /need dbus/d
 initddir = $(sysconfdir)/init.d
 EXTRA_DIST = \
 	avahi-daemon.in \
@@ -543,7 +544,8 @@ uninstall-am: uninstall-info-am uninstall-initdSCRIPTS
 
 
 avahi-daemon: avahi-daemon.in
-	sed -e 's,@sbindir\@,$(sbindir),g' $< > $@
+
+	sed -e 's,@sbindir\@,$(sbindir),g; $(NO_DBUS_DEPENDENCY)' $< > $@
 	chmod +x $@
 
 avahi-dnsconfd: avahi-dnsconfd.in

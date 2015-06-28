@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am 1152 2006-02-20 22:21:40Z sebest $
+# $Id: Makefile.am 1165 2006-03-01 23:51:22Z lennart $
 #
 # This file is part of avahi.
 # 
@@ -73,7 +73,8 @@ host_triplet = @host@
 @ENABLE_CHROOT_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	caps.c caps.h
 
 @ENABLE_CHROOT_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_3 = -lcap
-@HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_4 = \
+@HAVE_DLOPEN_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_4 = -ldl
+@HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_5 = \
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	dbus-protocol.c dbus-protocol.h \
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	dbus-util.c dbus-util.h \
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	dbus-internal.h \
@@ -91,10 +92,9 @@ host_triplet = @host@
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/dbus.c ../avahi-common/dbus.h \
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-common/dbus-watch-glue.c ../avahi-common/dbus-watch-glue.h
 
-@HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_5 = \
+@HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_6 = \
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(DBUS_LIBS)
 
-@HAVE_DBUS_TRUE@@HAVE_DLOPEN_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_6 = -ldl
 @HAVE_DBUS_TRUE@@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am__append_7 = $(DBUS_CFLAGS)
 subdir = avahi-daemon
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
@@ -161,8 +161,8 @@ am__DEPENDENCIES_1 =
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-core/libavahi-core.la \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_1) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_1) \
-@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_2) \
-@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_1)
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_1) \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__DEPENDENCIES_2)
 am__ini_file_parser_test_SOURCES_DIST = ini-file-parser.c \
 	ini-file-parser.h ini-file-parser-test.c
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@am_ini_file_parser_test_OBJECTS = ini_file_parser_test-ini-file-parser.$(OBJEXT) \
@@ -492,7 +492,7 @@ AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")' \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	setproctitle.h \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-client/check-nss.c \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_2) \
-@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_4)
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_5)
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@avahi_daemon_CFLAGS =  \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(AM_CFLAGS) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(LIBDAEMON_CFLAGS) \
@@ -503,7 +503,7 @@ AM_CFLAGS = -I$(top_srcdir) '-DDEBUG_TRAP=__asm__("int $$3")' \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	../avahi-core/libavahi-core.la \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(LIBDAEMON_LIBS) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	-lexpat $(am__append_3) \
-@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_5) \
+@HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_4) \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	$(am__append_6)
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@ini_file_parser_test_SOURCES = \
 @HAVE_EXPAT_TRUE@@HAVE_LIBDAEMON_TRUE@	ini-file-parser.c ini-file-parser.h \

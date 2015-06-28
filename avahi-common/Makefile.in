@@ -100,11 +100,13 @@ PROGRAMS = $(noinst_PROGRAMS)
 am_alternative_test_OBJECTS = alternative_test-alternative.$(OBJEXT) \
 	alternative_test-malloc.$(OBJEXT) \
 	alternative_test-domain.$(OBJEXT) \
+	alternative_test-address.$(OBJEXT) \
 	alternative_test-alternative-test.$(OBJEXT)
 alternative_test_OBJECTS = $(am_alternative_test_OBJECTS)
 alternative_test_LDADD = $(LDADD)
 am_domain_test_OBJECTS = domain_test-domain.$(OBJEXT) \
-	domain_test-malloc.$(OBJEXT) domain_test-domain-test.$(OBJEXT)
+	domain_test-malloc.$(OBJEXT) domain_test-address.$(OBJEXT) \
+	domain_test-domain-test.$(OBJEXT)
 domain_test_OBJECTS = $(am_domain_test_OBJECTS)
 domain_test_LDADD = $(LDADD)
 am_strlst_test_OBJECTS = strlst_test-strlst.$(OBJEXT) \
@@ -477,12 +479,14 @@ alternative_test_SOURCES = \
 	alternative.c alternative.h \
 	malloc.c malloc.h \
 	domain.c domain.h \
+	address.c address.h \
 	alternative-test.c
 
 alternative_test_CFLAGS = $(AM_CFLAGS)
 domain_test_SOURCES = \
 	domain.c domain.h \
 	malloc.c malloc.h \
+	address.c address.h \
 	domain-test.c
 
 domain_test_CFLAGS = $(AM_CFLAGS)
@@ -602,10 +606,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/alternative_test-address.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/alternative_test-alternative-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/alternative_test-alternative.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/alternative_test-domain.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/alternative_test-malloc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/domain_test-address.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/domain_test-domain-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/domain_test-domain.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/domain_test-malloc.Po@am__quote@
@@ -767,6 +773,20 @@ alternative_test-domain.obj: domain.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(alternative_test_CFLAGS) $(CFLAGS) -c -o alternative_test-domain.obj `if test -f 'domain.c'; then $(CYGPATH_W) 'domain.c'; else $(CYGPATH_W) '$(srcdir)/domain.c'; fi`
 
+alternative_test-address.o: address.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(alternative_test_CFLAGS) $(CFLAGS) -MT alternative_test-address.o -MD -MP -MF "$(DEPDIR)/alternative_test-address.Tpo" -c -o alternative_test-address.o `test -f 'address.c' || echo '$(srcdir)/'`address.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/alternative_test-address.Tpo" "$(DEPDIR)/alternative_test-address.Po"; else rm -f "$(DEPDIR)/alternative_test-address.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='address.c' object='alternative_test-address.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(alternative_test_CFLAGS) $(CFLAGS) -c -o alternative_test-address.o `test -f 'address.c' || echo '$(srcdir)/'`address.c
+
+alternative_test-address.obj: address.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(alternative_test_CFLAGS) $(CFLAGS) -MT alternative_test-address.obj -MD -MP -MF "$(DEPDIR)/alternative_test-address.Tpo" -c -o alternative_test-address.obj `if test -f 'address.c'; then $(CYGPATH_W) 'address.c'; else $(CYGPATH_W) '$(srcdir)/address.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/alternative_test-address.Tpo" "$(DEPDIR)/alternative_test-address.Po"; else rm -f "$(DEPDIR)/alternative_test-address.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='address.c' object='alternative_test-address.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(alternative_test_CFLAGS) $(CFLAGS) -c -o alternative_test-address.obj `if test -f 'address.c'; then $(CYGPATH_W) 'address.c'; else $(CYGPATH_W) '$(srcdir)/address.c'; fi`
+
 alternative_test-alternative-test.o: alternative-test.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(alternative_test_CFLAGS) $(CFLAGS) -MT alternative_test-alternative-test.o -MD -MP -MF "$(DEPDIR)/alternative_test-alternative-test.Tpo" -c -o alternative_test-alternative-test.o `test -f 'alternative-test.c' || echo '$(srcdir)/'`alternative-test.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/alternative_test-alternative-test.Tpo" "$(DEPDIR)/alternative_test-alternative-test.Po"; else rm -f "$(DEPDIR)/alternative_test-alternative-test.Tpo"; exit 1; fi
@@ -808,6 +828,20 @@ domain_test-malloc.obj: malloc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='malloc.c' object='domain_test-malloc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(domain_test_CFLAGS) $(CFLAGS) -c -o domain_test-malloc.obj `if test -f 'malloc.c'; then $(CYGPATH_W) 'malloc.c'; else $(CYGPATH_W) '$(srcdir)/malloc.c'; fi`
+
+domain_test-address.o: address.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(domain_test_CFLAGS) $(CFLAGS) -MT domain_test-address.o -MD -MP -MF "$(DEPDIR)/domain_test-address.Tpo" -c -o domain_test-address.o `test -f 'address.c' || echo '$(srcdir)/'`address.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/domain_test-address.Tpo" "$(DEPDIR)/domain_test-address.Po"; else rm -f "$(DEPDIR)/domain_test-address.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='address.c' object='domain_test-address.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(domain_test_CFLAGS) $(CFLAGS) -c -o domain_test-address.o `test -f 'address.c' || echo '$(srcdir)/'`address.c
+
+domain_test-address.obj: address.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(domain_test_CFLAGS) $(CFLAGS) -MT domain_test-address.obj -MD -MP -MF "$(DEPDIR)/domain_test-address.Tpo" -c -o domain_test-address.obj `if test -f 'address.c'; then $(CYGPATH_W) 'address.c'; else $(CYGPATH_W) '$(srcdir)/address.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/domain_test-address.Tpo" "$(DEPDIR)/domain_test-address.Po"; else rm -f "$(DEPDIR)/domain_test-address.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='address.c' object='domain_test-address.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(domain_test_CFLAGS) $(CFLAGS) -c -o domain_test-address.obj `if test -f 'address.c'; then $(CYGPATH_W) 'address.c'; else $(CYGPATH_W) '$(srcdir)/address.c'; fi`
 
 domain_test-domain-test.o: domain-test.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(domain_test_CFLAGS) $(CFLAGS) -MT domain_test-domain-test.o -MD -MP -MF "$(DEPDIR)/domain_test-domain-test.Tpo" -c -o domain_test-domain-test.o `test -f 'domain-test.c' || echo '$(srcdir)/'`domain-test.c; \
