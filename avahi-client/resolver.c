@@ -1,4 +1,4 @@
-/* $Id: resolver.c 1360 2006-12-31 17:19:30Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

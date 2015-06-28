@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1373 2007-01-06 16:45:34Z lennart $
+# $Id$
 
 # This file is part of avahi.
 #
@@ -42,7 +42,7 @@ libdns_sd_la_SOURCES = \
 	unsupported.c \
 	warn.c warn.h
 libdns_sd_la_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS)
-libdns_sd_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info $(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la
+libdns_sd_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la
 
 txt_test_SOURCES = \
 	dns_sd.h \

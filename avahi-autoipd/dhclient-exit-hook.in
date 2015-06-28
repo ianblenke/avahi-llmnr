@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: dhclient-exit-hook.in 1443 2007-04-19 17:56:30Z lennart $
+# $Id$
 #
 # This file is part of avahi.
 # 

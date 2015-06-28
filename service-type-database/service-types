@@ -1,4 +1,4 @@
-# $Id: service-types 1583 2007-12-16 20:14:00Z lennart $
+# $Id$
 
 # This file is part of avahi.
 #
@@ -208,3 +208,8 @@ _adobe-vc._tcp:Adobe Version Cue
 _pgpkey-hkp._tcp:GnuPG/PGP HKP Key Server
 
 _ldap._tcp:LDAP Directory Server
+
+_tp._tcp:Thousand Parsec Server
+_tps._tcp:Thousand Parsec Server (Secure)
+_tp-http._tcp:Thousand Parsec Server (HTTP Tunnel)
+_tp-https._tcp:Thousand Parsec Server (Secure HTTP Tunnel)

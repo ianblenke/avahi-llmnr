@@ -1,7 +1,7 @@
 #ifndef foodnshfoo
 #define foodnshfoo
 
-/* $Id: dns.h 1493 2007-07-07 21:22:19Z lathiat $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

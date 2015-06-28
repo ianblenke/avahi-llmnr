@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# $Id: c-plus-plus-test-gen.py 737 2005-10-12 14:38:07Z lennart $
+# $Id$
 #
 # This file is part of avahi.
 # 
@@ -31,7 +31,7 @@ def print_includes(dir):
         print "#include <%s/%s>" % (dir, f)
 
 
-print """/* $Id: c-plus-plus-test-gen.py 737 2005-10-12 14:38:07Z lennart $ */
+print """/* $Id$ */
 
 /***
   This file is part of avahi.

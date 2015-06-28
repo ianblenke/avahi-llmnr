@@ -1,7 +1,7 @@
 #ifndef fooresponseschedhfoo
 #define fooresponseschedhfoo
 
-/* $Id: response-sched.h 308 2005-08-13 21:25:09Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

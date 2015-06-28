@@ -1,4 +1,4 @@
-/* $Id: warn.c 789 2005-10-16 18:41:26Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

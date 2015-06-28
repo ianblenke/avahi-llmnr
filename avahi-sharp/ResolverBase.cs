@@ -1,4 +1,4 @@
-/* $Id: ResolverBase.cs 996 2005-11-17 17:55:09Z snorp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

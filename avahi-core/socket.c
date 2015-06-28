@@ -1,4 +1,4 @@
-/* $Id: socket.c 1591 2007-12-16 21:03:02Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

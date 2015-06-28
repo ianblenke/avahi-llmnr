@@ -1,4 +1,4 @@
-/* $Id: wide-area.c 1544 2007-09-28 14:51:54Z tedp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

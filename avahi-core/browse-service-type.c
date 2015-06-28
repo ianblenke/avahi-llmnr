@@ -1,4 +1,4 @@
-/* $Id: browse-service-type.c 811 2005-10-18 19:52:03Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

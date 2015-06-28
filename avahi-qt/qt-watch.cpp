@@ -1,4 +1,4 @@
-/* $Id: qt-watch.cpp 1116 2006-01-30 14:55:36Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

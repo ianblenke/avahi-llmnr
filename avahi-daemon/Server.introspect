@@ -2,7 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
 <!DOCTYPE node SYSTEM "introspect.dtd">
 
-<!-- $Id: Server.introspect 1260 2006-08-22 01:49:25Z lennart $ -->
+<!-- $Id$ -->
 
 <!--
   This file is part of avahi.

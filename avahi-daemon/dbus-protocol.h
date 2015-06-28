@@ -1,7 +1,7 @@
 #ifndef foodbusprotocolhfoo
 #define foodbusprotocolhfoo
 
-/* $Id: dbus-protocol.h 1197 2006-04-24 01:48:56Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

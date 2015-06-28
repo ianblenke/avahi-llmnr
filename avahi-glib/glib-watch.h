@@ -1,7 +1,7 @@
 #ifndef fooglibwatchhfoo
 #define fooglibwatchhfoo
 
-/* $Id: glib-watch.h 1255 2006-08-22 00:02:24Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

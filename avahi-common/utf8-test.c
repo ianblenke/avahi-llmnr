@@ -1,4 +1,4 @@
-/* $Id: utf8-test.c 1504 2007-08-12 14:03:27Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

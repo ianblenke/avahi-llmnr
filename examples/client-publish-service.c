@@ -1,4 +1,4 @@
-/* $Id: client-publish-service.c 1592 2007-12-17 10:39:18Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

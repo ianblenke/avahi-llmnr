@@ -1,4 +1,4 @@
-/* $Id: client-browse-services.c 1377 2007-01-30 06:38:07Z lathiat $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

@@ -1,7 +1,7 @@
 #ifndef fooglibmallochfoo
 #define fooglibmallochfoo
 
-/* $Id: glib-malloc.h 1244 2006-08-06 11:53:01Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

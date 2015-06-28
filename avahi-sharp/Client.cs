@@ -1,4 +1,4 @@
-/* $Id: Client.cs 1216 2006-05-08 02:27:25Z snorp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

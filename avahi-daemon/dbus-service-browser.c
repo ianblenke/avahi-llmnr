@@ -1,4 +1,4 @@
-/* $Id: dbus-service-browser.c 1329 2006-09-25 13:43:50Z lathiat $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

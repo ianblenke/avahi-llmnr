@@ -1,7 +1,7 @@
 #ifndef foofdutilhfoo
 #define foofdutilhfoo
 
-/* $Id: fdutil.h 299 2005-08-12 00:25:52Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

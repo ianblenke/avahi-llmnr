@@ -1,7 +1,7 @@
 #ifndef fooalternativehfoo
 #define fooalternativehfoo
 
-/* $Id: alternative.h 1546 2007-09-28 16:09:32Z tedp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

@@ -1,4 +1,4 @@
-/* $Id: thread-watch.c 1212 2006-05-05 13:43:26Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

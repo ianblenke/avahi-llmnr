@@ -1,7 +1,7 @@
 #ifndef foomulticastlookuphfoo
 #define foomulticastlookuphfoo
 
-/* $Id: multicast-lookup.h 608 2005-09-25 20:12:40Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

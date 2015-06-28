@@ -1,7 +1,7 @@
 #ifndef foostdbhfoo
 #define foostdbhfoo
 
-/* $Id: stdb.h 1414 2007-04-12 22:14:40Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

@@ -1,7 +1,7 @@
 #ifndef fooxdgconfighfoo
 #define fooxdgconfighfoo
 
-/* $Id: xdg-config.h 927 2005-11-04 01:05:48Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

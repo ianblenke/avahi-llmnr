@@ -1,7 +1,7 @@
 #ifndef foocachehfoo
 #define foocachehfoo
 
-/* $Id: cache.h 980 2005-11-16 01:15:46Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.
@@ -48,8 +48,10 @@ struct AvahiCacheEntry {
     AvahiCache *cache;
     AvahiRecord *record;
     struct timeval timestamp;
+    struct timeval poof_timestamp;
     struct timeval expiry;
     int cache_flush;
+    int poof_num;
     
     AvahiAddress origin;
 

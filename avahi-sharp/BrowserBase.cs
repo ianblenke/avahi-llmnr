@@ -1,4 +1,4 @@
-/* $Id: BrowserBase.cs 899 2005-10-27 19:47:02Z snorp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

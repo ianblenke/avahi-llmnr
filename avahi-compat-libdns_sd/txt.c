@@ -1,4 +1,4 @@
-/* $Id: txt.c 1192 2006-04-24 00:04:17Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

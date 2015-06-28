@@ -1,4 +1,4 @@
-/* $Id: compat.c 1258 2006-08-22 01:48:13Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

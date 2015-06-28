@@ -1,7 +1,7 @@
 #ifndef footimevalhfoo
 #define footimevalhfoo
 
-/* $Id: timeval.h 1244 2006-08-06 11:53:01Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

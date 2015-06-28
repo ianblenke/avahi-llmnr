@@ -1,4 +1,4 @@
-/* $Id: fdutil.c 1494 2007-07-10 22:39:30Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

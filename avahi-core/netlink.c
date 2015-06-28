@@ -1,4 +1,4 @@
-/* $Id: netlink.c 1382 2007-02-04 16:22:09Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

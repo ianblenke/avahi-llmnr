@@ -1,4 +1,4 @@
-/* $Id: srv-test.c 937 2005-11-08 21:56:28Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

@@ -1,4 +1,4 @@
-/* $Id: dns-spin-test.c 1420 2007-04-12 23:40:57Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

@@ -1,4 +1,4 @@
-/* $Id: cache.c 1275 2006-08-25 18:45:36Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.
@@ -444,12 +444,15 @@ void avahi_cache_flush(AvahiCache *c) {
 
 static void* start_poof_callback(AvahiCache *c, AvahiKey *pattern, AvahiCacheEntry *e, void *userdata) {
     AvahiAddress *a = userdata;
+    struct timeval now;
 
     assert(c);
     assert(pattern);
     assert(e);
     assert(a);
-    
+
+    gettimeofday(&now, NULL);
+
     switch (e->state) {
         case AVAHI_CACHE_VALID:
 
@@ -458,15 +461,23 @@ static void* start_poof_callback(AvahiCache *c, AvahiKey *pattern, AvahiCacheEnt
 
             e->state = AVAHI_CACHE_POOF;
             e->poof_address = *a;
-            
+            e->poof_timestamp = now;
+            e->poof_num = 0;
+
             break;
 
         case AVAHI_CACHE_POOF:
+            if (avahi_timeval_diff(&now, &e->poof_timestamp) < 1000000)
+              break;
 
-            /* This is the second time we got no response, so let's
+            e->poof_timestamp = now;
+            e->poof_address = *a;
+            e->poof_num ++;
+
+            /* This is the 4th time we got no response, so let's
              * fucking remove this entry. */
-            
-            expire_in_one_second(c, e, AVAHI_CACHE_POOF_FINAL);
+            if (e->poof_num > 3)
+              expire_in_one_second(c, e, AVAHI_CACHE_POOF_FINAL);
             break;
 
         default:

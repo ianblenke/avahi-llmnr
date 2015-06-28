@@ -1,4 +1,4 @@
-/* $Id: domain.c 1202 2006-04-24 21:52:34Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

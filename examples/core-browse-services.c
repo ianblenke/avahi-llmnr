@@ -1,4 +1,4 @@
-/* $Id: core-browse-services.c 1298 2006-08-31 17:26:29Z lennart $ */
+/* $Id$ */
 
 /* PLEASE NOTE *
  * This file demonstrates how to use Avahi's core API, this is

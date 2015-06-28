@@ -1,7 +1,7 @@
 #ifndef fooutilhfoo
 #define fooutilhfoo
 
-/* $Id: util.h 980 2005-11-16 01:15:46Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

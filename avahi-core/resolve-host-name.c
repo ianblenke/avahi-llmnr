@@ -1,4 +1,4 @@
-/* $Id: resolve-host-name.c 1169 2006-03-02 01:30:15Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

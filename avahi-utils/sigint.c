@@ -1,4 +1,4 @@
-/* $Id: sigint.c 881 2005-10-26 21:33:41Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

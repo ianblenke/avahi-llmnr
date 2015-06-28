@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1566 2007-10-28 18:41:43Z sjoerd $
+# $Id$
 #
 # This file is part of avahi.
 #
@@ -23,6 +23,7 @@ AM_CFLAGS=-I$(top_srcdir)
 AM_CFLAGS+='-DDEBUG_TRAP=__asm__("int $$3")'
 
 if HAVE_GOBJECT
+if HAVE_DBUS
 
 avahigobjectincludedir=$(includedir)/avahi-gobject
 
@@ -63,8 +64,8 @@ libavahi_gobject_la_SOURCES = \
 	$(BUILT_SOURCES)
 
 libavahi_gobject_la_CFLAGS = $(AM_CFLAGS) $(GOBJECT_CFLAGS)
-libavahi_gobject_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la ../avahi-glib/libavahi-glib.la $(GOJECT_LIBS)
-libavahi_gobject_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info $(LIBAVAHI_GOBJECT_VERSION_INFO)
+libavahi_gobject_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la ../avahi-glib/libavahi-glib.la $(GOBJECT_LIBS)
+libavahi_gobject_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(LIBAVAHI_GOBJECT_VERSION_INFO) -export-symbols-regex '^ga_'
 
 # correctly clean the generated source files
 CLEANFILES = $(BUILT_SOURCES)
@@ -74,7 +75,7 @@ dist-hook:
 
 signals-marshal.list: $(CORE_SOURCES) Makefile.am
 	( cd $(srcdir) && \
-	sed -n -e 's/.*ga_signals_marshal_\([A-Z]*__[A-Z_]*\).*/\1/p' \
+	sed -n -e 's/.*_ga_signals_marshal_\([A-Z]*__[A-Z_]*\).*/\1/p' \
 		$(CORE_SOURCES) ) \
 		| sed -e 's/__/:/' -e 'y/_/,/' | sort -u > $@.tmp
 	if cmp -s $@.tmp $@; then \
@@ -84,10 +85,10 @@ signals-marshal.list: $(CORE_SOURCES) Makefile.am
 	fi
 
 signals-marshal.h: signals-marshal.list
-	glib-genmarshal --header --prefix=ga_signals_marshal $< > $@
+	glib-genmarshal --header --prefix=_ga_signals_marshal $< > $@
 
 signals-marshal.c: signals-marshal.list
-	glib-genmarshal --body --prefix=ga_signals_marshal $< > $@
+	glib-genmarshal --body --prefix=_ga_signals_marshal $< > $@
 
 
 # rules for making the glib enum objects
@@ -108,6 +109,7 @@ signals-marshal.c: signals-marshal.list
 	--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
 	$< > $@
 
+endif
 endif
 
 indent:

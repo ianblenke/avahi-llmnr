@@ -1,4 +1,4 @@
-/* $Id: c-plus-plus-test.cc 994 2005-11-17 14:50:54Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

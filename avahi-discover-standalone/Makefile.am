@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1247 2006-08-21 14:43:05Z lennart $
+# $Id$
 #
 # This file is part of avahi.
 # 
@@ -26,6 +26,7 @@ interfaces = \
 AM_CFLAGS+='-DDEBUG_TRAP=__asm__("int $$3")'
 
 if HAVE_GTK
+if  HAVE_GLIB
 bin_PROGRAMS = \
 	avahi-discover-standalone
 
@@ -46,6 +47,7 @@ avahi_discover_standalone_LDADD = \
 
 interfaces_DATA = $(interfaces)
 
+endif  # HAVE_GLIB
 else 
 
 if HAVE_PYTHON_DBUS

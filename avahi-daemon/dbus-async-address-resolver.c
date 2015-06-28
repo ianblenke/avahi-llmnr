@@ -1,4 +1,4 @@
-/* $Id: dbus-async-address-resolver.c 1235 2006-07-15 20:15:30Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

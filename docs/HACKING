@@ -42,7 +42,7 @@ Please comply with the following rules when hacking on Avahi:
    For Makefile.am, python and shell code:
 
 <snip>
-# $Id: HACKING 521 2005-09-07 11:59:32Z lennart $
+# $Id$
 
 # This file is part of avahi.
 #
@@ -65,7 +65,7 @@ Please comply with the following rules when hacking on Avahi:
    For C source code:
 
 <snip>
-/* $Id: HACKING 521 2005-09-07 11:59:32Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.
@@ -88,4 +88,4 @@ Please comply with the following rules when hacking on Avahi:
 </snip>
 
 
-$Id: HACKING 521 2005-09-07 11:59:32Z lennart $
+$Id$

@@ -1,4 +1,4 @@
-/* $Id: main.c 922 2005-11-02 00:10:11Z sebest $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

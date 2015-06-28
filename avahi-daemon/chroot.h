@@ -1,7 +1,7 @@
 #ifndef foochroothelperhfoo
 #define foochroothelperhfoo
 
-/* $Id: chroot.h 908 2005-10-30 21:22:05Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

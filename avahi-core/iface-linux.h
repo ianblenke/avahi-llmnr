@@ -1,7 +1,7 @@
 #ifndef fooifacelinuxhfoo
 #define fooifacelinuxhfoo
 
-/* $Id: iface-linux.h 726 2005-10-11 19:52:38Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

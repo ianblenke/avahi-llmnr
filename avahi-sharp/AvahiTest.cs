@@ -1,4 +1,4 @@
-/* $Id: AvahiTest.cs 1215 2006-05-07 18:51:06Z snorp $ */
+/* $Id$ */
 
 /***
     This file is part of avahi.

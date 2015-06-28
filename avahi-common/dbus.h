@@ -1,7 +1,7 @@
 #ifndef foodbushfoo
 #define foodbushfoo
 
-/* $Id: dbus.h 1297 2006-08-31 17:22:29Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

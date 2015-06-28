@@ -1,7 +1,7 @@
 #ifndef foorlistfoo
 #define foorlistfoo
 
-/* $Id: rlist.h 872 2005-10-26 01:21:30Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

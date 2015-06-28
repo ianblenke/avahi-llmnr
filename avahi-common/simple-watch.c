@@ -1,4 +1,4 @@
-/* $Id: simple-watch.c 1425 2007-04-14 22:38:15Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

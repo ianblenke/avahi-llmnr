@@ -1,4 +1,4 @@
-/* $Id: entrygroup.c 1271 2006-08-24 21:37:18Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

@@ -1,4 +1,4 @@
-/* $Id: avahi-test.c 1233 2006-07-09 21:33:56Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

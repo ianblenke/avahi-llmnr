@@ -1,4 +1,4 @@
-/* $Id: dbus.c 1266 2006-08-23 23:35:46Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

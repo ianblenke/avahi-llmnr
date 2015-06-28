@@ -1,4 +1,4 @@
-/* $Id: browse.c 1225 2006-06-21 23:30:47Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

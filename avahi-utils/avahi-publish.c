@@ -1,4 +1,4 @@
-/* $Id: avahi-publish.c 1598 2007-12-17 15:12:55Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

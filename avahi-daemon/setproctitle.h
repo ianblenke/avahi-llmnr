@@ -1,7 +1,7 @@
 #ifndef foosetproctitlehfoo
 #define foosetproctitlehfoo
 
-/* $Id: setproctitle.h 1300 2006-08-31 18:32:27Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

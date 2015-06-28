@@ -1,7 +1,7 @@
 #ifndef foobrowsehfoo
 #define foobrowsehfoo
 
-/* $Id: browse.h 804 2005-10-17 22:28:01Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

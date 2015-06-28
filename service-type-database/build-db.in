@@ -1,6 +1,6 @@
 #!@PYTHON@
 # -*-python-*-
-# $Id: build-db.in 1245 2006-08-06 11:54:31Z lennart $
+# $Id$
 
 # This file is part of avahi.
 #

@@ -1,4 +1,4 @@
-/* $Id: iface-linux.c 1339 2006-12-12 02:12:03Z lathiat $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

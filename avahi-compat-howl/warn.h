@@ -1,7 +1,7 @@
 #ifndef foowarnhhowlfoo
 #define foowarnhhowlfoo
 
-/* $Id: warn.h 770 2005-10-15 15:53:46Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

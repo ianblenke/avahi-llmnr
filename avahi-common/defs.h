@@ -1,7 +1,7 @@
 #ifndef foodefshfoo
 #define foodefshfoo
 
-/* $Id: defs.h 1565 2007-10-28 00:26:15Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

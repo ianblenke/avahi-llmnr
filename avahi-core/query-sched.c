@@ -1,4 +1,4 @@
-/* $Id: query-sched.c 1084 2006-01-17 12:25:54Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

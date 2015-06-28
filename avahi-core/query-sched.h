@@ -1,7 +1,7 @@
 #ifndef fooqueryschedhfoo
 #define fooqueryschedhfoo
 
-/* $Id: query-sched.h 954 2005-11-13 16:36:33Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

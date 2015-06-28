@@ -1,7 +1,7 @@
 #ifndef footimeeventqhfoo
 #define footimeeventqhfoo
 
-/* $Id: timeeventq.h 803 2005-10-17 22:23:16Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

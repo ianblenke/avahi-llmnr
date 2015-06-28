@@ -1,6 +1,6 @@
 /*
  * ga-service-resolver.c - Source for GaServiceResolver
- * Copyright (C) 2005 Collabora Ltd.
+ * Copyright (C) 2006-2007 Collabora Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -183,7 +183,7 @@ static void ga_service_resolver_class_init(GaServiceResolverClass *
                          G_SIGNAL_RUN_LAST,
                          0,
                          NULL, NULL,
-                         ga_signals_marshal_VOID__INT_ENUM_STRING_STRING_STRING_STRING_POINTER_INT_POINTER_INT,
+                         _ga_signals_marshal_VOID__INT_ENUM_STRING_STRING_STRING_STRING_POINTER_INT_POINTER_INT,
                          G_TYPE_NONE, 10,
                          G_TYPE_INT,
                          GA_TYPE_PROTOCOL,
@@ -257,7 +257,7 @@ static void ga_service_resolver_class_init(GaServiceResolverClass *
 
     param_spec = g_param_spec_enum("flags", "Lookup flags for the resolver",
                                    "Resolver lookup flags",
-                                   GA_TYPE_PROTOCOL,
+                                   GA_TYPE_LOOKUP_FLAGS,
                                    GA_LOOKUP_NO_FLAGS,
                                    G_PARAM_READWRITE |
                                    G_PARAM_STATIC_NAME |

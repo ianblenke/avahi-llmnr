@@ -1,4 +1,4 @@
-/* $Id: watch-test.c 1074 2006-01-14 01:54:10Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

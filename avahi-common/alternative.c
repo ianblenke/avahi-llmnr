@@ -1,4 +1,4 @@
-/* $Id: alternative.c 1505 2007-08-12 14:09:11Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

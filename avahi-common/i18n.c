@@ -1,4 +1,4 @@
-/* $Id: i18n.c 1593 2007-12-17 12:36:14Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

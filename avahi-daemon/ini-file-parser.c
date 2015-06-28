@@ -1,4 +1,4 @@
-/* $Id: ini-file-parser.c 1533 2007-09-06 16:51:35Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

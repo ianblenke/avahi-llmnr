@@ -1,4 +1,4 @@
-/* $Id: browser.c 1022 2005-11-23 22:28:15Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

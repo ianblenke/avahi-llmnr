@@ -1,4 +1,4 @@
-/* $Id: glib-watch.c 1237 2006-07-18 19:36:31Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

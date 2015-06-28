@@ -1,7 +1,7 @@
 #ifndef fooutf8hfoo
 #define fooutf8hfoo
 
-/* $Id: utf8.h 1201 2006-04-24 21:51:00Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

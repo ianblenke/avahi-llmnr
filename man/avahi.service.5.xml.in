@@ -2,7 +2,7 @@
 <!DOCTYPE manpage SYSTEM "xmltoman.dtd">
 <?xml-stylesheet type="text/xsl" href="xmltoman.xsl" ?>
 
-<!-- $Id: avahi.service.5.xml.in 1577 2007-12-16 13:24:14Z lennart $ -->
+<!-- $Id$ -->
 
 <!-- 
   This file is part of avahi.

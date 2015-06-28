@@ -1,4 +1,4 @@
-/* $Id: static-hosts.c 1427 2007-04-15 00:35:11Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

@@ -1,4 +1,4 @@
-<!-- $Id: avahi-service.dtd 875 2005-10-26 02:03:11Z lennart $ -->
+<!-- $Id$ -->
 
 <!ELEMENT service-group (name,service+)>
 <!ATTLIST service-group>

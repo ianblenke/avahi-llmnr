@@ -1,4 +1,4 @@
-/* $Id: EntryGroup.cs 1188 2006-04-18 13:46:49Z snorp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

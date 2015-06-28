@@ -1,7 +1,7 @@
 #ifndef fooavahimainhfoo
 #define fooavahimainhfoo
 
-/* $Id: main.h 1290 2006-08-31 00:16:27Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

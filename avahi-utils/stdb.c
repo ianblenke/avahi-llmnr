@@ -1,4 +1,4 @@
-/* $Id: stdb.c 1484 2007-06-11 15:55:07Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

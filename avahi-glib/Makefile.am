@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1564 2007-10-28 00:17:16Z lennart $
+# $Id$
 #
 # This file is part of avahi.
 #
@@ -44,7 +44,7 @@ libavahi_glib_la_SOURCES = \
 
 libavahi_glib_la_CFLAGS = $(AM_CFLAGS) $(GLIB20_CFLAGS)
 libavahi_glib_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(GLIB20_LIBS)
-libavahi_glib_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info $(LIBAVAHI_GLIB_VERSION_INFO)
+libavahi_glib_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_GLIB_VERSION_INFO)
 
 glib_watch_test_SOURCES = \
 	glib-watch.c glib-watch.h \

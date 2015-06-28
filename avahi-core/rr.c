@@ -1,4 +1,4 @@
-/* $Id: rr.c 1209 2006-05-04 21:50:44Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

@@ -1,7 +1,7 @@
 #ifndef fooaddresshfoo
 #define fooaddresshfoo
 
-/* $Id: address.h 1547 2007-09-28 16:34:49Z tedp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

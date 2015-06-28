@@ -1,4 +1,4 @@
-/* $Id: main.c 1424 2007-04-14 22:19:52Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

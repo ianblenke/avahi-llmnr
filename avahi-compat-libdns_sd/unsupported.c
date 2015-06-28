@@ -1,4 +1,4 @@
-/* $Id: unsupported.c 1274 2006-08-25 18:45:17Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

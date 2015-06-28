@@ -1,4 +1,4 @@
-/* $Id: AssemblyInfo.cs 543 2005-09-09 19:29:47Z snorp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

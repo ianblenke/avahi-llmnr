@@ -1,7 +1,7 @@
 #ifndef foosockethfoo
 #define foosockethfoo
 
-/* $Id: socket.h 923 2005-11-03 00:28:24Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

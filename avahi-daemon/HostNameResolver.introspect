@@ -2,7 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
 <!DOCTYPE node SYSTEM "introspect.dtd">
 
-<!-- $Id: HostNameResolver.introspect 1556 2007-10-21 12:16:47Z lennart $ -->
+<!-- $Id$ -->
 
 <!--
   This file is part of avahi.

@@ -1,4 +1,4 @@
-/* $Id: ServiceResolver.cs 999 2005-11-17 21:11:13Z snorp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.
@@ -183,6 +183,9 @@ namespace Avahi
             info.HostName = Utility.PtrToString (host);
             info.Address = Utility.PtrToAddress (address);
             info.Port = port;
+
+            if (proto == Protocol.IPv6)
+              info.Address.ScopeId = iface;
 
             ArrayList txtlist = new ArrayList ();
             for (IntPtr l = txt; l != IntPtr.Zero; l = avahi_string_list_get_next (l)) {

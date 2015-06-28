@@ -1,4 +1,4 @@
-/* $Id: dbus-watch-glue.c 1535 2007-09-06 17:01:24Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

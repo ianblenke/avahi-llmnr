@@ -1,4 +1,4 @@
-/* $Id: client.c 1295 2006-08-31 17:17:18Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

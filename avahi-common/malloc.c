@@ -1,4 +1,4 @@
-/* $Id: malloc.c 849 2005-10-23 23:01:13Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

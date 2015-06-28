@@ -1,7 +1,7 @@
 #ifndef foonetlinkhfoo
 #define foonetlinkhfoo
 
-/* $Id: netlink.h 801 2005-10-17 20:20:53Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

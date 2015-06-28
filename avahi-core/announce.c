@@ -1,4 +1,4 @@
-/* $Id: announce.c 1365 2007-01-05 22:18:34Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

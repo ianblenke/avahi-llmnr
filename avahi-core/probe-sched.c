@@ -1,4 +1,4 @@
-/* $Id: probe-sched.c 1405 2007-04-12 20:43:29Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

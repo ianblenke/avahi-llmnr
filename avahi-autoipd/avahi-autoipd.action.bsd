@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: avahi-autoipd.action.bsd 1402 2007-04-12 18:57:31Z lennart $
+# $Id$
 #
 # This file is part of avahi.
 # 

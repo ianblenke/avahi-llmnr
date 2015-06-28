@@ -1,7 +1,7 @@
 #ifndef fooifacepfroutehfoo
 #define fooifacepfroutehfoo
 
-/* $Id: iface-pfroute.h 957 2005-11-13 17:44:10Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

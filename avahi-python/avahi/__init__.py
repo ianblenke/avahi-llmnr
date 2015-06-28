@@ -1,4 +1,4 @@
-# $Id: __init__.py 977 2005-11-15 01:49:54Z lennart $
+# $Id$
 
 # This file is part of avahi.
 #

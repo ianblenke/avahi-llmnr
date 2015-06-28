@@ -1,7 +1,7 @@
 #ifndef fooclientpublishhfoo
 #define fooclientpublishhfoo
 
-/* $Id: publish.h 1502 2007-07-30 20:12:20Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

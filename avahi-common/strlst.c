@@ -1,4 +1,4 @@
-/* $Id: strlst.c 1524 2007-08-25 23:16:36Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

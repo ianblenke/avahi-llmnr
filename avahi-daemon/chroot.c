@@ -1,4 +1,4 @@
-/* $Id: chroot.c 1302 2006-08-31 19:52:01Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

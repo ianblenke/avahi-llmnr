@@ -1,4 +1,4 @@
-/* $Id: Utility.cs 1073 2006-01-12 16:28:22Z snorp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

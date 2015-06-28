@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: avahi-dnsconfd.in 1369 2007-01-05 22:43:03Z lennart $
+# $Id$
 
 # This file is part of avahi.
 #

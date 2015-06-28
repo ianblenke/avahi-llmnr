@@ -1,7 +1,7 @@
 #ifndef foogccmacrohfoo
 #define foogccmacrohfoo
 
-/* $Id: gccmacro.h 931 2005-11-06 15:00:43Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

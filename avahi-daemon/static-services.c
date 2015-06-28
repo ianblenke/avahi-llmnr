@@ -1,4 +1,4 @@
-/* $Id: static-services.c 1588 2007-12-16 20:40:35Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

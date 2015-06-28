@@ -1,7 +1,7 @@
 #ifndef foomallochfoo
 #define foomallochfoo
 
-/* $Id: malloc.h 1477 2007-05-09 19:45:54Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

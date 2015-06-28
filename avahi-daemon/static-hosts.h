@@ -1,7 +1,7 @@
 #ifndef foostatichostshfoo
 #define foostatichostshfoo
 
-/* $Id: static-hosts.h 1133 2006-02-11 15:12:48Z lathiat $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

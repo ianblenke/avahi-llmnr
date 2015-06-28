@@ -1,4 +1,4 @@
-/* $Id: dns-test.c 903 2005-10-28 22:30:56Z sebest $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

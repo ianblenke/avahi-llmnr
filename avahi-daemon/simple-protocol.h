@@ -1,7 +1,7 @@
 #ifndef foosimpleprotocolhfoo
 #define foosimpleprotocolhfoo
 
-/* $Id: simple-protocol.h 327 2005-08-15 02:42:59Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

@@ -1,4 +1,4 @@
-/* $Id: rlist.c 606 2005-09-25 19:59:40Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

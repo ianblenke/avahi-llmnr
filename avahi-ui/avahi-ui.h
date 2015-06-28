@@ -1,7 +1,7 @@
 #ifndef fooavahiuihfoo
 #define fooavahiuihfoo
 
-/* $Id: avahi-ui.h 1570 2007-11-09 13:42:35Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

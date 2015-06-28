@@ -1,4 +1,4 @@
-/* $Id: conformance-test.c 966 2005-11-15 00:11:51Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

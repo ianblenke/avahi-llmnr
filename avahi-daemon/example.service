@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 
-<!-- $Id: example.service 948 2005-11-12 18:55:52Z lennart $ -->
+<!-- $Id$ -->
 
 <!--
   This file is part of avahi.

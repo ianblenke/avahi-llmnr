@@ -1,4 +1,4 @@
-/* $Id: check-nss-test.c 1509 2007-08-12 15:40:25Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

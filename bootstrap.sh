@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: bootstrap.sh 1206 2006-05-02 15:10:31Z sebest $
+# $Id$
 
 # This file is part of avahi.
 #

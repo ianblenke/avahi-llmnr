@@ -1,7 +1,7 @@
 #ifndef foorrhfoo
 #define foorrhfoo
 
-/* $Id: rr.h 896 2005-10-27 19:11:34Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

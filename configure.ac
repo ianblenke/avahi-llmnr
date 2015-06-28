@@ -1,7 +1,7 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# $Id: configure.ac 1600 2007-12-17 15:35:49Z lennart $
+# $Id$
 
 # This file is part of avahi.
 #
@@ -21,7 +21,7 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.22],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.23],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
@@ -29,12 +29,12 @@ AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
 AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [8:0:5])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [5:4:0])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [5:5:0])
 AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:4:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
-AC_SUBST(LIBAVAHI_GOBJECT_VERSION_INFO, [0:0:0])
-AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:1:0])
-AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:1:0])
+AC_SUBST(LIBAVAHI_GOBJECT_VERSION_INFO, [0:1:0])
+AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:2:0])
+AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:2:0])
 AC_SUBST(LIBAVAHI_UI_VERSION_INFO, [1:0:1])
 
 # Do not touch these, since they we took this version-info from upstream HOWL/Bonjour
@@ -246,13 +246,17 @@ AC_TRY_COMPILE([#include <netinet/in.h>], [
 #
 AC_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the distribution to target: One of debian, gentoo, archlinux, fedora, mandriva, darwin, netbsd, freebsd, slackware or none]))
 if test "z$with_distro" = "z"; then
-    AC_CHECK_FILE(/etc/SuSE-release,with_distro="suse")
-    AC_CHECK_FILE(/etc/gentoo-release,with_distro="gentoo")
-    AC_CHECK_FILE(/etc/arch-release,with_distro="archlinux")
-    AC_CHECK_FILE(/etc/debian_version,with_distro="debian")
-    AC_CHECK_FILE(/etc/redhat-release,with_distro="fedora")
-    AC_CHECK_FILE(/etc/mandriva-release,with_distro="mandriva")
-    AC_CHECK_FILE(/etc/slackware-version,with_distro="slackware")
+    if test "$cross_compiling" = yes; then
+        AC_MSG_WARN([Target distribution cannot be reliably detected when cross-compiling. You should specify it with --with-distro (see $0 --help for recognized distros)])
+    else
+        AC_CHECK_FILE(/etc/SuSE-release,with_distro="suse")
+        AC_CHECK_FILE(/etc/gentoo-release,with_distro="gentoo")
+        AC_CHECK_FILE(/etc/arch-release,with_distro="archlinux")
+        AC_CHECK_FILE(/etc/debian_version,with_distro="debian")
+        AC_CHECK_FILE(/etc/redhat-release,with_distro="fedora")
+        AC_CHECK_FILE(/etc/mandriva-release,with_distro="mandriva")
+        AC_CHECK_FILE(/etc/slackware-version,with_distro="slackware")
+    fi
     if test "z$with_distro" = "z"; then
         with_distro=`uname -s`
     fi
@@ -349,8 +353,10 @@ AC_HEADER_SYS_WAIT
 # Checks for library functions.
 AC_FUNC_MEMCMP
 AC_FUNC_SELECT_ARGTYPES
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
+# avahi_malloc actually returns NULL for avahi_malloc(0), so it does not matter
+# whether libc's malloc does too. (Same for realloc.)
+#AC_FUNC_MALLOC
+#AC_FUNC_REALLOC
 AC_CHECK_FUNCS([gethostname memchr memmove memset mkdir select socket strchr strcspn strdup strerror strrchr strspn strstr uname setresuid setreuid setresgid setregid strcasecmp gettimeofday putenv strncasecmp strlcpy gethostbyname seteuid setegid setproctitle getprogname])
 
 AC_FUNC_CHOWN
@@ -359,6 +365,9 @@ AC_TYPE_MODE_T
 AC_TYPE_PID_T
 
 AC_CHECK_DECLS(environ)
+
+# check if gcc's -fvisibility is supported
+CHECK_VISIBILITY_HIDDEN
 
 enable_chroot=yes
 AC_CHECK_HEADERS([sys/capability.h],,enable_chroot=no)
@@ -473,10 +482,10 @@ if test "x$HAVE_QT3" = "xyes" ; then
         AC_SUBST(QT3_CFLAGS)
         AC_SUBST(QT3_LIBS)
 	    QT3_PREFIX="`$PKG_CONFIG --variable=prefix qt-mt`/bin"
-        MOC_QT3="no"
-	    AC_CHECK_FILE( "$QT3_PREFIX/moc-qt3", [ MOC_QT3=$QT3_PREFIX/moc-qt3 ], [
-        	    AC_CHECK_FILE("$QT3_PREFIX/moc", [ MOC_QT3=$QT3_PREFIX/moc ], [
-                AC_MSG_ERROR([Couldn't find QT3 moc])])])
+        AC_PATH_PROGS(MOC_QT3, [moc-qt3 moc], no, [$QT3_PREFIX])
+        if test "$MOC_QT3" = no; then
+            AC_MSG_ERROR([Could not find QT3 moc])
+        fi
         AC_SUBST(MOC_QT3)
 fi
 AM_CONDITIONAL(HAVE_QT3, test "x$HAVE_QT3" = "xyes")
@@ -498,10 +507,10 @@ if test "x$HAVE_QT4" = "xyes" ; then
         AC_SUBST(QT4_CFLAGS)
         AC_SUBST(QT4_LIBS)
 	    QT4_PREFIX="`$PKG_CONFIG --variable=prefix QtCore`/bin"
-        MOC_QT4="no"
-	    AC_CHECK_FILE( "$QT4_PREFIX/moc-qt4", [ MOC_QT4=$QT4_PREFIX/moc-qt4 ], [
-               AC_CHECK_FILE("$QT4_PREFIX/moc", [ MOC_QT4=$QT4_PREFIX/moc ], [
-               AC_MSG_ERROR([Couldn't find QT4 moc])])])
+        AC_PATH_PROGS(MOC_QT4, [moc-qt4 moc], no, [$QT4_PREFIX])
+        if test "$MOC_QT4" = no; then
+            AC_MSG_ERROR([Could not find QT4 moc])
+        fi
         AC_SUBST(MOC_QT4)
 fi
 AM_CONDITIONAL(HAVE_QT4, test "x$HAVE_QT4" = "xyes")
@@ -1154,6 +1163,11 @@ if test "x$HAVE_GTK" = "xyes" -a "x$BUILD_CLIENT" = "xyes" ; then
    BUILD_UI="yes"
 fi
 
+BUILD_GOBJECT="no"
+if test "x$BUILD_CLIENT" = "xyes" -a "x$HAVE_GOBJECT" = "xyes" ; then
+   BUILD_GOBJECT="yes"
+fi
+
 echo "\
     Building libavahi-core              yes
     Building avahi-daemon:              ${BUILD_DAEMON}
@@ -1162,7 +1176,7 @@ echo "\
     Building avahi-utils:               ${BUILD_CLIENT}
     Building avahi-python:              ${BUILD_PYTHON}
     Building libavahi-glib:             ${HAVE_GLIB}
-    Building libavahi-gobject:          ${HAVE_GOBJECT}
+    Building libavahi-gobject:          ${BUILD_GOBJECT}
     Building avahi-discover-standalone: ${HAVE_GTK}
     Building libavahi-qt3:              ${HAVE_QT3}
     Building libavahi-qt4:              ${HAVE_QT4}

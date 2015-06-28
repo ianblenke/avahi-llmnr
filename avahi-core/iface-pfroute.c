@@ -1,4 +1,4 @@
-/* $Id: iface-pfroute.c 1383 2007-02-04 17:12:18Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

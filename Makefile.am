@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1593 2007-12-17 12:36:14Z lennart $
+# $Id$
 
 # This file is part of avahi.
 #
@@ -50,10 +50,7 @@ EXTRA_DIST = \
 	avahi-compat-libdns_sd.pc.in \
 	avahi-compat-howl.pc.in \
 	avahi-ui.pc.in \
-	doxygen_to_devhelp.xsl \
-	intltool-merge.in \
-        intltool-update.in \
-        intltool-extract.in
+	doxygen_to_devhelp.xsl
 
 SUBDIRS = \
 	common \
@@ -112,6 +109,7 @@ DX_INPUT += \
 	$(srcdir)/avahi-glib/glib-malloc.h
 
 if HAVE_GOBJECT
+if HAVE_DBUS
 DX_INPUT += \
 	$(srcdir)/avahi-gobject/ga-client.h \
 	$(srcdir)/avahi-gobject/ga-entry-group.h \
@@ -120,6 +118,7 @@ DX_INPUT += \
 	$(srcdir)/avahi-gobject/ga-record-browser.h \
 	$(srcdir)/avahi-gobject/ga-service-browser.h \
 	$(srcdir)/avahi-gobject/ga-service-resolver.h
+endif
 endif
 endif
 
@@ -313,7 +312,4 @@ dist-hook:
 	fi
 
 DISTCLEANFILES = \
-        intltool-extract \
-        intltool-merge \
-        intltool-update \
 	po/.intltool-merge-cache

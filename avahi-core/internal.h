@@ -1,7 +1,7 @@
 #ifndef foointernalhfoo
 #define foointernalhfoo
 
-/* $Id: internal.h 1508 2007-08-12 15:39:53Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

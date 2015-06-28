@@ -1,4 +1,4 @@
-/* $Id: dbus-sync-service-resolver.c 901 2005-10-27 20:44:59Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

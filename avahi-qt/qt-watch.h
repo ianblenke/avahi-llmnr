@@ -1,7 +1,7 @@
 #ifndef QAVAHI_H
 #define QAVAHI_H
 
-/* $Id: qt-watch.h 872 2005-10-26 01:21:30Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.
@@ -29,7 +29,11 @@
 AVAHI_C_DECL_BEGIN
 
 /** Setup abstract poll structure for integration with Qt main loop  */
-const AvahiPoll* avahi_qt_poll_get(void);
+const AvahiPoll* avahi_qt_poll_get(void)
+#ifdef HAVE_VISIBILITY_HIDDEN
+__attribute__ ((visibility("default")))
+#endif
+;
 
 AVAHI_C_DECL_END
 

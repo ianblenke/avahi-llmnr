@@ -1,4 +1,4 @@
-# $Id: Makefile.am 1128 2006-02-03 22:04:13Z sebest $
+# $Id$
 
 # This file is part of avahi.
 #

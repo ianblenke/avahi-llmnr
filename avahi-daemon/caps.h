@@ -1,7 +1,7 @@
 #ifndef foocapshfoo
 #define foocapshfoo
 
-/* $Id: caps.h 907 2005-10-30 18:21:57Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

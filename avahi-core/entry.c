@@ -1,4 +1,4 @@
-/* $Id: entry.c 1499 2007-07-20 18:13:42Z lathiat $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

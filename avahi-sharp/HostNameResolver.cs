@@ -1,4 +1,4 @@
-/* $Id: HostNameResolver.cs 999 2005-11-17 21:11:13Z snorp $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.

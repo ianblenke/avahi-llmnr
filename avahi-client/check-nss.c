@@ -1,4 +1,4 @@
-/* $Id: check-nss.c 1092 2006-01-20 22:56:11Z lennart $ */
+/* $Id$ */
 
 /***
   This file is part of avahi.
