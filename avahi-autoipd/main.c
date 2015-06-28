@@ -1144,8 +1144,12 @@ static int loop(int iface, uint32_t addr) {
         for (i = 0; i < ETHER_ADDRLEN; i++)
             a += hw_address[i]*i;
 
+        a = (a % 0xFE00) + 0x0100;
+
         addr = htonl(IPV4LL_NETWORK | (uint32_t) a);
     }
+
+    assert(is_ll_address(addr));
 
     set_state(st, 1, addr);
 
@@ -1277,7 +1281,7 @@ static int loop(int iface, uint32_t addr) {
                     DEBUG(daemon_log(LOG_DEBUG, "Ignoring irrelevant ARP packet."));
             }
 
-        } else if (event == EVENT_ROUTABLE_ADDR_CONFIGURED) {
+        } else if (event == EVENT_ROUTABLE_ADDR_CONFIGURED && !force_bind) {
 
             daemon_log(LOG_INFO, "A routable address has been configured.");
 
@@ -1302,7 +1306,7 @@ static int loop(int iface, uint32_t addr) {
             elapse_time(&next_wakeup, 0, PROBE_WAIT*1000);
             next_wakeup_valid = 1;
 
-        } else if (event == EVENT_REFRESH_REQUEST && state == STATE_RUNNING && !force_bind) {
+        } else if (event == EVENT_REFRESH_REQUEST && state == STATE_RUNNING) {
 
             /* The user requested a reannouncing of the address by a SIGHUP */
             daemon_log(LOG_INFO, "Reannouncing address.");

@@ -21,21 +21,21 @@
 # USA.
 
 AC_PREREQ(2.57)
-AC_INIT([avahi],[0.6.23],[avahi (at) lists (dot) freedesktop (dot) org])
+AC_INIT([avahi],[0.6.24],[avahi (at) lists (dot) freedesktop (dot) org])
 AC_CONFIG_SRCDIR([avahi-core/server.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
 
 AC_SUBST(PACKAGE_URL, [http://avahi.org/])
 
-AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [8:0:5])
-AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [5:5:0])
-AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:4:2])
+AC_SUBST(LIBAVAHI_COMMON_VERSION_INFO, [8:1:5])
+AC_SUBST(LIBAVAHI_CORE_VERSION_INFO, [6:0:0])
+AC_SUBST(LIBAVAHI_CLIENT_VERSION_INFO, [5:5:2])
 AC_SUBST(LIBAVAHI_GLIB_VERSION_INFO, [1:1:0])
 AC_SUBST(LIBAVAHI_GOBJECT_VERSION_INFO, [0:1:0])
 AC_SUBST(LIBAVAHI_QT3_VERSION_INFO, [1:2:0])
 AC_SUBST(LIBAVAHI_QT4_VERSION_INFO, [1:2:0])
-AC_SUBST(LIBAVAHI_UI_VERSION_INFO, [1:0:1])
+AC_SUBST(LIBAVAHI_UI_VERSION_INFO, [1:1:1])
 
 # Do not touch these, since they we took this version-info from upstream HOWL/Bonjour
 AC_SUBST(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO, [1:0:0])
@@ -387,7 +387,6 @@ fi
 AM_CONDITIONAL(HAVE_DLOPEN, test "x$HAVE_DLOPEN" = "xyes")
 
 have_inotify=no
-AC_CHECK_HEADERS([linux/inotify.h], [have_inotify=yes])
 AC_CHECK_HEADERS([sys/inotify.h], [have_inotify=yes])
 
 AM_CONDITIONAL(HAVE_INOTIFY, test "x$have_inotify" = "xyes")

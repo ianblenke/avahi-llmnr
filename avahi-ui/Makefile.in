@@ -54,14 +54,15 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_1 = ../avahi-utils/stdb.h ../avahi-utils/stdb.c
-@HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_2 = -DDATABASE_FILE=\"$(pkglibdir)/service-types.db\"
-@HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_3 = -lgdbm
-@HAVE_DBM_TRUE@@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_4 = ../avahi-utils/stdb.h ../avahi-utils/stdb.c
-@HAVE_DBM_TRUE@@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_5 = -DDATABASE_FILE=\"$(pkglibdir)/service-types.db\"
+@HAVE_GTK_TRUE@am__append_1 = -DGNOMELOCALEDIR=\"$(datadir)/locale\"
+@HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_2 = ../avahi-utils/stdb.h ../avahi-utils/stdb.c
+@HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_3 = -DDATABASE_FILE=\"$(pkglibdir)/service-types.db\"
+@HAVE_DBUS_TRUE@@HAVE_GDBM_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_4 = -lgdbm
+@HAVE_DBM_TRUE@@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_5 = ../avahi-utils/stdb.h ../avahi-utils/stdb.c
+@HAVE_DBM_TRUE@@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_6 = -DDATABASE_FILE=\"$(pkglibdir)/service-types.db\"
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@bin_PROGRAMS =  \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	bssh$(EXEEXT)
-@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_6 = bssh.desktop bvnc.desktop
+@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@am__append_7 = bssh.desktop bvnc.desktop
 subdir = avahi-ui
 DIST_COMMON = $(am__avahiinclude_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -72,8 +73,14 @@ am__aclocal_m4_deps = $(top_srcdir)/common/acx_pthread.m4 \
 	$(top_srcdir)/common/gettext.m4 $(top_srcdir)/common/iconv.m4 \
 	$(top_srcdir)/common/lib-ld.m4 \
 	$(top_srcdir)/common/lib-link.m4 \
-	$(top_srcdir)/common/lib-prefix.m4 $(top_srcdir)/common/nls.m4 \
-	$(top_srcdir)/common/po.m4 $(top_srcdir)/common/progtest.m4 \
+	$(top_srcdir)/common/lib-prefix.m4 \
+	$(top_srcdir)/common/libtool.m4 \
+	$(top_srcdir)/common/ltoptions.m4 \
+	$(top_srcdir)/common/ltsugar.m4 \
+	$(top_srcdir)/common/ltversion.m4 \
+	$(top_srcdir)/common/lt~obsolete.m4 \
+	$(top_srcdir)/common/nls.m4 $(top_srcdir)/common/po.m4 \
+	$(top_srcdir)/common/progtest.m4 \
 	$(top_srcdir)/common/python.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/common/doxygen.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -180,6 +187,7 @@ DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DOXYGEN_PAPER_SIZE = @DOXYGEN_PAPER_SIZE@
 DSYMUTIL = @DSYMUTIL@
+DUMPBIN = @DUMPBIN@
 DX_CONFIG = @DX_CONFIG@
 DX_DOCDIR = @DX_DOCDIR@
 DX_DOT = @DX_DOT@
@@ -203,14 +211,12 @@ DX_MAKEINDEX = @DX_MAKEINDEX@
 DX_PDFLATEX = @DX_PDFLATEX@
 DX_PERL = @DX_PERL@
 DX_PROJECT = @DX_PROJECT@
-ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-F77 = @F77@
-FFLAGS = @FFLAGS@
+FGREP = @FGREP@
 GACUTIL = @GACUTIL@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
@@ -258,6 +264,7 @@ INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_NOMERGE_RULE = @INTLTOOL_XML_NOMERGE_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
+LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBAVAHI_CLIENT_VERSION_INFO = @LIBAVAHI_CLIENT_VERSION_INFO@
 LIBAVAHI_COMMON_VERSION_INFO = @LIBAVAHI_COMMON_VERSION_INFO@
@@ -276,6 +283,7 @@ LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
+LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
@@ -295,8 +303,12 @@ MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGFMT_OPTS = @MSGFMT_OPTS@
 MSGMERGE = @MSGMERGE@
+NM = @NM@
 NMEDIT = @NMEDIT@
+OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -341,7 +353,7 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_F77 = @ac_ct_F77@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 acx_pthread_config = @acx_pthread_config@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -379,6 +391,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -402,10 +415,12 @@ top_srcdir = @top_srcdir@
 # This cool debug trap works on i386/gcc only
 AM_CFLAGS = -I$(top_srcdir) -DG_DISABLE_DEPRECATED=1 \
 	-DGDK_DISABLE_DEPRECATED=1 -DGTK_DISABLE_DEPRECATED=1 \
-	'-DDEBUG_TRAP=__asm__("int $$3")'
+	'-DDEBUG_TRAP=__asm__("int $$3")' $(am__append_1)
 desktopdir = $(datadir)/applications
-desktop_DATA = $(am__append_6)
-EXTRA_DIST = bssh.desktop.in bvnc.desktop.in
+desktop_DATA = $(am__append_7)
+desktop_DATA_in = $(desktop_DATA_in_in:.in.in=.in)
+desktop_DATA_in_in = bssh.desktop.in.in bvnc.desktop.in.in
+EXTRA_DIST = $(desktop_DATA_in_in)
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@avahiincludedir = $(includedir)/avahi-ui
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@avahiinclude_HEADERS = \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	avahi-ui.h
@@ -416,25 +431,25 @@ EXTRA_DIST = bssh.desktop.in bvnc.desktop.in
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@libavahi_ui_la_SOURCES =  \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	avahi-ui.h \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	avahi-ui.c \
-@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(am__append_1) \
-@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(am__append_4)
+@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(am__append_2) \
+@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(am__append_5)
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@libavahi_ui_la_CFLAGS =  \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(AM_CFLAGS) \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(GTK20_CFLAGS) \
-@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(am__append_2) \
-@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(am__append_5)
+@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(am__append_3) \
+@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(am__append_6)
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@libavahi_ui_la_LIBADD =  \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(AM_LDADD) \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	../avahi-common/libavahi-common.la \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	../avahi-client/libavahi-client.la \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	../avahi-glib/libavahi-glib.la \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(GTK20_LIBS) \
-@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(am__append_3)
+@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	$(am__append_4)
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@libavahi_ui_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_UI_VERSION_INFO)
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@bssh_SOURCES = bssh.c
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@bssh_CFLAGS = $(AM_CFLAGS) $(GTK20_CFLAGS)
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@bssh_LDADD = $(AM_LDADD) $(GTK20_LIBS) ../avahi-client/libavahi-client.la ../avahi-common/libavahi-common.la libavahi-ui.la
-CLEANFILES = $(desktop_DATA)
+CLEANFILES = $(desktop_DATA) $(desktop_DATA_in)
 all: all-am
 
 .SUFFIXES:
@@ -819,6 +834,7 @@ uninstall-am: uninstall-avahiincludeHEADERS uninstall-binPROGRAMS \
 	uninstall-binPROGRAMS uninstall-desktopDATA \
 	uninstall-libLTLIBRARIES
 
+@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@@INTLTOOL_DESKTOP_RULE@
 
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@install-exec-local:
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	cd $(DESTDIR)/$(bindir) && \
@@ -826,11 +842,13 @@ uninstall-am: uninstall-avahiincludeHEADERS uninstall-binPROGRAMS \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@		$(LN_S) bssh bvnc && \
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@		$(LN_S) bssh bshell
 
-@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@bssh.desktop: bssh.desktop.in
+@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@bssh.desktop.in: bssh.desktop.in.in
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	sed -e 's,@bindir\@,$(bindir),g' $< > $@
 
-@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@bvnc.desktop: bvnc.desktop.in
+@HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@bvnc.desktop.in: bvnc.desktop.in.in
 @HAVE_DBUS_TRUE@@HAVE_GLIB_TRUE@@HAVE_GTK_TRUE@	sed -e 's,@bindir\@,$(bindir),g' $< > $@
+
+@INTLTOOL_DESKTOP_RULE@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
